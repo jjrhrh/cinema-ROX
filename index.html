@@ -1,74 +1,30 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinema ROX | عالم الأفلام والأنمي</title>
-    <link href="https://googleapis.com" rel="stylesheet">
-    <style>
-        :root { --bg: #0b0c10; --primary: #e50914; --glass: rgba(255, 255, 255, 0.08); --text: #ffffff; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Tajawal', sans-serif; margin: 0; padding-top: 80px; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); position: fixed; top: 0; width: 90%; z-index: 1000; border-bottom: 1px solid var(--glass); }
-        .logo { font-size: 24px; font-weight: bold; letter-spacing: 1px; }
-        .logo span { color: var(--primary); }
-        .container { padding: 20px 5%; }
-        .section-title { border-right: 4px solid var(--primary); padding-right: 15px; margin-bottom: 25px; font-size: 22px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
-        .card { background: var(--glass); border-radius: 15px; overflow: hidden; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; position: relative; }
-        .card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .card img { width: 100%; height: 225px; object-fit: cover; }
-        .card-info { padding: 10px; text-align: center; font-size: 14px; font-weight: bold; height: 40px; overflow: hidden; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinema ROX | عالم الأفلام</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Cinema <span>ROX</span></div>
-    </nav>
+  <nav class="navbar">
+    <div class="logo">Cinema <span>ROX</span></div>
+  </nav>
 
-    <div class="container">
-        <h2 class="section-title">الأفلام الرائجة 🔥</h2>
-        <div class="grid" id="moviesGrid"></div>
-        
-        <h2 class="section-title" style="margin-top: 50px;">عالم الأنمي (AniList) ✨</h2>
-        <div class="grid" id="animeGrid"></div>
+  <div class="container">
+    <h2 class="section-title">🔥 الأفلام الرائجة</h2>
+    <div class="grid" id="moviesGrid">
+      <div class="loading">جاري التحميل...</div>
     </div>
 
-    <script>
-        const TMDB_KEY = '943bac496146cd6404017535d3c0e8ec';
+    <h2 class="section-title" style="margin-top:50px">✨ عالم الأنمي (AniList)</h2>
+    <div class="grid" id="animeGrid">
+      <div class="loading">جاري التحميل...</div>
+    </div>
+  </div>
 
-        async function init() {
-            // جلب الأفلام
-            const mRes = await fetch(`https://themoviedb.org{TMDB_KEY}&language=ar`);
-            const mData = await mRes.json();
-            render('moviesGrid', mData.results, 'movie');
-
-            // جلب الأنمي
-            const query = `query { Page(perPage: 12) { media(type: ANIME, sort: TRENDING_DESC) { id title { english native } coverImage { extraLarge } } } }`;
-            const aRes = await fetch('https://anilist.co', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query })
-            });
-            const aData = await aRes.json();
-            render('animeGrid', aData.data.Page.media, 'anime');
-        }
-
-        function render(gridId, items, type) {
-            const grid = document.getElementById(gridId);
-            items.forEach(item => {
-                const title = item.title || (item.title && (item.title.english || item.title.native));
-                const img = type === 'movie' ? `https://tmdb.org{item.poster_path}` : item.coverImage.extraLarge;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<img src="${img}"><div class="card-info">${title}</div>`;
-                card.onclick = () => {
-                    const url = type === 'movie' ? `https://vidsrc.me{item.id}` : `https://shaka.video{item.id}`;
-                    window.open(url, '_blank');
-                };
-                grid.appendChild(card);
-            });
-        }
-        init();
-    </script>
+  <script src="app.js"></script>
 </body>
 </html>
