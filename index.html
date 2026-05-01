@@ -3,28 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cinema ROX | عالم الأفلام</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <title>Cinema ROX</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">Cinema <span>ROX</span></div>
-  </nav>
 
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">Cinema <span>ROX</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" data-page="moviesPage" onclick="showPage('moviesPage')">🎬 أفلام</button>
+    <button class="nav-btn" data-page="seriesPage" onclick="showPage('seriesPage')">📺 مسلسلات</button>
+    <button class="nav-btn" data-page="animePage" onclick="showPage('animePage')">✨ أنمي</button>
+    <button class="nav-btn" data-page="searchPage" onclick="showPage('searchPage')">🔍 بحث</button>
+  </div>
+</nav>
+
+<!-- صفحة الأفلام -->
+<div class="page active" id="moviesPage">
   <div class="container">
     <h2 class="section-title">🔥 الأفلام الرائجة</h2>
-    <div class="grid" id="moviesGrid">
-      <div class="loading">جاري التحميل...</div>
-    </div>
-
-    <h2 class="section-title" style="margin-top:50px">✨ عالم الأنمي (AniList)</h2>
-    <div class="grid" id="animeGrid">
-      <div class="loading">جاري التحميل...</div>
-    </div>
+    <div class="grid" id="moviesGrid"></div>
   </div>
+</div>
 
-  <script src="app.js"></script>
+<!-- صفحة المسلسلات -->
+<div class="page" id="seriesPage">
+  <div class="container">
+    <h2 class="section-title">📺 المسلسلات الرائجة</h2>
+    <div class="grid" id="seriesGrid"></div>
+  </div>
+</div>
+
+<!-- صفحة الأنمي -->
+<div class="page" id="animePage">
+  <div class="container">
+    <h2 class="section-title">✨ عالم الأنمي</h2>
+    <div class="grid" id="animeGrid"></div>
+  </div>
+</div>
+
+<!-- صفحة البحث -->
+<div class="page" id="searchPage">
+  <div class="container">
+    <h2 class="section-title">🔍 ابحث عن فيلم أو مسلسل</h2>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="اكتب اسم الفيلم أو المسلسل...">
+      <button onclick="doSearch()">بحث</button>
+    </div>
+    <div class="grid" id="searchGrid"></div>
+  </div>
+</div>
+
+<!-- مشغل الفيديو -->
+<div class="modal" id="playerModal">
+  <div class="modal-inner">
+    <button class="close-btn" onclick="closePlayer()">✕</button>
+    <iframe id="playerFrame" src="" allowfullscreen
+      allow="autoplay; fullscreen; picture-in-picture"></iframe>
+  </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
