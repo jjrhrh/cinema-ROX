@@ -2,6 +2,24 @@ const TMDB_KEY = '943bac496146cd6404017535d3c0e8ec';
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
 
+// سيرفرات الأفلام بالترتيب (يجرب الأول، إذا فشل يجرب الثاني...)
+const MOVIE_SERVERS = (id) => [
+  `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
+  `https://vidsrc.to/embed/movie/${id}`,
+  `https://multiembed.mov/?video_id=${id}&tmdb=1`,
+  `https://www.2embed.cc/embed/${id}`,
+];
+
+const TV_SERVERS = (id, s = 1, e = 1) => [
+  `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${s}&episode=${e}`,
+  `https://vidsrc.to/embed/tv/${id}/${s}/${e}`,
+  `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}`,
+  `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`,
+];
+
+let currentServers = [];
+let currentServerIndex = 0;
+
 // ===== عرض صفحة =====
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -11,40 +29,57 @@ function showPage(pageId) {
   window.scrollTo(0, 0);
 }
 
-// ===== جلب الأفلام =====
-async function fetchMovies(page = 1) {
+// ===== جلب الأفلام (5 صفحات = ~100 فيلم) =====
+async function fetchMovies() {
   const grid = document.getElementById('moviesGrid');
   grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
   try {
-    const res = await fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${page}`);
-    const data = await res.json();
-    renderGrid(data.results, 'moviesGrid', 'movie');
+    const pages = [1, 2, 3, 4, 5];
+    const results = await Promise.all(
+      pages.map(p =>
+        fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${p}`)
+          .then(r => r.json())
+          .then(d => d.results || [])
+      )
+    );
+    const all = results.flat();
+    renderGrid(all, 'moviesGrid', 'movie');
   } catch (err) {
-    document.getElementById('moviesGrid').innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
+    grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
 }
 
-// ===== جلب المسلسلات =====
-async function fetchSeries(page = 1) {
+// ===== جلب المسلسلات (5 صفحات = ~100 مسلسل) =====
+async function fetchSeries() {
   const grid = document.getElementById('seriesGrid');
   grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
   try {
-    const res = await fetch(`${TMDB_BASE}/tv/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${page}`);
-    const data = await res.json();
-    renderGrid(data.results, 'seriesGrid', 'tv');
+    const pages = [1, 2, 3, 4, 5];
+    const results = await Promise.all(
+      pages.map(p =>
+        fetch(`${TMDB_BASE}/tv/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${p}`)
+          .then(r => r.json())
+          .then(d => d.results || [])
+      )
+    );
+    const all = results.flat();
+    renderGrid(all, 'seriesGrid', 'tv');
   } catch (err) {
-    document.getElementById('seriesGrid').innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
+    grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
 }
 
-// ===== جلب الأنمي =====
+// ===== جلب الأنمي (50 أنمي) =====
 async function fetchAnime() {
   const grid = document.getElementById('animeGrid');
   grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
   const query = `query {
-    Page(perPage: 20) {
+    Page(perPage: 50) {
       media(type: ANIME, sort: POPULARITY_DESC) {
-        id title { romaji native } coverImage { extraLarge }
+        id
+        title { romaji native }
+        coverImage { extraLarge }
+        averageScore
       }
     }
   }`;
@@ -57,7 +92,7 @@ async function fetchAnime() {
     const data = await res.json();
     renderGrid(data.data.Page.media, 'animeGrid', 'anime');
   } catch (err) {
-    document.getElementById('animeGrid').innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
+    grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
 }
 
@@ -79,7 +114,9 @@ function renderGrid(items, gridId, type) {
       ? `${IMG_BASE}${item.poster_path}`
       : 'https://via.placeholder.com/300x450/111/555?text=No+Image';
 
-    const rating = item.vote_average ? item.vote_average.toFixed(1) : '';
+    const rating = type === 'anime'
+      ? (item.averageScore ? (item.averageScore / 10).toFixed(1) : '')
+      : (item.vote_average ? item.vote_average.toFixed(1) : '');
 
     const card = document.createElement('div');
     card.className = 'card';
@@ -97,23 +134,49 @@ function renderGrid(items, gridId, type) {
   });
 }
 
-// ===== فتح المشغل =====
+// ===== فتح المشغل مع fallback =====
 function openPlayer(id, type) {
-  // سيرفرات متعددة تشتغل
-  let url = '';
   if (type === 'movie') {
-    url = `https://embed.su/embed/movie/${id}`;
+    currentServers = MOVIE_SERVERS(id);
   } else if (type === 'tv') {
-    url = `https://embed.su/embed/tv/${id}/1/1`;
+    currentServers = TV_SERVERS(id);
   } else {
-    url = `https://animepahe.ru/anime/${id}`;
+    // أنمي — استخدام AniWatch
+    currentServers = [
+      `https://aniwatch.to/watch/${id}`,
+      `https://9anime.to/watch/${id}`,
+    ];
   }
 
+  currentServerIndex = 0;
+  loadServer(currentServerIndex);
+
   const modal = document.getElementById('playerModal');
-  const iframe = document.getElementById('playerFrame');
-  iframe.src = url;
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function loadServer(index) {
+  const iframe = document.getElementById('playerFrame');
+  iframe.src = currentServers[index];
+}
+
+// زر "جرب سيرفر آخر"
+function nextServer() {
+  if (currentServerIndex < currentServers.length - 1) {
+    currentServerIndex++;
+    loadServer(currentServerIndex);
+    updateServerBtn();
+  } else {
+    alert('لا يوجد سيرفر آخر متاح حالياً');
+  }
+}
+
+function updateServerBtn() {
+  const btn = document.getElementById('nextServerBtn');
+  if (btn) {
+    btn.textContent = `🔄 سيرفر ${currentServerIndex + 1}/${currentServers.length}`;
+  }
 }
 
 // ===== إغلاق المشغل =====
@@ -122,6 +185,8 @@ function closePlayer() {
   document.getElementById('playerFrame').src = '';
   modal.classList.remove('open');
   document.body.style.overflow = '';
+  currentServers = [];
+  currentServerIndex = 0;
 }
 
 // ===== البحث =====
@@ -161,7 +226,7 @@ async function doSearch() {
         </div>
         <div class="card-info">
           <h4>${title}</h4>
-          <span class="type-badge">${item._type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
+          <span class="type-badge">${item._type === 'movie' ? '🎬 فيلم' : '📺 مسلسل'}</span>
         </div>
       `;
       card.onclick = () => openPlayer(item.id, item._type);
@@ -178,12 +243,10 @@ window.onload = () => {
   fetchSeries();
   fetchAnime();
 
-  // بحث بضغطة Enter
   document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') doSearch();
   });
 
-  // إغلاق بالضغط خارج المشغل
   document.getElementById('playerModal').addEventListener('click', function(e) {
     if (e.target === this) closePlayer();
   });
