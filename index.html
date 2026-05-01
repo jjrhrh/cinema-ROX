@@ -25,6 +25,7 @@
   <div class="container">
     <h2 class="section-title">🔥 الأفلام الرائجة</h2>
     <div class="grid" id="moviesGrid"></div>
+    <div class="sentinel" id="moviesSentinel"></div>
   </div>
 </div>
 
@@ -33,6 +34,7 @@
   <div class="container">
     <h2 class="section-title">📺 المسلسلات الرائجة</h2>
     <div class="grid" id="seriesGrid"></div>
+    <div class="sentinel" id="seriesSentinel"></div>
   </div>
 </div>
 
@@ -41,6 +43,7 @@
   <div class="container">
     <h2 class="section-title">✨ عالم الأنمي</h2>
     <div class="grid" id="animeGrid"></div>
+    <div class="sentinel" id="animeSentinel"></div>
   </div>
 </div>
 
@@ -60,6 +63,8 @@
 <div class="modal" id="playerModal">
   <div class="modal-inner">
     <button class="close-btn" onclick="closePlayer()">✕</button>
+    <button id="nextServerBtn" onclick="nextServer()">🔄 سيرفر 1/4</button>
+    <button id="nextServerBtn" onclick="nextServer()">🔄 سيرفر 1/4</button>
     <iframe id="playerFrame" src="" allowfullscreen
       allow="autoplay; fullscreen; picture-in-picture"></iframe>
   </div>
