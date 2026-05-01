@@ -1,52 +1,57 @@
 const TMDB_KEY = '943bac496146cd6404017535d3c0e8ec';
 
-// جلب الأفلام من TMDB
+// جلب الأفلام الرائجة
 async function fetchMovies() {
-    const res = await fetch(`https://themoviedb.org{TMDB_KEY}&language=ar`);
-    const data = await res.json();
-    displayItems(data.results, 'moviesGrid', 'movie');
+    try {
+        const res = await fetch(`https://themoviedb.org{TMDB_KEY}&language=ar`);
+        const data = await res.json();
+        renderGrid(data.results, 'moviesGrid', 'movie');
+    } catch (err) { console.error("خطأ في جلب الأفلام:", err); }
 }
 
-// جلب الأنمي من AniList (القوي جداً)
+// جلب الأنمي من AniList (الأقوى)
 async function fetchAnime() {
-    const query = `query { Page(perPage: 10) { media(type: ANIME, sort: TRENDING_DESC) { id title { english native } coverImage { extraLarge } } } }`;
-    const res = await fetch('https://anilist.co', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query })
-    });
-    const data = await res.json();
-    displayAnime(data.data.Page.media);
+    const query = `query { Page(perPage: 12) { media(type: ANIME, sort: TRENDING_DESC) { id title { english native romaji } coverImage { extraLarge } bannerImage } } }`;
+    try {
+        const res = await fetch('https://anilist.co', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query })
+        });
+        const data = await res.json();
+        renderGrid(data.data.Page.media, 'animeGrid', 'anime');
+    } catch (err) { console.error("خطأ في جلب الأنمي:", err); }
 }
 
-function displayItems(items, gridId, type) {
+function renderGrid(items, gridId, type) {
     const grid = document.getElementById(gridId);
+    if (!grid) return;
+    grid.innerHTML = ""; // تنظيف الشبكة قبل العرض
+
     items.forEach(item => {
+        const title = item.title || item.name || (item.title && (item.title.english || item.title.native));
+        const image = type === 'movie' 
+            ? `https://tmdb.org{item.poster_path}` 
+            : item.coverImage.extraLarge;
+
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <img src="https://tmdb.org{item.poster_path}">
-            <div class="card-info"><h4>${item.title || item.name}</h4></div>
+            <img src="${image}" alt="${title}" onerror="this.src='https://placeholder.com'">
+            <div class="card-info"><h4>${title}</h4></div>
         `;
-        card.onclick = () => window.open(`https://vidsrc.me{item.id}`, '_blank');
+        
+        // رابط المشاهدة الذكي
+        card.onclick = () => {
+            const streamUrl = type === 'movie' 
+                ? `https://vidsrc.me{item.id}` 
+                : `https://shaka.video{item.id}`; // سيرفر أنمي مباشر
+            window.open(streamUrl, '_blank');
+        };
         grid.appendChild(card);
     });
 }
 
-function displayAnime(items) {
-    const grid = document.getElementById('animeGrid');
-    items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-            <img src="${item.coverImage.extraLarge}">
-            <div class="card-info"><h4>${item.title.english || item.title.native}</h4></div>
-        `;
-        // رابط مشاهدة أنمي (مثال)
-        card.onclick = () => alert('جاري تحويلك لسيرفر مشاهدة الأنمي...');
-        grid.appendChild(card);
-    });
-}
-
+// تشغيل الدوال
 fetchMovies();
 fetchAnime();
