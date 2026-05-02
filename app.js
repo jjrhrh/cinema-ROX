@@ -227,7 +227,7 @@ async function fetchMovies() {
   try {
     const results = [];
     for (const p of [1,2,3,4,5]) {
-      const r = await fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${p}`).then(r=>r.json());
+      const r = await fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=${currentLang === 'ar' ? 'ar-SA' : 'en-US'}&page=${p}`).then(r=>r.json());
       results.push(...(r.results||[]));
     }
     renderGrid(results, 'moviesGrid', 'movie');
