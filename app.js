@@ -851,3 +851,95 @@ applyLang();
 };
 
 setInterval(()=>{ fetchMovies(); fetchSeries(); fetchAnime(); }, 600000);
+// ===== فاجئني =====
+async function openSurprisePage() {
+  pageHistory.push('surprisePage');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('surprisePage');
+  page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
+  window.scrollTo(0, 0);
+  page.innerHTML = '<div class="loading" style="padding:120px 0">🎲 جاري اختيار فيلم مفاجئ لك...</div>';
+  try {
+    const randPage = Math.floor(Math.random() * 20) + 1;
+    const lang = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+    const res = await fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=${lang}&page=${randPage}`).then(r=>r.json());
+    const movies = (res.results||[]).filter(m=>m.poster_path&&m.overview);
+    const movie = movies[Math.floor(Math.random() * movies.length)];
+    if (!movie) { page.innerHTML = '<div class="loading">❌ حاول مرة ثانية</div>'; return; }
+    page.innerHTML = `
+      <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+      <div style="max-width:500px;margin:40px auto;padding:20px;text-align:center;">
+        <div style="font-size:3rem;margin-bottom:16px;">🎲</div>
+        <h2 style="margin-bottom:20px;color:var(--primary)">فيلمك المفاجئ!</h2>
+        <img src="${IMG_ORIG}${movie.poster_path}" style="width:200px;border-radius:16px;box-shadow:0 8px 32px #0008;margin-bottom:20px;">
+        <h3 style="margin-bottom:8px;">${movie.title||movie.original_title}</h3>
+        <p style="opacity:.7;margin-bottom:20px;line-height:1.6;">${movie.overview.slice(0,150)}...</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button onclick="openDetails(${movie.id},'movie')" style="padding:12px 24px;background:var(--primary);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:1rem;font-family:inherit;">ℹ️ التفاصيل</button>
+          <button onclick="openPlayerFromDetail(${movie.id},'movie')" style="padding:12px 24px;background:#222;color:#fff;border:2px solid var(--primary);border-radius:12px;cursor:pointer;font-size:1rem;font-family:inherit;">▶ مشاهدة</button>
+          <button onclick="openSurprisePage()" style="padding:12px 24px;background:#333;color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:1rem;font-family:inherit;">🎲 فيلم آخر</button>
+        </div>
+      </div>
+    `;
+  } catch(e) {
+    page.innerHTML = '<div class="loading">❌ خطأ، حاول مرة ثانية</div>';
+  }
+}
+
+// ===== إحصائياتي =====
+function openStatsPage() {
+  pageHistory.push('statsPage');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('statsPage');
+  page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
+  window.scrollTo(0, 0);
+
+  const list = getWatchlist();
+  const total = list.length;
+  const movies = list.filter(i=>i.type==='movie').length;
+  const series = list.filter(i=>i.type==='tv').length;
+  const anime  = list.filter(i=>i.type==='anime').length;
+
+  page.innerHTML = `
+    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+    <div style="max-width:500px;margin:40px auto;padding:20px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:3rem;">📊</div>
+        <h2 style="color:var(--primary);margin-top:8px;">إحصائياتي</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div style="background:var(--bg2);border-radius:16px;padding:20px;text-align:center;border:2px solid var(--primary);">
+          <div style="font-size:2.5rem;font-weight:900;color:var(--primary)">${total}</div>
+          <div style="opacity:.7;margin-top:4px;">إجمالي قائمتي</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:16px;padding:20px;text-align:center;">
+          <div style="font-size:2.5rem;font-weight:900;">🎬 ${movies}</div>
+          <div style="opacity:.7;margin-top:4px;">أفلام</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:16px;padding:20px;text-align:center;">
+          <div style="font-size:2.5rem;font-weight:900;">📺 ${series}</div>
+          <div style="opacity:.7;margin-top:4px;">مسلسلات</div>
+        </div>
+        <div style="background:var(--bg2);border-radius:16px;padding:20px;text-align:center;">
+          <div style="font-size:2.5rem;font-weight:900;">✨ ${anime}</div>
+          <div style="opacity:.7;margin-top:4px;">أنمي</div>
+        </div>
+      </div>
+      ${total === 0 ? '<div style="text-align:center;opacity:.6;padding:20px;">أضف أفلام لقائمتك لترى إحصائياتك! ❤️</div>' : ''}
+    </div>
+  `;
+}
+
+// ===== بحث سريع من الإعدادات =====
+function doQuickSearch() {
+  const q = document.getElementById('quickSearchInput').value.trim();
+  if (!q) return;
+  closeSettings();
+  document.getElementById('searchInput').value = q;
+  showPage('searchPage');
+  doSearch();
+    }
