@@ -69,7 +69,20 @@ function applyLang() {
   root.setAttribute('dir', isAr ? 'rtl' : 'ltr');
   const label = document.getElementById('langLabel');
   if (label) label.textContent = isAr ? 'English' : 'عربي';
-    }
+  const btnAr = document.getElementById('btnLangAr');
+  const btnEn = document.getElementById('btnLangEn');
+  if (btnAr) { btnAr.style.background = isAr ? 'var(--primary)' : 'transparent'; btnAr.style.borderColor = isAr ? 'var(--primary)' : '#444'; }
+  if (btnEn) { btnEn.style.background = !isAr ? 'var(--primary)' : 'transparent'; btnEn.style.borderColor = !isAr ? 'var(--primary)' : '#444'; }
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('siteLang', lang);
+  applyLang();
+  fetchMovies();
+  fetchSeries();
+  fetchAnime();
+}
 // ===== القائمة الجانبية =====
 function openSideMenu() {
   document.getElementById('sideMenu').classList.add('open');
