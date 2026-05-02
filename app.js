@@ -559,13 +559,13 @@ window.onload = () => {
   initHero();
   // ===== إخفاء السبلاش =====
   setTimeout(function() {
-    var s = document.getElementById('splash-screen');
-    if (s) { s.style.opacity='0'; s.style.visibility='hidden'; }
-    setTimeout(function() {
-      var s2 = document.getElementById('splash-screen');
-      if (s2) s2.remove();
-    }, 700);
-  }, 2500);
+  var s = document.getElementById('splash-screen');
+  if (s) s.classList.add('hide');
+  setTimeout(function() {
+    var s2 = document.getElementById('splash-screen');
+    if (s2) s2.remove();
+  }, 700);
+}, 2500);
   // ===========================
   fetchMovies();
   fetchSeries();
