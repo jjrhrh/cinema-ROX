@@ -31,10 +31,6 @@
   <button class="bnav-btn bnav-center" id="bnavBrowse" onclick="bnavGo('browse')">
     <span class="bnav-icon">🎬</span>
   </button>
-  <button class="bnav-btn" id="bnavLibrary" onclick="bnavGo('library')">
-    <span class="bnav-icon">📚</span>
-    <span class="bnav-label">مكتبتي</span>
-  </button>
   <button class="bnav-btn" id="bnavProfile" onclick="bnavGo('profile')">
     <span class="bnav-icon">👤</span>
     <span class="bnav-label">حسابي</span>
@@ -47,8 +43,8 @@
     <input type="text" id="searchInput" placeholder="🔍 ابحث عن فيلم أو مسلسل..." oninput="liveSearch()" style="width:100%;padding:14px 18px;border-radius:16px;border:2px solid #333;background:#1a1a2e;color:#fff;font-family:'Tajawal',sans-serif;font-size:1rem;margin-bottom:16px;box-sizing:border-box;">
     <div class="filter-bar">
       <select id="filterType" onchange="applyFilters()"><option value="">🎬 الكل</option><option value="movie">🎥 أفلام</option><option value="tv">📺 مسلسلات</option></select>
-      <select id="filterGenre" onchange="applyFilters()"><option value="">🎭 التصنيف</option><option value="28">أكشن</option><option value="35">كوميدي</option><option value="18">دراما</option><option value="27">رعب</option><option value="10749">رومانسي</option><option value="878">خيال علمي</option></select>
-      <select id="filterYear" onchange="applyFilters()"><option value="">📅 السنة</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option></select>
+      <select id="filterGenre" onchange="applyFilters()"><option value="">🎭 التصنيف</option><option value="28">أكشن</option><option value="35">كوميديا</option><option value="18">دراما</option><option value="27">رعب</option><option value="10749">رومانسي</option><option value="878">خيال علمي</option><option value="16">أنمي</option></select>
+      <select id="filterYear" onchange="applyFilters()"><option value="">📅 السنة</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select>
       <select id="filterSort" onchange="applyFilters()"><option value="popularity.desc">🔥 الأكثر شيوعاً</option><option value="vote_average.desc">⭐ الأعلى تقييماً</option><option value="release_date.desc">🆕 الأحدث</option></select>
     </div>
     <div id="searchQuickLinks">
@@ -79,8 +75,10 @@
     <img src="logo.png" alt="Cinema ROX" style="width:90px;height:90px;border-radius:50%;border:3px solid var(--primary);margin-bottom:12px;object-fit:cover;">
     <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:4px;">Cinema <span style="color:var(--primary)">ROX</span></h2>
     <div style="opacity:.5;font-size:.85rem;margin-bottom:28px;">الإصدار 1.0</div>
+
     <div style="background:#ffffff08;border-radius:18px;padding:20px;text-align:right;margin-bottom:16px;">
       <div style="font-weight:700;margin-bottom:14px;font-size:1rem;">⚙️ الإعدادات</div>
+
       <div style="margin-bottom:16px;">
         <div style="opacity:.6;font-size:.8rem;margin-bottom:8px;">🌐 اللغة</div>
         <div style="display:flex;gap:10px;">
@@ -88,6 +86,7 @@
           <button onclick="setLang('en')" id="btnLangEn" style="flex:1;padding:10px;border-radius:12px;border:2px solid #444;background:transparent;color:#fff;font-size:.9rem;font-family:inherit;cursor:pointer;">🇺🇸 English</button>
         </div>
       </div>
+
       <div style="margin-bottom:16px;">
         <div style="opacity:.6;font-size:.8rem;margin-bottom:8px;">🎨 لون الموقع</div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -98,6 +97,7 @@
           <button class="color-opt" onclick="setColor('#c084fc',this)" style="width:38px;height:38px;border-radius:50%;background:#c084fc;border:3px solid transparent;cursor:pointer;"></button>
         </div>
       </div>
+
       <div style="margin-bottom:16px;">
         <div style="opacity:.6;font-size:.8rem;margin-bottom:8px;">🌑 خلفية الموقع</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -108,7 +108,18 @@
         </div>
       </div>
     </div>
+
     <div style="background:#ffffff08;border-radius:18px;padding:20px;text-align:right;margin-bottom:16px;">
+      <div style="font-weight:700;margin-bottom:14px;">📚 مكتبتي</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <button onclick="openWatchlistPage()" style="padding:12px;border-radius:12px;background:#ffffff10;color:#fff;border:none;font-family:inherit;font-size:.95rem;cursor:pointer;text-align:right;">❤️ قائمتي المفضلة</button>
+        <button onclick="openWatchLaterPage()" style="padding:12px;border-radius:12px;background:#ffffff10;color:#fff;border:none;font-family:inherit;font-size:.95rem;cursor:pointer;text-align:right;">⏰ سأشاهده لاحقاً</button>
+        <button onclick="openNotesPage()" style="padding:12px;border-radius:12px;background:#ffffff10;color:#fff;border:none;font-family:inherit;font-size:.95rem;cursor:pointer;text-align:right;">💬 ملاحظاتي</button>
+        <button onclick="openStatsPage()" style="padding:12px;border-radius:12px;background:#ffffff10;color:#fff;border:none;font-family:inherit;font-size:.95rem;cursor:pointer;text-align:right;">📊 إحصائياتي</button>
+      </div>
+    </div>
+
+    <div style="background:#ffffff08;border-radius:18px;padding:20px;text-align:right;margin-bottom:80px;">
       <div style="font-weight:700;margin-bottom:14px;">ℹ️ عن التطبيق</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div style="display:flex;justify-content:space-between;opacity:.7;font-size:.9rem;padding:8px 0;border-bottom:1px solid #ffffff10;">الإصدار<span>1.0.0</span></div>
@@ -119,8 +130,9 @@
   </div>
 </div>
 
+<!-- صفحة الشبكات -->
 <div class="page" id="networksListPage"></div>
-
+<!-- HERO BANNER -->
 <!-- HERO BANNER -->
 <div id="heroBanner" class="hero-banner">
   <div class="hero-carousel" id="heroCarousel"></div>
@@ -136,8 +148,8 @@
   </div>
   <div class="hero-dots" id="heroDots"></div>
 </div>
-
-<!-- صفحة الرئيسية -->
+<!-- END HERO -->
+<!-- صفحة الأفلام -->
 <div class="page active" id="moviesPage">
   <div class="container">
     <h2 class="section-title">🔥 الأفلام الرائجة</h2>
@@ -161,41 +173,28 @@
   </div>
 </div>
 
-<!-- صفحة المكتبة -->
-<div class="page" id="libraryPage">
-  <div class="container" style="padding-top:80px;padding-bottom:100px;">
-    <div class="library-tabs">
-      <button class="lib-tab active" onclick="switchLibTab(this,'libWatchlist')">❤️ المفضلة</button>
-      <button class="lib-tab" onclick="switchLibTab(this,'libWatchLater')">⏰ لاحقاً</button>
-      <button class="lib-tab" onclick="switchLibTab(this,'libNotes')">💬 ملاحظاتي</button>
-      <button class="lib-tab" onclick="switchLibTab(this,'libStats')">📊 إحصائياتي</button>
+<!-- صفحة البحث -->
+<div class="page" id="searchPage">
+  <div class="container">
+    <h2 class="section-title">🔍 ابحث عن فيلم أو مسلسل</h2>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="اكتب اسم الفيلم أو المسلسل...">
+      <button onclick="doSearch()">بحث</button>
     </div>
-    <div class="lib-panel" id="libWatchlist">
-      <h2 class="section-title">❤️ قائمتي المفضلة</h2>
-      <div class="grid" id="libWatchlistGrid"></div>
-    </div>
-    <div class="lib-panel" id="libWatchLater" style="display:none">
-      <h2 class="section-title">⏰ سأشاهده لاحقاً</h2>
-      <div class="grid" id="libWatchLaterGrid"></div>
-    </div>
-    <div class="lib-panel" id="libNotes" style="display:none">
-      <h2 class="section-title">💬 ملاحظاتي</h2>
-      <div id="libNotesList"></div>
-    </div>
-    <div class="lib-panel" id="libStats" style="display:none">
-      <h2 class="section-title">📊 إحصائياتي</h2>
-      <div id="libStatsContent"></div>
-    </div>
+    <div class="grid" id="searchGrid"></div>
   </div>
 </div>
 
-<div class="page" id="watchlistPage"><div class="container"><h2 class="section-title">❤️ قائمتي</h2><div class="grid" id="watchlistGrid"></div></div></div>
-<div class="page" id="surprisePage"></div>
+ <div class="page" id="watchlistPage"><div class="container"><h2 class="section-title">❤️ قائمتي</h2><div class="grid" id="watchlistGrid"></div></div></div>
+  <div class="page" id="surprisePage"></div>
 <div class="page" id="statsPage"></div>
-<div class="page" id="movieOfDayPage"></div>
+  <div class="page" id="movieOfDayPage"></div>
 <div class="page" id="watchLaterPage"></div>
 <div class="page" id="notesPage"></div>
+<!-- صفحة التفاصيل -->
 <div class="page" id="detailPage"></div>
+
+<!-- صفحة المنصة -->
 <div class="page" id="networkPage"></div>
 
 <!-- مشغل الفيديو -->
@@ -207,11 +206,12 @@
   </div>
 </div>
 
-<!-- نافذة الإعدادات -->
-<div class="modal" id="settingsModal">
+<!-- نافذة الإعدادات --><div class="modal" id="settingsModal">
   <div class="settings-inner" style="max-width:420px;width:95%;border-radius:20px;padding:28px 20px;background:var(--bg2);box-shadow:0 8px 40px #000a;">
     <button class="close-btn" onclick="closeSettings()" style="top:16px;left:16px;right:auto;">✕</button>
     <h2 class="settings-title" style="text-align:center;font-size:1.4rem;margin-bottom:24px;">⚙️ الإعدادات</h2>
+
+    <!-- اللغة -->
     <div class="settings-section" style="margin-bottom:22px;">
       <h3 style="margin-bottom:12px;font-size:1rem;opacity:.8;">🌐 اللغة</h3>
       <div style="display:flex;gap:10px;">
@@ -219,6 +219,8 @@
         <button onclick="setLang('en')" id="btnLangEn" style="flex:1;padding:12px;border-radius:12px;border:2px solid #444;background:transparent;color:#fff;font-size:1rem;font-family:inherit;cursor:pointer;">🇺🇸 English</button>
       </div>
     </div>
+
+    <!-- لون الموقع -->
     <div class="settings-section" style="margin-bottom:22px;">
       <h3 style="margin-bottom:12px;font-size:1rem;opacity:.8;">🎨 لون الموقع</h3>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -230,6 +232,8 @@
         <button class="color-opt" onclick="setColor('#ffffff',this)" style="width:42px;height:42px;border-radius:50%;background:#fff;border:3px solid transparent;cursor:pointer;"></button>
       </div>
     </div>
+
+    <!-- خلفية الموقع -->
     <div class="settings-section">
       <h3 style="margin-bottom:12px;font-size:1rem;opacity:.8;">🌑 خلفية الموقع</h3>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -239,10 +243,18 @@
         <button onclick="setBg('#1a0a0a','#2a1010',this)" style="padding:10px 16px;border-radius:12px;background:#1a0a0a;color:#fff;border:2px solid #444;cursor:pointer;font-family:inherit;">أسود محمر</button>
       </div>
     </div>
+<!-- البحث السريع -->
+    <div class="settings-section" style="margin-top:22px;">
+      <h3 style="margin-bottom:12px;font-size:1rem;opacity:.8;">🔍 بحث سريع</h3>
+      <div style="display:flex;gap:8px;">
+        <input id="quickSearchInput" placeholder="ابحث هنا..." style="flex:1;padding:12px;border-radius:12px;border:2px solid #444;background:#111;color:#fff;font-family:inherit;font-size:1rem;">
+        <button onclick="doQuickSearch()" style="padding:12px 16px;border-radius:12px;background:var(--primary);color:#fff;border:none;cursor:pointer;font-size:1.2rem;">🔍</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
-  </html>
+</html>
