@@ -160,7 +160,6 @@ async function openNetwork(networkId, networkName, color) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('networkPage');
   page.classList.add('active');
-  page.innerHTML = `<div class="loading" style="padding:120px 0">⏳ جاري تحميل ${networkName}...</div>`;
   window.scrollTo(0, 0);
 
   const providerMap = {
@@ -171,80 +170,69 @@ async function openNetwork(networkId, networkName, color) {
   };
   const pid = providerMap[networkId] || networkId;
 
-  try {
-    const [tvRes1,tvRes2,tvRes3,tvRes4,tvRes5,
-           movRes1,movRes2,movRes3,movRes4,movRes5] = await Promise.all([
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=1`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=2`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=3`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=4`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=5`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=1`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=2`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=3`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=4`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=5`).then(r=>r.json()),
-    ]);
+  async function loadNetworkPage(type, pageNum) {
+    window.scrollTo(0, 0);
+    const grid = document.getElementById('nGrid');
+    grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
 
-    const tvItems  = [tvRes1,tvRes2,tvRes3,tvRes4,tvRes5].flatMap(r=>r.results||[]).filter(x=>x.poster_path);
-    const movItems = [movRes1,movRes2,movRes3,movRes4,movRes5].flatMap(r=>r.results||[]).filter(x=>x.poster_path);
+    const endpoint = type === 'tv' ? 'tv' : 'movie';
+    const res = await fetch(`${TMDB_BASE}/discover/${endpoint}?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=${pageNum}`).then(r=>r.json());
+    const items = (res.results||[]).filter(x=>x.poster_path);
+    const totalPages = Math.min(res.total_pages||1, 135);
 
-    page.innerHTML = `
-      <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
-      <div class="network-header" style="border-color:${color||'var(--primary)'}">
-        <div class="network-logo-big" style="color:${color||'var(--primary)'}">  ${networkName}</div>
-      </div>
-      <div class="network-tabs">
-        <button class="ntab active" onclick="switchNetworkTab(this,'ntv')">📺 المسلسلات (${tvItems.length})</button>
-        <button class="ntab" onclick="switchNetworkTab(this,'nmov')">🎬 الأفلام (${movItems.length})</button>
-      </div>
-      <div class="container" style="padding-top:10px">
-        <div class="grid" id="ntv">
-          ${tvItems.length ? '' : '<div class="loading">لا توجد مسلسلات متاحة</div>'}
+    grid.innerHTML = '';
+    items.forEach(item => {
+      const title = type==='tv' ? (item.name||item.original_name) : (item.title||item.original_title);
+      const rating = item.vote_average ? item.vote_average.toFixed(1) : '';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-img-wrap">
+          <img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">
+          ${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}
+          <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
         </div>
-        <div class="grid" id="nmov" style="display:none">
-          ${movItems.length ? '' : '<div class="loading">لا توجد أفلام متاحة</div>'}
-        </div>
-      </div>
+        <div class="card-info"><h4>${title}</h4></div>
+      `;
+      card.onclick = () => openDetails(item.id, type);
+      grid.appendChild(card);
+    });
+
+    document.getElementById('nPagination').innerHTML = `
+      <button class="pag-btn" ${pageNum<=1?'disabled':''} onclick="window._nLoad('${type}',${pageNum-1})">&#8249; السابق</button>
+      <span class="pag-info">${pageNum} من ${totalPages}</span>
+      <button class="pag-btn" ${pageNum>=totalPages?'disabled':''} onclick="window._nLoad('${type}',${pageNum+1})">التالي &#8250;</button>
     `;
-
-    tvItems.forEach(item => {
-      const title = item.name||item.original_name;
-      const rating = item.vote_average ? item.vote_average.toFixed(1) : '';
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="card-img-wrap">
-          <img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">
-          ${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}
-          <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
-        </div>
-        <div class="card-info"><h4>${title}</h4></div>
-      `;
-      card.onclick = () => openDetails(item.id, 'tv');
-      document.getElementById('ntv').appendChild(card);
-    });
-
-    movItems.forEach(item => {
-      const title = item.title||item.original_title;
-      const rating = item.vote_average ? item.vote_average.toFixed(1) : '';
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="card-img-wrap">
-          <img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">
-          ${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}
-          <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
-        </div>
-        <div class="card-info"><h4>${title}</h4></div>
-      `;
-      card.onclick = () => openDetails(item.id, 'movie');
-      document.getElementById('nmov').appendChild(card);
-    });
-
-  } catch(e) {
-    page.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
+
+  window._nLoad = loadNetworkPage;
+  window._nType = 'tv';
+
+  page.innerHTML = `
+    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+    <div class="network-header" style="border-color:${color||'var(--primary)'}">
+      <div class="network-logo-big" style="color:${color||'var(--primary)'}; font-size:2rem; padding:20px 0;">${networkName}</div>
+    </div>
+    <div class="network-tabs">
+      <button class="ntab active" id="nTabTv" onclick="
+        document.getElementById('nTabTv').classList.add('active');
+        document.getElementById('nTabMov').classList.remove('active');
+        window._nType='tv'; window._nLoad('tv',1);
+      ">📺 المسلسلات</button>
+      <button class="ntab" id="nTabMov" onclick="
+        document.getElementById('nTabMov').classList.add('active');
+        document.getElementById('nTabTv').classList.remove('active');
+        window._nType='movie'; window._nLoad('movie',1);
+      ">🎬 الأفلام</button>
+    </div>
+    <div class="container" style="padding-top:10px">
+      <div class="grid" id="nGrid"></div>
+    </div>
+    <div id="nPagination" style="display:flex;justify-content:center;align-items:center;gap:16px;padding:24px 0;"></div>
+  `;
+
+  loadNetworkPage('tv', 1);
+}
       }
 function switchNetworkTab(btn, targetId) {
   document.querySelectorAll('.ntab').forEach(b => b.classList.remove('active'));
