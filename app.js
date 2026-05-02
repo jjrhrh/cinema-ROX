@@ -180,7 +180,7 @@ fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_compa
     ]);
 
     const tvItems  = (tvRes.results||[]).filter(x=>x.poster_path);
-    const movItems = (movRes.results||[]).filter(x=>x.poster_path);
+const movItems = (movRes.results||[]).filter(x=>x.poster_path);
 
     page.innerHTML = `
       <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
