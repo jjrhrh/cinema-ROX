@@ -443,7 +443,7 @@ async function renderTMDBDetails(id, type) {
     fetch(`${TMDB_BASE}/${ep}/${id}/similar?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json()),
     fetch(`${TMDB_BASE}/${ep}/${id}/videos?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json()),
     fetch(`${TMDB_BASE}/${ep}/${id}/watch/providers?api_key=${TMDB_KEY}`).then(r=>r.json()),
-    fetch(`${TMDB_BASE}/${ep}/${id}/reviews?api_key=${TMDB_KEY}&language=en-US`).then(r=>r.json()),
+    fetch(`${TMDB_BASE}/${ep}/${id}/reviews?api_key=${TMDB_KEY}`).then(r=>r.json()),
   ]);
 
   const title    = type==='movie' ? (detail.title||detail.original_title) : (detail.name||detail.original_name);
