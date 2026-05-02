@@ -912,7 +912,6 @@ async function initHero() {
     if (!heroMovies.length) return;
     buildHeroDots();
     showHero(0);
-    showHero(0);
     initHeroSwipe();
     heroTimer = setInterval(...
     heroTimer = setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); }, 5000);
