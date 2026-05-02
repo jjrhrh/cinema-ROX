@@ -502,6 +502,9 @@ async function renderTMDBDetails(id, type) {
               <button onclick="saveNote(${id},'${title}','${detail.poster_path||''}',document.getElementById('noteText${id}').value,window._selectedStar${id}||${getNotes()[id]?.stars||0})" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:inherit;">💾 حفظ</button>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
     <div class="detail-body">
       <section class="detail-section">
         <h2 class="detail-section-title">📖 القصة</h2>
