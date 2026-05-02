@@ -463,7 +463,7 @@ async function renderTMDBDetails(id, type) {
   const streams    = providers?.flatrate || [];
   const cast       = (credits.cast||[]).slice(0,15);
   const similar2   = (similar.results||[]).filter(s=>s.poster_path).slice(0,12);
-  const reviewList = (reviews.results||[]).slice(0,5);
+  const reviewList = (reviews.results||[]).slice(0,10);
   const isWatchlisted = isInWatchlist(id);
   const isWatchLater  = getWatchLater().some(i=>i.id===id);
   const myNote = getNotes()[id];
