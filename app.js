@@ -50,7 +50,26 @@ function loadSettings() {
   if (bg)  document.documentElement.style.setProperty('--bg', bg);
   if (bg2) document.documentElement.style.setProperty('--bg2', bg2);
 }
+// ===== تغيير اللغة =====
+let currentLang = localStorage.getItem('siteLang') || 'ar';
 
+function toggleLang() {
+  currentLang = currentLang === 'ar' ? 'en' : 'ar';
+  localStorage.setItem('siteLang', currentLang);
+  applyLang();
+  fetchMovies();
+  fetchSeries();
+  fetchAnime();
+}
+
+function applyLang() {
+  const isAr = currentLang === 'ar';
+  const root = document.getElementById('htmlRoot');
+  root.setAttribute('lang', currentLang);
+  root.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+  const label = document.getElementById('langLabel');
+  if (label) label.textContent = isAr ? 'English' : 'عربي';
+    }
 // ===== القائمة الجانبية =====
 function openSideMenu() {
   document.getElementById('sideMenu').classList.add('open');
