@@ -168,7 +168,15 @@ async function openNetwork(networkId, networkName, color) {
   try {
     const [tvRes, movRes] = await Promise.all([
       fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=4`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=5`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=4`).then(r=>r.json()),
+fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=5`).then(r=>r.json()),
     ]);
 
     const tvItems  = (tvRes.results||[]).filter(x=>x.poster_path);
