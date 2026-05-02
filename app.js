@@ -943,3 +943,210 @@ function doQuickSearch() {
   showPage('searchPage');
   doSearch();
     }
+// ===== فيلم اليوم =====
+async function openMovieOfDayPage() {
+  pageHistory.push('movieOfDayPage');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('movieOfDayPage');
+  page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
+  window.scrollTo(0, 0);
+  page.innerHTML = '<div class="loading" style="padding:120px 0">🌍 جاري تحميل فيلم اليوم...</div>';
+
+  const today = new Date().toDateString();
+  const cached = localStorage.getItem('movieOfDay');
+  const cachedDate = localStorage.getItem('movieOfDayDate');
+
+  try {
+    let movie;
+    if (cached && cachedDate === today) {
+      movie = JSON.parse(cached);
+    } else {
+      const seed = new Date().getDate();
+      const res = await fetch(`${TMDB_BASE}/movie/top_rated?api_key=${TMDB_KEY}&language=${currentLang==='ar'?'ar-SA':'en-US'}&page=${seed%5+1}`).then(r=>r.json());
+      const movies = (res.results||[]).filter(m=>m.poster_path&&m.overview);
+      movie = movies[seed % movies.length];
+      localStorage.setItem('movieOfDay', JSON.stringify(movie));
+      localStorage.setItem('movieOfDayDate', today);
+    }
+
+    const now = new Date();
+    const midnight = new Date(); midnight.setHours(24,0,0,0);
+    const diff = midnight - now;
+    const h = Math.floor(diff/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+
+    page.innerHTML = `
+      <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+      <div style="max-width:500px;margin:40px auto;padding:20px;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:8px;">🌍</div>
+        <h2 style="color:var(--primary);margin-bottom:4px;">فيلم اليوم</h2>
+        <div style="opacity:.6;font-size:.9rem;margin-bottom:20px;">يتغير بعد: ${h}س ${m}د ⏳</div>
+        <img src="${IMG_ORIG}${movie.poster_path}" style="width:200px;border-radius:16px;box-shadow:0 8px 32px #0008;margin-bottom:20px;">
+        <h3 style="margin-bottom:8px;">${movie.title||movie.original_title}</h3>
+        <div style="margin-bottom:12px;">⭐ ${movie.vote_average?movie.vote_average.toFixed(1):''}</div>
+        <p style="opacity:.7;margin-bottom:24px;line-height:1.7;">${(movie.overview||'').slice(0,200)}...</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button onclick="openDetails(${movie.id},'movie')" style="padding:12px 24px;background:var(--primary);color:#fff;border:none;border-radius:12px;cursor:pointer;font-size:1rem;font-family:inherit;">ℹ️ التفاصيل</button>
+          <button onclick="openPlayerFromDetail(${movie.id},'movie')" style="padding:12px 24px;background:#222;color:#fff;border:2px solid var(--primary);border-radius:12px;cursor:pointer;font-size:1rem;font-family:inherit;">▶ مشاهدة</button>
+        </div>
+      </div>
+    `;
+  } catch(e) {
+    page.innerHTML = '<div class="loading">❌ خطأ، حاول مرة ثانية</div>';
+  }
+}
+
+// ===== أريد مشاهدته =====
+function getWatchLater() { return JSON.parse(localStorage.getItem('watchLater')||'[]'); }
+function toggleWatchLater(id, title, poster, type, btn) {
+  let list = getWatchLater();
+  if (list.some(i=>i.id===id)) {
+    list = list.filter(i=>i.id!==id);
+    if(btn){ btn.textContent='🕐 أريد مشاهدته'; btn.classList.remove('active'); }
+  } else {
+    list.push({id,title,poster,type,addedAt:new Date().toLocaleDateString('ar')});
+    if(btn){ btn.textContent='✅ في القائمة'; btn.classList.add('active'); }
+  }
+  localStorage.setItem('watchLater', JSON.stringify(list));
+}
+function openWatchLaterPage() {
+  pageHistory.push('watchLaterPage');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page = document.getElementById('watchLaterPage');
+  page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if(hero) hero.style.display='none';
+  window.scrollTo(0,0);
+  const list = getWatchLater();
+  if(!list.length){
+    page.innerHTML=`<button class="back-btn" onclick="goBack()">&#8594; رجوع</button><div class="loading" style="padding:120px 0">لا يوجد أفلام بعد ⏰<br><small style="opacity:.6">أضف أفلام تريد مشاهدتها لاحقاً</small></div>`;
+    return;
+  }
+  page.innerHTML=`
+    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+    <div class="container">
+      <h2 class="section-title">⏰ أريد مشاهدته (${list.length})</h2>
+      <div class="grid" id="watchLaterGrid"></div>
+    </div>
+  `;
+  const grid = document.getElementById('watchLaterGrid');
+  list.forEach(item=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML=`
+      <div class="card-img-wrap">
+        <img src="${IMG_BASE}${item.poster}" alt="${item.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x450/111/555?text=No+Image'">
+        <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
+      </div>
+      <div class="card-info"><h4>${item.title}</h4>
+        <span style="font-size:.75rem;opacity:.6;">أُضيف: ${item.addedAt||''}</span>
+      </div>
+    `;
+    card.onclick=()=>openDetails(item.id,item.type);
+    grid.appendChild(card);
+  });
+}
+
+// ===== ملاحظاتي =====
+function getNotes() { return JSON.parse(localStorage.getItem('myNotes')||'{}'); }
+function saveNote(id, title, poster, text, stars) {
+  const notes = getNotes();
+  notes[id] = {id, title, poster, text, stars, date: new Date().toLocaleDateString('ar')};
+  localStorage.setItem('myNotes', JSON.stringify(notes));
+}
+function openNotesPage() {
+  pageHistory.push('notesPage');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page = document.getElementById('notesPage');
+  page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if(hero) hero.style.display='none';
+  window.scrollTo(0,0);
+  renderNotesPage();
+}
+function renderNotesPage() {
+  const page = document.getElementById('notesPage');
+  const notes = getNotes();
+  const list = Object.values(notes);
+  if(!list.length){
+    page.innerHTML=`<button class="back-btn" onclick="goBack()">&#8594; رجوع</button><div class="loading" style="padding:120px 0">لا توجد ملاحظات بعد 💬<br><small style="opacity:.6">افتح أي فيلم واكتب رأيك</small></div>`;
+    return;
+  }
+  page.innerHTML=`
+    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+    <div class="container">
+      <h2 class="section-title">💬 ملاحظاتي (${list.length})</h2>
+      <div style="display:flex;flex-direction:column;gap:16px;padding-bottom:40px;">
+        ${list.map(n=>`
+          <div style="background:var(--bg2);border-radius:16px;padding:16px;display:flex;gap:14px;align-items:flex-start;">
+            <img src="${IMG_BASE}${n.poster}" style="width:60px;border-radius:10px;flex-shrink:0;" onerror="this.style.display='none'">
+            <div style="flex:1;">
+              <div style="font-weight:700;margin-bottom:4px;">${n.title}</div>
+              <div style="margin-bottom:6px;">${'⭐'.repeat(n.stars||0)}${'☆'.repeat(5-(n.stars||0))}</div>
+              <div style="opacity:.8;font-size:.9rem;line-height:1.5;">${n.text}</div>
+              <div style="opacity:.5;font-size:.75rem;margin-top:6px;">${n.date}</div>
+            </div>
+            <button onclick="deleteNote(${n.id})" style="background:none;border:none;color:#e50914;font-size:1.2rem;cursor:pointer;">🗑️</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+function deleteNote(id) {
+  const notes = getNotes();
+  delete notes[id];
+  localStorage.setItem('myNotes', JSON.stringify(notes));
+  renderNotesPage();
+}
+
+// ===== AI توصيات ذكية =====
+async function openAIRecommendations() {
+  pageHistory.push('surprisePage');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page = document.getElementById('surprisePage');
+  page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if(hero) hero.style.display='none';
+  window.scrollTo(0,0);
+  page.innerHTML='<div class="loading" style="padding:120px 0">🤖 جاري تحليل ذوقك...</div>';
+
+  const list = getWatchlist();
+  if(!list.length){
+    page.innerHTML=`<button class="back-btn" onclick="goBack()">&#8594; رجوع</button><div class="loading" style="padding:80px 0">أضف أفلام لقائمتك أولاً ❤️<br><small style="opacity:.6">حتى نتعرف على ذوقك</small></div>`;
+    return;
+  }
+
+  try {
+    const randomPick = list[Math.floor(Math.random()*list.length)];
+    const lang = currentLang==='ar'?'ar-SA':'en-US';
+    const res = await fetch(`${TMDB_BASE}/movie/${randomPick.id}/recommendations?api_key=${TMDB_KEY}&language=${lang}`).then(r=>r.json());
+    const recs = (res.results||[]).filter(m=>m.poster_path).slice(0,12);
+
+    page.innerHTML=`
+      <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+      <div class="container">
+        <div style="text-align:center;padding:24px 0 16px;">
+          <div style="font-size:2.5rem;">🤖</div>
+          <h2 style="color:var(--primary);margin:8px 0 4px;">توصيات ذكية لك</h2>
+          <p style="opacity:.6;font-size:.9rem;">بناءً على "${randomPick.title}"</p>
+        </div>
+        <div class="grid" id="aiGrid"></div>
+      </div>
+    `;
+    const grid = document.getElementById('aiGrid');
+    recs.forEach(item=>{
+      const title=item.title||item.original_title;
+      const rating=item.vote_average?item.vote_average.toFixed(1):'';
+      const card=document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<div class="card-img-wrap"><img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}<div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div></div><div class="card-info"><h4>${title}</h4></div>`;
+      card.onclick=()=>openDetails(item.id,'movie');
+      grid.appendChild(card);
+    });
+  } catch(e) {
+    page.innerHTML='<div class="loading">❌ خطأ، حاول مرة ثانية</div>';
+  }
+}
