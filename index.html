@@ -122,31 +122,44 @@
   </div>
 </div>
 
-<!-- نافذة الإعدادات -->
-<div class="modal" id="settingsModal">
-  <div class="settings-inner">
-    <button class="close-btn" onclick="closeSettings()">✕</button>
-    <h2 class="settings-title">⚙️ الإعدادات</h2>
-    <div class="settings-section">
-      <h3>🎨 لون الموقع</h3>
-      <div class="color-options">
-        <button class="color-opt active" onclick="setColor('#e50914',this)" style="background:#e50914">أحمر</button>
-        <button class="color-opt" onclick="setColor('#1a6cff',this)" style="background:#1a6cff">أزرق</button>
-        <button class="color-opt" onclick="setColor('#1ce783',this)" style="background:#1ce783;color:#000">أخضر</button>
-        <button class="color-opt" onclick="setColor('#f5a623',this)" style="background:#f5a623;color:#000">ذهبي</button>
-        <button class="color-opt" onclick="setColor('#c084fc',this)" style="background:#c084fc;color:#000">بنفسجي</button>
-        <button class="color-opt" onclick="setColor('#ffffff',this)" style="background:#fff;color:#000">أبيض</button>
+<!-- نافذة الإعدادات --><div class="modal" id="settingsModal">
+  <div class="settings-inner" style="max-width:420px;width:95%;border-radius:20px;padding:28px 20px;background:var(--bg2);box-shadow:0 8px 40px #000a;">
+    <button class="close-btn" onclick="closeSettings()" style="top:16px;left:16px;right:auto;">✕</button>
+    <h2 class="settings-title" style="text-align:center;font-size:1.4rem;margin-bottom:24px;">⚙️ الإعدادات</h2>
+
+    <!-- اللغة -->
+    <div class="settings-section" style="margin-bottom:22px;">
+      <h3 style="margin-bottom:12px;font-size:1rem;opacity:.8;">🌐 اللغة</h3>
+      <div style="display:flex;gap:10px;">
+        <button onclick="setLang('ar')" id="btnLangAr" style="flex:1;padding:12px;border-radius:12px;border:2px solid var(--primary);background:var(--primary);color:#fff;font-size:1rem;font-family:inherit;cursor:pointer;">🇸🇦 عربي</button>
+        <button onclick="setLang('en')" id="btnLangEn" style="flex:1;padding:12px;border-radius:12px;border:2px solid #444;background:transparent;color:#fff;font-size:1rem;font-family:inherit;cursor:pointer;">🇺🇸 English</button>
       </div>
     </div>
-    <div class="settings-section">
-      <h3>🌑 خلفية الموقع</h3>
-      <div class="color-options">
-        <button class="color-opt" onclick="setBg('#0b0c10','#12141c',this)">أسود</button>
-        <button class="color-opt" onclick="setBg('#0a0a1a','#10102a',this)">أسود مزرق</button>
-        <button class="color-opt" onclick="setBg('#0d0d0d','#1a1a1a',this)">رمادي داكن</button>
-        <button class="color-opt" onclick="setBg('#1a0a0a','#2a1010',this)">أسود محمر</button>
+
+    <!-- لون الموقع -->
+    <div class="settings-section" style="margin-bottom:22px;">
+      <h3 style="margin-bottom:12px;font-size:1rem;opacity:.8;">🎨 لون الموقع</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="color-opt active" onclick="setColor('#e50914',this)" style="width:42px;height:42px;border-radius:50%;background:#e50914;border:3px solid #fff;cursor:pointer;"></button>
+        <button class="color-opt" onclick="setColor('#1a6cff',this)" style="width:42px;height:42px;border-radius:50%;background:#1a6cff;border:3px solid transparent;cursor:pointer;"></button>
+        <button class="color-opt" onclick="setColor('#1ce783',this)" style="width:42px;height:42px;border-radius:50%;background:#1ce783;border:3px solid transparent;cursor:pointer;"></button>
+        <button class="color-opt" onclick="setColor('#f5a623',this)" style="width:42px;height:42px;border-radius:50%;background:#f5a623;border:3px solid transparent;cursor:pointer;"></button>
+        <button class="color-opt" onclick="setColor('#c084fc',this)" style="width:42px;height:42px;border-radius:50%;background:#c084fc;border:3px solid transparent;cursor:pointer;"></button>
+        <button class="color-opt" onclick="setColor('#ffffff',this)" style="width:42px;height:42px;border-radius:50%;background:#fff;border:3px solid transparent;cursor:pointer;"></button>
       </div>
     </div>
+
+    <!-- خلفية الموقع -->
+    <div class="settings-section">
+      <h3 style="margin-bottom:12px;font-size:1rem;opacity:.8;">🌑 خلفية الموقع</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button onclick="setBg('#0b0c10','#12141c',this)" style="padding:10px 16px;border-radius:12px;background:#0b0c10;color:#fff;border:2px solid #444;cursor:pointer;font-family:inherit;">أسود</button>
+        <button onclick="setBg('#0a0a1a','#10102a',this)" style="padding:10px 16px;border-radius:12px;background:#0a0a1a;color:#fff;border:2px solid #444;cursor:pointer;font-family:inherit;">أسود مزرق</button>
+        <button onclick="setBg('#0d0d0d','#1a1a1a',this)" style="padding:10px 16px;border-radius:12px;background:#0d0d0d;color:#fff;border:2px solid #444;cursor:pointer;font-family:inherit;">رمادي داكن</button>
+        <button onclick="setBg('#1a0a0a','#2a1010',this)" style="padding:10px 16px;border-radius:12px;background:#1a0a0a;color:#fff;border:2px solid #444;cursor:pointer;font-family:inherit;">أسود محمر</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
