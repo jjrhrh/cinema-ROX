@@ -818,6 +818,7 @@ function showHero(i) {
 // ===== تهيئة =====
 window.onload = () => {
   loadSettings();
+applyLang();
   // Splash
   setTimeout(function() {
     var s = document.getElementById('splash-screen');
