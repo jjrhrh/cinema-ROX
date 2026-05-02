@@ -11,25 +11,67 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif; overflow-x:hidden; }
 
-/* NAVBAR */
-.navbar {
-  position:fixed; top:0; left:0; right:0; z-index:9999;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 4%; height:62px;
-  background:rgba(7,9,15,0.97);
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 65px;
+  background: rgba(7,9,15,0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom);
 }
-.logo { font-size:20px; font-weight:900; }
-.logo span { color:var(--primary); }
-.nav-links { display:flex; gap:6px; }
-.nav-btn {
-  background:transparent; border:none; color:var(--text2);
-  font-family:'Tajawal',sans-serif; font-size:14px; font-weight:600;
-  padding:7px 14px; border-radius:20px; cursor:pointer; transition:all 0.3s;
+.bnav-btn {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px; flex: 1;
+  background: none; border: none;
+  color: var(--text2);
+  font-family: 'Tajawal', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 8px 0;
 }
-.nav-btn:hover, .nav-btn.active { background:var(--primary); color:#fff; }
+.bnav-btn.active { color: var(--primary); }
+.bnav-icon { font-size: 1.4rem; line-height: 1; }
+.bnav-label { font-size: .65rem; font-weight: 700; }
+.bnav-center {
+  width: 52px; height: 52px;
+  background: var(--primary);
+  border-radius: 50% !important;
+  color: #fff !important;
+  flex: 0 0 52px;
+  box-shadow: 0 4px 20px rgba(229,9,20,0.5);
+  margin-bottom: 10px;
+  padding: 0 !important;
+}
+.bnav-center .bnav-icon { font-size: 1.5rem; }
 
+/* فلاتر البحث */
+.filter-bar {
+  display: flex; gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.filter-bar select {
+  flex: 1; min-width: 120px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid #333;
+  background: #1a1a2e;
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: .85rem;
+  cursor: pointer;
+}
+
+/* تعديل padding الصفحات للـ bottom nav */
+.page { padding-bottom: 80px; }
+.hero-banner { margin-top: 0 !important; }
 /* ============================
    PLATFORMS SECTION
    ============================ */
