@@ -1,7 +1,3 @@
-const TMDB_KEY = '943bac496146cd6404017535d3c0e8ec';
-const TMDB_BASE = 'https://api.themoviedb.org/3';
-const IMG_BASE  = 'https://image.tmdb.org/t/p/w500';
-const IMG_ORIG  = 'https://image.tmdb.org/t/p/original';
 
 const MOVIE_SERVERS = (id) => [
   `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
