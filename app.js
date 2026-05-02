@@ -554,24 +554,58 @@ async function renderTMDBDetails(id, type) {
       <!-- المواسم -->
       ${seasonsHTML}
 
-      <!-- التعليقات -->
-      ${reviewList.length?`
+      <!-- التقييمات والمراجعات -->
       <div style="margin-bottom:24px;">
-        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--primary);">💬 تعليقات المشاهدين</h2>
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:16px;color:var(--primary);">⭐ التقييمات والمراجعات</h2>
+        <div style="background:#ffffff08;border-radius:20px;padding:20px;margin-bottom:16px;text-align:center;">
+          <svg viewBox="0 0 200 120" width="200" height="120" style="overflow:visible;">
+            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#ffffff15" stroke-width="10" stroke-linecap="round"/>
+            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#ratingGrad)" stroke-width="10" stroke-linecap="round"
+              stroke-dasharray="251.2"
+              stroke-dashoffset="${251.2 - (251.2 * Math.min((detail.vote_average||0)/10, 1))}"/>
+            <defs>
+              <linearGradient id="ratingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#00c6ff"/>
+                <stop offset="100%" style="stop-color:#f5a623"/>
+              </linearGradient>
+            </defs>
+            <text x="100" y="95" text-anchor="middle" fill="#fff" font-size="28" font-weight="900" font-family="Tajawal">${rating||'—'}</text>
+            <text x="100" y="115" text-anchor="middle" fill="#888" font-size="11" font-family="Tajawal">${detail.vote_count?detail.vote_count.toLocaleString()+' تقييم':''}</text>
+          </svg>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;">
+            <div style="background:#ffffff0d;border-radius:14px;padding:12px;text-align:center;">
+              <div style="font-size:1.5rem;margin-bottom:4px;">🍅</div>
+              <div style="font-size:1.1rem;font-weight:900;color:#fa320a;" id="rtScore_${id}">—</div>
+              <div style="font-size:.7rem;opacity:.6;margin-top:2px;">Rotten Tomatoes</div>
+            </div>
+            <div style="background:#ffffff0d;border-radius:14px;padding:12px;text-align:center;">
+              <div style="background:#f5c518;color:#000;font-weight:900;font-size:.75rem;padding:2px 6px;border-radius:4px;display:inline-block;margin-bottom:4px;">IMDb</div>
+              <div style="font-size:1.1rem;font-weight:900;color:#f5c518;" id="imdbScore_${id}">—</div>
+              <div style="font-size:.7rem;opacity:.6;margin-top:2px;">IMDb</div>
+            </div>
+            <div style="background:#ffffff0d;border-radius:14px;padding:12px;text-align:center;">
+              <div style="font-size:1.5rem;margin-bottom:4px;">🎬</div>
+              <div style="font-size:1.1rem;font-weight:900;color:#a8e063;" id="tmdbScore_${id}">${rating||'—'}/10</div>
+              <div style="font-size:.7rem;opacity:.6;margin-top:2px;">TMDB</div>
+            </div>
+          </div>
+        </div>
+        ${reviewList.length?`
         <div style="display:flex;flex-direction:column;gap:12px;">
           ${reviewList.map(r=>`
-            <div style="background:#ffffff08;border-radius:14px;padding:14px;">
-              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-                <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;">${r.author?.charAt(0).toUpperCase()||'؟'}</div>
-                <div>
+            <div style="background:#ffffff08;border-radius:16px;padding:16px;border:1px solid #ffffff0d;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#ff6b35);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0;">${r.author?.charAt(0).toUpperCase()||'؟'}</div>
+                <div style="flex:1;">
                   <div style="font-weight:700;font-size:.9rem;">${r.author||'مجهول'}</div>
-                  ${r.author_details?.rating?`<div style="font-size:.8rem;opacity:.7;">⭐ ${r.author_details.rating}/10</div>`:''}
+                  <div style="font-size:.75rem;opacity:.5;">${r.created_at?new Date(r.created_at).toLocaleDateString('ar-SA'):''}</div>
                 </div>
+                ${r.author_details?.rating?`<div style="background:#f5a62320;color:#f5a623;padding:4px 10px;border-radius:20px;font-size:.8rem;font-weight:700;">⭐ ${r.author_details.rating}/10</div>`:''}
               </div>
               <p style="font-size:.85rem;line-height:1.7;opacity:.85;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">${r.content||''}</p>
             </div>`).join('')}
-        </div>
-      </div>`:''}
+        </div>`:'<div style="text-align:center;opacity:.4;padding:20px;">لا توجد مراجعات بعد</div>'}
+      </div>
 
       <!-- التريلرات -->
       ${allVideos.length?`
