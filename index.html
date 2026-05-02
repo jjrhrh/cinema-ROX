@@ -31,6 +31,10 @@
   <button class="bnav-btn bnav-center" id="bnavBrowse" onclick="bnavGo('browse')">
     <span class="bnav-icon">🎬</span>
   </button>
+  <button class="bnav-btn" id="bnavLibrary" onclick="bnavGo('library')">
+    <span class="bnav-icon">📚</span>
+    <span class="bnav-label">مكتبتي</span>
+  </button>
   <button class="bnav-btn" id="bnavProfile" onclick="bnavGo('profile')">
     <span class="bnav-icon">👤</span>
     <span class="bnav-label">حسابي</span>
@@ -191,6 +195,45 @@
   <div class="page" id="movieOfDayPage"></div>
 <div class="page" id="watchLaterPage"></div>
 <div class="page" id="notesPage"></div>
+<!-- صفحة المكتبة -->
+<div class="page" id="libraryPage">
+  <div class="container" style="padding-top:80px;padding-bottom:100px;">
+
+    <!-- تبويبات المكتبة -->
+    <div class="library-tabs">
+      <button class="lib-tab active" onclick="switchLibTab(this,'libWatchlist')">❤️ المفضلة</button>
+      <button class="lib-tab" onclick="switchLibTab(this,'libWatchLater')">⏰ لاحقاً</button>
+      <button class="lib-tab" onclick="switchLibTab(this,'libNotes')">💬 ملاحظاتي</button>
+      <button class="lib-tab" onclick="switchLibTab(this,'libStats')">📊 إحصائياتي</button>
+    </div>
+
+    <!-- المفضلة -->
+    <div class="lib-panel" id="libWatchlist">
+      <h2 class="section-title">❤️ قائمتي المفضلة</h2>
+      <div class="grid" id="libWatchlistGrid"></div>
+    </div>
+
+    <!-- سأشاهده لاحقاً -->
+    <div class="lib-panel" id="libWatchLater" style="display:none">
+      <h2 class="section-title">⏰ سأشاهده لاحقاً</h2>
+      <div class="grid" id="libWatchLaterGrid"></div>
+    </div>
+
+    <!-- ملاحظاتي -->
+    <div class="lib-panel" id="libNotes" style="display:none">
+      <h2 class="section-title">💬 ملاحظاتي</h2>
+      <div id="libNotesList"></div>
+    </div>
+
+    <!-- إحصائياتي -->
+    <div class="lib-panel" id="libStats" style="display:none">
+      <h2 class="section-title">📊 إحصائياتي</h2>
+      <div id="libStatsContent"></div>
+    </div>
+
+  </div>
+</div>
+
 <!-- صفحة التفاصيل -->
 <div class="page" id="detailPage"></div>
 
