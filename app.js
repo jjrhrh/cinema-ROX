@@ -41,13 +41,7 @@ async function fetchMovies() {
           .then(r=>r.json()).then(d=>d.results||[])
       )
     );
-    renderGrid(results.flat(), 'moviesGrid', 'movie');
-  } catch(err) {
-    grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
-  }
-}
-
-// ===== جلب المسلسلات =====
+    if (bg2)   document.documentElement.style.setProperty('--bg2', bg2);
 async function fetchSeries() {
   const grid = document.getElementById('seriesGrid');
   grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
