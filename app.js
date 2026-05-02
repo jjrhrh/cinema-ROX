@@ -233,7 +233,6 @@ async function openNetwork(networkId, networkName, color) {
 
   loadNetworkPage('tv', 1);
 }
-      }
 function switchNetworkTab(btn, targetId) {
   document.querySelectorAll('.ntab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
