@@ -640,7 +640,21 @@ async function renderTMDBDetails(id, type) {
   `;
   initRowDrag('castRow'+id);
   initRowDrag('simRow'+id);
-                                                                                                                                                                                                                                                 }
+       if (type === 'movie' && detail.imdb_id) {
+    fetch(`https://www.omdbapi.com/?i=${detail.imdb_id}&apikey=${OMDB_KEY}`)
+      .then(r=>r.json())
+      .then(d=>{
+        const rt   = document.getElementById('rtScore_'+id);
+        const imdb = document.getElementById('imdbScore_'+id);
+        if (rt) {
+          const rottenScore = (d.Ratings||[]).find(r=>r.Source==='Rotten Tomatoes');
+          if (rottenScore) rt.textContent = rottenScore.Value;
+        }
+        if (imdb && d.imdbRating && d.imdbRating!=='N/A') {
+          imdb.textContent = d.imdbRating;
+        }
+      }).catch(()=>{});
+       }                                                                                                                                                                                                                                          }
 
 async function buildSeasonsHTML(seriesId, seasons) {
   const real = seasons.filter(s=>s.season_number>0);
