@@ -11,223 +11,45 @@
 
 <!-- NAVBAR -->
 <nav class="navbar">
-  <div class="logo">Cinema <span>ROX</span></div>
   <div class="nav-links">
     <button class="nav-btn active" data-page="moviesPage" onclick="showPage('moviesPage')">🎬 أفلام</button>
     <button class="nav-btn" data-page="seriesPage" onclick="showPage('seriesPage')">📺 مسلسلات</button>
     <button class="nav-btn" data-page="animePage" onclick="showPage('animePage')">✨ أنمي</button>
     <button class="nav-btn" data-page="searchPage" onclick="showPage('searchPage')">🔍 بحث</button>
   </div>
+  <div class="logo" onclick="goHome()">Cinema <span>ROX</span></div>
+  <button class="settings-btn" onclick="openSettings()">⚙️</button>
 </nav>
 
-<!-- ===== قسم المنصات — يظهر دائماً فوق كل شيء ===== -->
+<!-- قسم المنصات -->
 <section class="plt-section">
   <h2 class="plt-heading"><span class="plt-bar"></span>جميع المنصات</h2>
   <div class="plt-outer" id="pltOuter">
     <button class="plt-arrow plt-arrow-r" id="pltPrev">&#8249;</button>
     <button class="plt-arrow plt-arrow-l" id="pltNext">&#8250;</button>
     <div class="plt-track" id="pltTrack">
-
-      <a class="plt-card" href="https://netflix.com" target="_blank" style="--gc:#e50914;--di:0s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo nf">N</div>
-        <span class="plt-name">Netflix</span>
-      </a>
-
-      <a class="plt-card" href="https://max.com" target="_blank" style="--gc:#6a0dad;--di:0.1s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:16px;letter-spacing:3px;color:#fff;font-weight:900;">MAX</div>
-        <span class="plt-name">HBO Max</span>
-      </a>
-
-      <a class="plt-card" href="https://disneyplus.com" target="_blank" style="--gc:#0063e5;--di:0.2s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:12px;color:#0063e5;font-weight:900;font-style:italic;line-height:1.2;text-align:center;">Disney<br><span style="font-size:20px">+</span></div>
-        <span class="plt-name">Disney+</span>
-      </a>
-
-      <a class="plt-card" href="https://primevideo.com" target="_blank" style="--gc:#00a8e1;--di:0.3s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#00a8e1;font-weight:700;line-height:1.3;text-align:center;">prime<br>video</div>
-        <span class="plt-name">Prime Video</span>
-      </a>
-
-      <a class="plt-card" href="https://tv.apple.com" target="_blank" style="--gc:#888;--di:0.4s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#ddd;font-weight:700;line-height:1.3;text-align:center;">Apple<br>TV+</div>
-        <span class="plt-name">Apple TV+</span>
-      </a>
-
-      <a class="plt-card" href="https://paramountplus.com" target="_blank" style="--gc:#0064ff;--di:0.5s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:24px;color:#0064ff;font-weight:900;">P+</div>
-        <span class="plt-name">Paramount+</span>
-      </a>
-
-      <a class="plt-card" href="https://peacocktv.com" target="_blank" style="--gc:#f5a623;--di:0.6s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:30px;">🦚</div>
-        <span class="plt-name">Peacock</span>
-      </a>
-
-      <a class="plt-card" href="https://hulu.com" target="_blank" style="--gc:#1ce783;--di:0.7s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:16px;color:#1ce783;font-weight:900;letter-spacing:1px;">hulu</div>
-        <span class="plt-name">Hulu</span>
-      </a>
-
-      <a class="plt-card" href="https://netflix.com/kids" target="_blank" style="--gc:#ff6b35;--di:0.8s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:13px;color:#ff6b35;font-weight:900;text-align:center;line-height:1.2;">NETFLIX<br>KIDS</div>
-        <span class="plt-name">Netflix Kids</span>
-      </a>
-
-      <a class="plt-card" href="https://crunchyroll.com" target="_blank" style="--gc:#f47521;--di:0.9s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:28px;">🍥</div>
-        <span class="plt-name">Crunchyroll</span>
-      </a>
-
-      <a class="plt-card" href="https://hayu.com" target="_blank" style="--gc:#e91e8c;--di:1s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:18px;color:#e91e8c;font-weight:900;">hayu</div>
-        <span class="plt-name">Hayu</span>
-      </a>
-
-      <a class="plt-card" href="https://clarovideo.com" target="_blank" style="--gc:#e3000f;--di:1.1s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#fff;font-weight:900;text-align:center;line-height:1.3;">Claro<br>video</div>
-        <span class="plt-name">Claro Video</span>
-      </a>
-
-      <a class="plt-card" href="https://globoplay.globo.com" target="_blank" style="--gc:#ff4444;--di:1.2s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#e84545;font-weight:900;text-align:center;line-height:1.3;">globo<br>play</div>
-        <span class="plt-name">Globoplay</span>
-      </a>
-
-      <a class="plt-card" href="https://starz.com" target="_blank" style="--gc:#c0c0c0;--di:1.3s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:16px;color:#fff;font-weight:900;letter-spacing:2px;">STARZ</div>
-        <span class="plt-name">Starz</span>
-      </a>
-
-      <a class="plt-card" href="https://mubi.com" target="_blank" style="--gc:#1a6cff;--di:1.4s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:18px;color:#1a6cff;font-weight:900;">MUBI</div>
-        <span class="plt-name">MUBI</span>
-      </a>
-
-      <a class="plt-card" href="https://canalplus.com" target="_blank" style="--gc:#fff;--di:1.5s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:14px;color:#fff;font-weight:900;letter-spacing:1px;">CANAL+</div>
-        <span class="plt-name">Canal+</span>
-      </a>
-
-      <a class="plt-card" href="https://viki.com" target="_blank" style="--gc:#1196f0;--di:1.6s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#1196f0;font-weight:900;text-align:center;line-height:1.3;">VIKI<br>Rakuten</div>
-        <span class="plt-name">Viki</span>
-      </a>
-
-      <a class="plt-card" href="https://sky.com" target="_blank" style="--gc:#0072c6;--di:1.7s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:22px;color:#0072c6;font-weight:900;">sky</div>
-        <span class="plt-name">Sky</span>
-      </a>
-
-      <a class="plt-card" href="https://sonyliv.com" target="_blank" style="--gc:#ff6a00;--di:1.8s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#fff;font-weight:900;text-align:center;line-height:1.3;">SONY<br>LIV</div>
-        <span class="plt-name">Sony LIV</span>
-      </a>
-
-      <a class="plt-card" href="https://movistarplus.es" target="_blank" style="--gc:#019df4;--di:1.9s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:20px;color:#019df4;font-weight:900;">M+</div>
-        <span class="plt-name">Movistar+</span>
-      </a>
-
-      <a class="plt-card" href="https://britbox.com" target="_blank" style="--gc:#e4003a;--di:2s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#e4003a;font-weight:900;text-align:center;line-height:1.3;">brit<br>box</div>
-        <span class="plt-name">BritBox</span>
-      </a>
-
-      <a class="plt-card" href="https://acorn.tv" target="_blank" style="--gc:#888;--di:2.1s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#ccc;font-weight:900;text-align:center;line-height:1.3;">ACORN<br>TV</div>
-        <span class="plt-name">Acorn TV</span>
-      </a>
-
-      <a class="plt-card" href="https://itv.com/watch" target="_blank" style="--gc:#c8d400;--di:2.2s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:20px;color:#c8d400;font-weight:900;">ITVX</div>
-        <span class="plt-name">ITVX</span>
-      </a>
-
-      <a class="plt-card" href="https://bbc.co.uk/iplayer" target="_blank" style="--gc:#e4003a;--di:2.3s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#e4003a;font-weight:900;text-align:center;line-height:1.3;">BBC<br>iPlayer</div>
-        <span class="plt-name">BBC iPlayer</span>
-      </a>
-
-      <a class="plt-card" href="https://channel4.com" target="_blank" style="--gc:#57d44d;--di:2.4s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:26px;color:#57d44d;font-weight:900;">4</div>
-        <span class="plt-name">Channel 4</span>
-      </a>
-
-      <a class="plt-card" href="https://criterionchannel.com" target="_blank" style="--gc:#ddd;--di:2.5s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:9px;color:#ccc;font-weight:900;text-align:center;line-height:1.4;letter-spacing:1px;">THE<br>CRITERION<br>CHANNEL</div>
-        <span class="plt-name">Criterion</span>
-      </a>
-
-      <a class="plt-card" href="https://iq.com" target="_blank" style="--gc:#00c569;--di:2.6s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:16px;color:#00c569;font-weight:900;">iQIYI</div>
-        <span class="plt-name">iQIYI</span>
-      </a>
-
-      <a class="plt-card" href="https://skyshowtime.com" target="_blank" style="--gc:#9b59b6;--di:2.7s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:10px;color:#9b59b6;font-weight:900;text-align:center;line-height:1.3;">Sky<br>ShowTime</div>
-        <span class="plt-name">SkyShowtime</span>
-      </a>
-
-      <a class="plt-card" href="https://videoland.com" target="_blank" style="--gc:#e50914;--di:2.8s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:11px;color:#e50914;font-weight:900;text-align:center;line-height:1.3;">video<br>land.</div>
-        <span class="plt-name">Videoland</span>
-      </a>
-
-      <a class="plt-card" href="https://zee5.com" target="_blank" style="--gc:#8b5cf6;--di:2.9s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:22px;color:#8b5cf6;font-weight:900;">Z5</div>
-        <span class="plt-name">Zee5</span>
-      </a>
-
-      <a class="plt-card" href="https://medici.tv" target="_blank" style="--gc:#00b4d8;--di:3s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:24px;color:#00b4d8;font-weight:900;font-style:italic;">M</div>
-        <span class="plt-name">Medici</span>
-      </a>
-
-      <a class="plt-card" href="https://zee.com" target="_blank" style="--gc:#e63946;--di:3.1s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:14px;color:#e63946;font-weight:900;">ZEE▶</div>
-        <span class="plt-name">ZEE</span>
-      </a>
-
-      <a class="plt-card" href="https://starplus.com" target="_blank" style="--gc:#c084fc;--di:3.2s">
-        <div class="plt-shine"></div>
-        <div class="plt-logo" style="font-size:26px;color:#c084fc;">✦</div>
-        <span class="plt-name">Star+</span>
-      </a>
-
-    </div><!-- end track -->
-  </div><!-- end outer -->
+      <div class="plt-card" onclick="openNetwork(213,'Netflix','#e50914')" style="--gc:#e50914;--di:0s"><div class="plt-shine"></div><div class="plt-logo nf">N</div><span class="plt-name">Netflix</span></div>
+      <div class="plt-card" onclick="openNetwork(49,'HBO Max','#6a0dad')" style="--gc:#6a0dad;--di:0.1s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:16px;letter-spacing:3px;color:#fff;font-weight:900;">MAX</div><span class="plt-name">HBO Max</span></div>
+      <div class="plt-card" onclick="openNetwork(2739,'Disney+','#0063e5')" style="--gc:#0063e5;--di:0.2s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:12px;color:#0063e5;font-weight:900;font-style:italic;line-height:1.2;text-align:center;">Disney<br><span style="font-size:20px">+</span></div><span class="plt-name">Disney+</span></div>
+      <div class="plt-card" onclick="openNetwork(1024,'Prime Video','#00a8e1')" style="--gc:#00a8e1;--di:0.3s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:11px;color:#00a8e1;font-weight:700;line-height:1.3;text-align:center;">prime<br>video</div><span class="plt-name">Prime Video</span></div>
+      <div class="plt-card" onclick="openNetwork(2552,'Apple TV+','#888')" style="--gc:#888;--di:0.4s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:11px;color:#ddd;font-weight:700;line-height:1.3;text-align:center;">Apple<br>TV+</div><span class="plt-name">Apple TV+</span></div>
+      <div class="plt-card" onclick="openNetwork(4330,'Paramount+','#0064ff')" style="--gc:#0064ff;--di:0.5s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:24px;color:#0064ff;font-weight:900;">P+</div><span class="plt-name">Paramount+</span></div>
+      <div class="plt-card" onclick="openNetwork(3353,'Peacock','#f5a623')" style="--gc:#f5a623;--di:0.6s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:30px;">🦚</div><span class="plt-name">Peacock</span></div>
+      <div class="plt-card" onclick="openNetwork(453,'Hulu','#1ce783')" style="--gc:#1ce783;--di:0.7s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:16px;color:#1ce783;font-weight:900;letter-spacing:1px;">hulu</div><span class="plt-name">Hulu</span></div>
+      <div class="plt-card" onclick="openNetwork(283,'Crunchyroll','#f47521')" style="--gc:#f47521;--di:0.8s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:28px;">🍥</div><span class="plt-name">Crunchyroll</span></div>
+      <div class="plt-card" onclick="openNetwork(174,'AMC','#e91e8c')" style="--gc:#e91e8c;--di:0.9s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:18px;color:#e91e8c;font-weight:900;">AMC</div><span class="plt-name">AMC</span></div>
+      <div class="plt-card" onclick="openNetwork(6,'NBC','#c8d400')" style="--gc:#c8d400;--di:1s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:18px;color:#c8d400;font-weight:900;">NBC</div><span class="plt-name">NBC</span></div>
+      <div class="plt-card" onclick="openNetwork(16,'ABC','#0072c6')" style="--gc:#0072c6;--di:1.1s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:18px;color:#0072c6;font-weight:900;">abc</div><span class="plt-name">ABC</span></div>
+      <div class="plt-card" onclick="openNetwork(67,'CBS','#c0c0c0')" style="--gc:#c0c0c0;--di:1.2s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:16px;color:#fff;font-weight:900;letter-spacing:2px;">CBS</div><span class="plt-name">CBS</span></div>
+      <div class="plt-card" onclick="openNetwork(71,'The CW','#ff6a00')" style="--gc:#ff6a00;--di:1.3s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:20px;color:#ff6a00;font-weight:900;">CW</div><span class="plt-name">The CW</span></div>
+      <div class="plt-card" onclick="openNetwork(19,'FOX','#ff0000')" style="--gc:#ff0000;--di:1.4s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:20px;color:#ff0000;font-weight:900;">FOX</div><span class="plt-name">FOX</span></div>
+      <div class="plt-card" onclick="openNetwork(64,'Starz','#c0c0c0')" style="--gc:#c0c0c0;--di:1.5s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:16px;color:#fff;font-weight:900;letter-spacing:2px;">STARZ</div><span class="plt-name">Starz</span></div>
+      <div class="plt-card" onclick="openNetwork(2,'BBC','#e4003a')" style="--gc:#e4003a;--di:1.6s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:14px;color:#e4003a;font-weight:900;text-align:center;">BBC</div><span class="plt-name">BBC</span></div>
+      <div class="plt-card" onclick="openNetwork(56,'Showtime','#e50914')" style="--gc:#e50914;--di:1.7s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:11px;color:#e50914;font-weight:900;text-align:center;line-height:1.3;">SHOW<br>TIME</div><span class="plt-name">Showtime</span></div>
+      <div class="plt-card" onclick="openNetwork(359,'Syfy','#1a6cff')" style="--gc:#1a6cff;--di:1.8s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:18px;color:#1a6cff;font-weight:900;">SYFY</div><span class="plt-name">Syfy</span></div>
+      <div class="plt-card" onclick="openNetwork(19,'FX','#9b59b6')" style="--gc:#9b59b6;--di:1.9s"><div class="plt-shine"></div><div class="plt-logo" style="font-size:26px;color:#9b59b6;font-weight:900;">FX</div><span class="plt-name">FX</span></div>
+    </div>
+  </div>
 </section>
 
 <!-- صفحة الأفلام -->
@@ -235,7 +57,6 @@
   <div class="container">
     <h2 class="section-title">🔥 الأفلام الرائجة</h2>
     <div class="grid" id="moviesGrid"></div>
-    <div class="sentinel" id="moviesSentinel"></div>
   </div>
 </div>
 
@@ -244,7 +65,6 @@
   <div class="container">
     <h2 class="section-title">📺 المسلسلات الرائجة</h2>
     <div class="grid" id="seriesGrid"></div>
-    <div class="sentinel" id="seriesSentinel"></div>
   </div>
 </div>
 
@@ -253,7 +73,6 @@
   <div class="container">
     <h2 class="section-title">✨ عالم الأنمي</h2>
     <div class="grid" id="animeGrid"></div>
-    <div class="sentinel" id="animeSentinel"></div>
   </div>
 </div>
 
@@ -269,18 +88,48 @@
   </div>
 </div>
 
+<!-- صفحة التفاصيل -->
+<div class="page" id="detailPage"></div>
+
+<!-- صفحة المنصة -->
+<div class="page" id="networkPage"></div>
+
 <!-- مشغل الفيديو -->
 <div class="modal" id="playerModal">
   <div class="modal-inner">
     <button class="close-btn" onclick="closePlayer()">✕</button>
     <button id="nextServerBtn" onclick="nextServer()">🔄 سيرفر 1/4</button>
-    <iframe id="playerFrame" src="" allowfullscreen
-      allow="autoplay; fullscreen; picture-in-picture"></iframe>
+    <iframe id="playerFrame" src="" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe>
   </div>
 </div>
 
-<!-- صفحة التفاصيل -->
-<div class="page" id="detailPage"></div>
+<!-- نافذة الإعدادات -->
+<div class="modal" id="settingsModal">
+  <div class="settings-inner">
+    <button class="close-btn" onclick="closeSettings()">✕</button>
+    <h2 class="settings-title">⚙️ الإعدادات</h2>
+    <div class="settings-section">
+      <h3>🎨 لون الموقع</h3>
+      <div class="color-options">
+        <button class="color-opt active" onclick="setColor('#e50914',this)" style="background:#e50914">أحمر</button>
+        <button class="color-opt" onclick="setColor('#1a6cff',this)" style="background:#1a6cff">أزرق</button>
+        <button class="color-opt" onclick="setColor('#1ce783',this)" style="background:#1ce783;color:#000">أخضر</button>
+        <button class="color-opt" onclick="setColor('#f5a623',this)" style="background:#f5a623;color:#000">ذهبي</button>
+        <button class="color-opt" onclick="setColor('#c084fc',this)" style="background:#c084fc;color:#000">بنفسجي</button>
+        <button class="color-opt" onclick="setColor('#ffffff',this)" style="background:#fff;color:#000">أبيض</button>
+      </div>
+    </div>
+    <div class="settings-section">
+      <h3>🌑 خلفية الموقع</h3>
+      <div class="color-options">
+        <button class="color-opt" onclick="setBg('#0b0c10','#12141c',this)">أسود</button>
+        <button class="color-opt" onclick="setBg('#0a0a1a','#10102a',this)">أسود مزرق</button>
+        <button class="color-opt" onclick="setBg('#0d0d0d','#1a1a1a',this)">رمادي داكن</button>
+        <button class="color-opt" onclick="setBg('#1a0a0a','#2a1010',this)">أسود محمر</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>
