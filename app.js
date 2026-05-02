@@ -89,7 +89,7 @@ async function fetchMovies() {
   } catch(e) {
     grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
-  }
+}
 
 // ===== جلب المسلسلات =====
 async function fetchSeries() {
@@ -106,6 +106,7 @@ async function fetchSeries() {
     grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
 }
+
 // ===== جلب الأنمي =====
 async function fetchAnime() {
   const grid = document.getElementById('animeGrid');
@@ -122,8 +123,6 @@ async function fetchAnime() {
   }
 }
 
-  }
-}
 // ===== رندر الكروت =====
 function renderGrid(items, gridId, type) {
   const grid = document.getElementById(gridId);
@@ -167,19 +166,19 @@ async function openNetwork(networkId, networkName, color) {
   try {
     const [tvRes1,tvRes2,tvRes3,tvRes4,tvRes5,movRes1,movRes2,movRes3,movRes4,movRes5] = await Promise.all([
       fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=4`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=5`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=4`).then(r=>r.json()),
-fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=5`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=4`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=5`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=4`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=5`).then(r=>r.json()),
     ]);
 
-    const tvItems  = (tvRes.results||[]).filter(x=>x.poster_path);
-const movItems = (movRes.results||[]).filter(x=>x.poster_path);
+    const tvItems  = [tvRes1,tvRes2,tvRes3,tvRes4,tvRes5].flatMap(r=>r.results||[]).filter(x=>x.poster_path);
+    const movItems = [movRes1,movRes2,movRes3,movRes4,movRes5].flatMap(r=>r.results||[]).filter(x=>x.poster_path);
 
     page.innerHTML = `
       <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
@@ -576,6 +575,7 @@ window.onload = () => {
   document.getElementById('playerModal').addEventListener('click',function(e){ if(e.target===this) closePlayer(); });
   document.getElementById('settingsModal').addEventListener('click',function(e){ if(e.target===this) closeSettings(); });
 };
+
 // ===== HERO BANNER =====
 let heroMovies = [];
 let heroIndex = 0;
