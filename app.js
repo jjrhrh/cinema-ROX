@@ -101,7 +101,11 @@ function bnavGo(tab) {
   document.getElementById('bnavSearch')?.classList.remove('active');
   document.getElementById('bnavBrowse')?.classList.remove('active');
   document.getElementById('bnavProfile')?.classList.remove('active');
-
+document.getElementById('bnavHome')?.classList.remove('active');
+  document.getElementById('bnavSearch')?.classList.remove('active');
+  document.getElementById('bnavBrowse')?.classList.remove('active');
+  document.getElementById('bnavLibrary')?.classList.remove('active');
+  document.getElementById('bnavProfile')?.classList.remove('active');
   if (tab === 'home') {
     document.getElementById('bnavHome').classList.add('active');
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
