@@ -72,6 +72,8 @@ async function openNetworksPage(pageNum) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('networksListPage');
   page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
   page.innerHTML = `
     <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
     <div class="networks-page-header">📡 الشبكات والقنوات</div>
@@ -79,32 +81,60 @@ async function openNetworksPage(pageNum) {
     <div id="netsPagination" style="display:flex;justify-content:center;align-items:center;gap:16px;padding:24px 0;"></div>
   `;
   window.scrollTo(0, 0);
-  const letters = 'abcdefghijklmnopqrstuvwxyz';
-  const letter = letters[(pageNum - 1) % letters.length];
+
   try {
-    const res = await fetch(`${TMDB_BASE}/search/network?api_key=${TMDB_KEY}&query=${letter}`).then(r=>r.json());
-    const items = res.results || [];
+    // جلب الشبكات عبر discover/tv وتجميع network IDs
+    const popularNetworkIds = [
+      {id:213,name:'Netflix'}, {id:49,name:'HBO'}, {id:2739,name:'Disney+'}, 
+      {id:1024,name:'Amazon'}, {id:2552,name:'Apple TV+'}, {id:4330,name:'Paramount+'},
+      {id:3353,name:'Peacock'}, {id:453,name:'Hulu'}, {id:283,name:'Crunchyroll'},
+      {id:174,name:'AMC'}, {id:6,name:'NBC'}, {id:16,name:'ABC'},
+      {id:67,name:'CBS'}, {id:71,name:'The CW'}, {id:19,name:'FOX'},
+      {id:64,name:'Starz'}, {id:2,name:'BBC'}, {id:56,name:'Showtime'},
+      {id:359,name:'Syfy'}, {id:25,name:'FX'}, {id:34,name:'Comedy Central'},
+      {id:318,name:'AMC+'}, {id:43,name:'National Geographic'}, {id:1,name:'Fuji TV'},
+      {id:80,name:'TBS'}, {id:77,name:'TV Asahi'}, {id:65,name:'Discovery'},
+      {id:74,name:'MTV'}, {id:35,name:'E!'}, {id:138,name:'Lifetime'},
+      {id:31,name:'USA Network'}, {id:41,name:'ITV'}, {id:332,name:'Channel 4'},
+      {id:96,name:'BBC Two'}, {id:4,name:'BBC One'}, {id:38,name:'PBS'},
+      {id:53,name:'Cartoon Network'}, {id:55,name:'Nickelodeon'}, {id:63,name:'Disney Channel'},
+      {id:85,name:'Adult Swim'}, {id:104,name:'Sky One'}, {id:308,name:'Sky Atlantic'},
+    ];
+
+    const itemsPerPage = 12;
+    const totalPages = Math.ceil(popularNetworkIds.length / itemsPerPage);
+    const start = (pageNum - 1) * itemsPerPage;
+    const pageItems = popularNetworkIds.slice(start, start + itemsPerPage);
+
+    // جلب تفاصيل كل شبكة للحصول على اللوجو
+    const details = await Promise.all(
+      pageItems.map(n => 
+        fetch(`${TMDB_BASE}/network/${n.id}?api_key=${TMDB_KEY}`).then(r=>r.json()).catch(()=>({id:n.id,name:n.name}))
+      )
+    );
+
     const grid = document.getElementById('networksGrid');
     if (!grid) return;
-    if (!items.length) { grid.innerHTML = '<div class="loading">لا توجد نتائج</div>'; return; }
     grid.innerHTML = '';
-    items.forEach(net => {
+
+    details.forEach(net => {
       const card = document.createElement('div');
       card.className = 'network-card';
       if (net.logo_path) {
         card.innerHTML = `<img src="https://image.tmdb.org/t/p/w185${net.logo_path}" alt="${net.name}"><span class="network-card-name">${net.name}</span>`;
       } else {
-        card.innerHTML = `<span style="font-size:1.1rem;font-weight:700;color:#fff;text-align:center;">${net.name}</span>`;
+        card.innerHTML = `<span style="font-size:1rem;font-weight:700;color:#fff;text-align:center;padding:8px;">${net.name}</span>`;
       }
       card.onclick = () => openNetwork(net.id, net.name, 'var(--primary)');
       grid.appendChild(card);
     });
+
     const pag = document.getElementById('netsPagination');
     if (pag) {
       pag.innerHTML = `
         <button class="pag-btn" ${pageNum<=1?'disabled':''} onclick="openNetworksPage(${pageNum-1})">&#8249; السابق</button>
-        <span class="pag-info">${pageNum} من 26</span>
-        <button class="pag-btn" onclick="openNetworksPage(${pageNum+1})">التالي &#8250;</button>
+        <span class="pag-info">${pageNum} من ${totalPages}</span>
+        <button class="pag-btn" ${pageNum>=totalPages?'disabled':''} onclick="openNetworksPage(${pageNum+1})">التالي &#8250;</button>
       `;
     }
   } catch(e) {
@@ -123,6 +153,9 @@ function showPage(pageId) {
   if (['moviesPage','seriesPage','animePage','searchPage'].includes(pageId)) {
     lastPage = pageId;
   }
+  // إخفاء أو إظهار الـ Hero
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = pageId === 'moviesPage' ? '' : 'none';
   window.scrollTo(0, 0);
 }
 
@@ -132,6 +165,8 @@ function goHome() {
 
 function goBack() {
   showPage(lastPage);
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = lastPage === 'moviesPage' ? '' : 'none';
 }
 
 // ===== جلب الأفلام =====
@@ -219,6 +254,8 @@ async function openNetwork(networkId, networkName, color) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('networkPage');
   page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
   window.scrollTo(0, 0);
 
   const providerMap = {
@@ -306,6 +343,8 @@ async function openDetails(id, type) {
   const page = document.getElementById('detailPage');
   page.classList.add('active');
   page.innerHTML = '<div class="loading" style="padding:120px 0">⏳ جاري التحميل...</div>';
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
   window.scrollTo(0, 0);
 
   try {
