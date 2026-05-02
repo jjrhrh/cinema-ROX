@@ -524,3 +524,22 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
   .hero-title { font-size: 22px; }
 }
 /* ===== END HERO ===== */
+.pag-btn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-family: 'Tajawal', sans-serif;
+}
+.pag-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.pag-info {
+  color: #fff;
+  font-size: 1rem;
+  font-family: 'Tajawal', sans-serif;
+} 
