@@ -94,7 +94,92 @@ function closeSideMenu() {
   document.getElementById('sideMenuOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
+// ===== BOTTOM NAV =====
+function bnavGo(tab) {
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('bnavHome')?.classList.remove('active');
+  document.getElementById('bnavSearch')?.classList.remove('active');
+  document.getElementById('bnavBrowse')?.classList.remove('active');
+  document.getElementById('bnavProfile')?.classList.remove('active');
 
+  if (tab === 'home') {
+    document.getElementById('bnavHome').classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('moviesPage')?.classList.add('active');
+    const hero = document.getElementById('heroBanner');
+    if (hero) hero.style.display = '';
+  } else if (tab === 'search') {
+    document.getElementById('bnavSearch').classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('searchPage').classList.add('active');
+    const hero = document.getElementById('heroBanner');
+    if (hero) hero.style.display = 'none';
+    // تحميل المفضلات
+    const wlGrid = document.getElementById('watchlistGrid');
+    if (wlGrid) renderWatchlistGrid(wlGrid);
+    const wlGrid2 = document.getElementById('watchLaterGrid2');
+    if (wlGrid2) renderWatchLaterGrid(wlGrid2);
+  } else if (tab === 'browse') {
+    document.getElementById('bnavBrowse').classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('browsePage').classList.add('active');
+    const hero = document.getElementById('heroBanner');
+    if (hero) hero.style.display = 'none';
+    fetchMovies(); fetchSeries(); fetchAnime();
+  } else if (tab === 'profile') {
+    document.getElementById('bnavProfile').classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('profilePage').classList.add('active');
+    const hero = document.getElementById('heroBanner');
+    if (hero) hero.style.display = 'none';
+  }
+}
+
+function renderWatchlistGrid(grid) {
+  const items = getWatchlist();
+  if (!items.length) { grid.innerHTML = '<div style="opacity:.4;padding:10px;">لا توجد أفلام بعد</div>'; return; }
+  grid.innerHTML = items.map(i => `<div class="card" onclick="openDetails(${i.id},'${i.type||'movie'}')"><div class="card-img-wrap"><img src="https://image.tmdb.org/t/p/w500${i.poster}" alt="${i.title}" loading="lazy"><div class="card-overlay"><span class="play-btn">▶</span></div></div><span class="card-title">${i.title}</span></div>`).join('');
+}
+
+function renderWatchLaterGrid(grid) {
+  const items = getWatchLater();
+  if (!items.length) { grid.innerHTML = '<div style="opacity:.4;padding:10px;">لا توجد أفلام بعد</div>'; return; }
+  grid.innerHTML = items.map(i => `<div class="card" onclick="openDetails(${i.id},'${i.type||'movie'}')"><div class="card-img-wrap"><img src="https://image.tmdb.org/t/p/w500${i.poster}" alt="${i.title}" loading="lazy"><div class="card-overlay"><span class="play-btn">▶</span></div></div><span class="card-title">${i.title}</span></div>`).join('');
+}
+
+function liveSearch() {
+  const q = document.getElementById('searchInput')?.value?.trim();
+  const sqLinks = document.getElementById('searchQuickLinks');
+  if (sqLinks) sqLinks.style.display = q ? 'none' : '';
+  if (q && q.length > 1) doSearch();
+}
+
+async function applyFilters() {
+  const type   = document.getElementById('filterType')?.value;
+  const genre  = document.getElementById('filterGenre')?.value;
+  const year   = document.getElementById('filterYear')?.value;
+  const sort   = document.getElementById('filterSort')?.value || 'popularity.desc';
+  const grid   = document.getElementById('searchGrid');
+  const sqLinks = document.getElementById('searchQuickLinks');
+  if (sqLinks) sqLinks.style.display = 'none';
+  if (!grid) return;
+  grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
+  const ep = type === 'tv' ? 'tv' : 'movie';
+  let url = `${TMDB_BASE}/discover/${ep}?api_key=${TMDB_KEY}&language=ar-SA&sort_by=${sort}&page=1`;
+  if (genre) url += `&with_genres=${genre}`;
+  if (year && ep === 'movie') url += `&primary_release_year=${year}`;
+  if (year && ep === 'tv')    url += `&first_air_date_year=${year}`;
+  try {
+    const data = await fetch(url).then(r=>r.json());
+    const results = (data.results||[]).filter(i=>i.poster_path);
+    if (!results.length) { grid.innerHTML = '<div class="loading">لا توجد نتائج</div>'; return; }
+    grid.innerHTML = results.map(i => {
+      const t = i.title||i.name||i.original_title||'';
+      const r = i.vote_average?i.vote_average.toFixed(1):'';
+      return `<div class="card" onclick="openDetails(${i.id},'${type||'movie'}')"><div class="card-img-wrap"><img src="https://image.tmdb.org/t/p/w500${i.poster_path}" alt="${t}" loading="lazy">${r?`<span class="card-rating">⭐ ${r}</span>`:''}<div class="card-overlay"><span class="play-btn">▶</span></div></div><span class="card-title">${t}</span></div>`;
+    }).join('');
+  } catch(e) { grid.innerHTML = '<div class="loading">❌ خطأ</div>'; }
+      }
 // ===== صفحة الشبكات =====
 async function openNetworksPage(pageNum) {
   if (!pageNum) pageNum = 1;
