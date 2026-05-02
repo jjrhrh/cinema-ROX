@@ -18,6 +18,7 @@ const TV_SERVERS = (id, s=1, e=1) => [
 
 let currentServers = [];
 let currentServerIndex = 0;
+let pageHistory = [];
 let lastPage = 'moviesPage';
 
 // ===== الإعدادات =====
@@ -50,8 +51,8 @@ function loadSettings() {
     document.documentElement.style.setProperty('--primary', color);
     document.documentElement.style.setProperty('--splash-color', color);
   }
-  if (bg)    document.documentElement.style.setProperty('--bg', bg);
-  if (bg2)   document.documentElement.style.setProperty('--bg2', bg2);
+  if (bg)  document.documentElement.style.setProperty('--bg', bg);
+  if (bg2) document.documentElement.style.setProperty('--bg2', bg2);
 }
 
 // ===== القائمة الجانبية =====
@@ -69,6 +70,7 @@ function closeSideMenu() {
 // ===== صفحة الشبكات =====
 async function openNetworksPage(pageNum) {
   if (!pageNum) pageNum = 1;
+  pageHistory.push('networksListPage');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('networksListPage');
   page.classList.add('active');
@@ -82,34 +84,38 @@ async function openNetworksPage(pageNum) {
   `;
   window.scrollTo(0, 0);
 
+  const allNetworks = [
+    {id:213,name:'Netflix'},{id:49,name:'HBO'},{id:2739,name:'Disney+'},
+    {id:1024,name:'Amazon Prime'},{id:2552,name:'Apple TV+'},
+    {id:4330,name:'Paramount+'},{id:3353,name:'Peacock'},{id:453,name:'Hulu'},
+    {id:283,name:'Crunchyroll'},{id:174,name:'AMC'},{id:6,name:'NBC'},
+    {id:16,name:'ABC'},{id:67,name:'CBS'},{id:71,name:'The CW'},
+    {id:19,name:'FOX'},{id:64,name:'Starz'},{id:2,name:'BBC One'},
+    {id:56,name:'Showtime'},{id:359,name:'Syfy'},{id:25,name:'FX'},
+    {id:34,name:'Comedy Central'},{id:43,name:'National Geographic'},
+    {id:1,name:'Fuji TV'},{id:80,name:'TBS'},{id:65,name:'Discovery'},
+    {id:74,name:'MTV'},{id:138,name:'Lifetime'},{id:31,name:'USA Network'},
+    {id:41,name:'ITV'},{id:332,name:'Channel 4'},{id:96,name:'BBC Two'},
+    {id:4,name:'BBC One'},{id:38,name:'PBS'},{id:53,name:'Cartoon Network'},
+    {id:55,name:'Nickelodeon'},{id:63,name:'Disney Channel'},
+    {id:85,name:'Adult Swim'},{id:104,name:'Sky One'},{id:308,name:'Sky Atlantic'},
+    {id:318,name:'AMC+'},{id:510,name:'Discovery+'},{id:35,name:'E!'},
+    {id:77,name:'TV Asahi'},{id:103,name:'History'},{id:273,name:'MSNBC'},
+    {id:13,name:'Bravo'},{id:84,name:'TNT'},{id:361,name:'Cinemax'},
+  ];
+
   try {
-    // جلب الشبكات عبر discover/tv وتجميع network IDs
-    const popularNetworkIds = [
-      {id:213,name:'Netflix'}, {id:49,name:'HBO'}, {id:2739,name:'Disney+'}, 
-      {id:1024,name:'Amazon'}, {id:2552,name:'Apple TV+'}, {id:4330,name:'Paramount+'},
-      {id:3353,name:'Peacock'}, {id:453,name:'Hulu'}, {id:283,name:'Crunchyroll'},
-      {id:174,name:'AMC'}, {id:6,name:'NBC'}, {id:16,name:'ABC'},
-      {id:67,name:'CBS'}, {id:71,name:'The CW'}, {id:19,name:'FOX'},
-      {id:64,name:'Starz'}, {id:2,name:'BBC'}, {id:56,name:'Showtime'},
-      {id:359,name:'Syfy'}, {id:25,name:'FX'}, {id:34,name:'Comedy Central'},
-      {id:318,name:'AMC+'}, {id:43,name:'National Geographic'}, {id:1,name:'Fuji TV'},
-      {id:80,name:'TBS'}, {id:77,name:'TV Asahi'}, {id:65,name:'Discovery'},
-      {id:74,name:'MTV'}, {id:35,name:'E!'}, {id:138,name:'Lifetime'},
-      {id:31,name:'USA Network'}, {id:41,name:'ITV'}, {id:332,name:'Channel 4'},
-      {id:96,name:'BBC Two'}, {id:4,name:'BBC One'}, {id:38,name:'PBS'},
-      {id:53,name:'Cartoon Network'}, {id:55,name:'Nickelodeon'}, {id:63,name:'Disney Channel'},
-      {id:85,name:'Adult Swim'}, {id:104,name:'Sky One'}, {id:308,name:'Sky Atlantic'},
-    ];
-
     const itemsPerPage = 12;
-    const totalPages = Math.ceil(popularNetworkIds.length / itemsPerPage);
+    const totalPages = Math.ceil(allNetworks.length / itemsPerPage);
     const start = (pageNum - 1) * itemsPerPage;
-    const pageItems = popularNetworkIds.slice(start, start + itemsPerPage);
+    const pageItems = allNetworks.slice(start, start + itemsPerPage);
 
-    // جلب تفاصيل كل شبكة للحصول على اللوجو
     const details = await Promise.all(
-      pageItems.map(n => 
-        fetch(`${TMDB_BASE}/network/${n.id}?api_key=${TMDB_KEY}`).then(r=>r.json()).catch(()=>({id:n.id,name:n.name}))
+      pageItems.map(n =>
+        fetch(`${TMDB_BASE}/network/${n.id}?api_key=${TMDB_KEY}`)
+          .then(r => r.json())
+          .then(d => ({ ...d, fallbackName: n.name }))
+          .catch(() => ({ id: n.id, name: n.name, fallbackName: n.name }))
       )
     );
 
@@ -117,15 +123,16 @@ async function openNetworksPage(pageNum) {
     if (!grid) return;
     grid.innerHTML = '';
 
-    details.forEach(net => {
+    details.forEach((net, idx) => {
+      const displayName = net.name || net.fallbackName || pageItems[idx]?.name || 'شبكة';
       const card = document.createElement('div');
       card.className = 'network-card';
       if (net.logo_path) {
-        card.innerHTML = `<img src="https://image.tmdb.org/t/p/w185${net.logo_path}" alt="${net.name}"><span class="network-card-name">${net.name}</span>`;
+        card.innerHTML = `<img src="https://image.tmdb.org/t/p/w185${net.logo_path}" alt="${displayName}"><span class="network-card-name">${displayName}</span>`;
       } else {
-        card.innerHTML = `<span style="font-size:1rem;font-weight:700;color:#fff;text-align:center;padding:8px;">${net.name}</span>`;
+        card.innerHTML = `<span style="font-size:1rem;font-weight:700;color:#fff;text-align:center;padding:8px;">${displayName}</span><span class="network-card-name">${displayName}</span>`;
       }
-      card.onclick = () => openNetwork(net.id, net.name, 'var(--primary)');
+      card.onclick = () => openNetwork(net.id || pageItems[idx].id, displayName, 'var(--primary)');
       grid.appendChild(card);
     });
 
@@ -145,6 +152,7 @@ async function openNetworksPage(pageNum) {
 
 // ===== الصفحات =====
 function showPage(pageId) {
+  pageHistory.push(pageId);
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(pageId).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -153,20 +161,40 @@ function showPage(pageId) {
   if (['moviesPage','seriesPage','animePage','searchPage'].includes(pageId)) {
     lastPage = pageId;
   }
-  // إخفاء أو إظهار الـ Hero
   const hero = document.getElementById('heroBanner');
   if (hero) hero.style.display = pageId === 'moviesPage' ? '' : 'none';
   window.scrollTo(0, 0);
 }
 
 function goHome() {
+  pageHistory = [];
   showPage('moviesPage');
 }
 
 function goBack() {
-  showPage(lastPage);
-  const hero = document.getElementById('heroBanner');
-  if (hero) hero.style.display = lastPage === 'moviesPage' ? '' : 'none';
+  pageHistory.pop();
+  const prev = pageHistory[pageHistory.length - 1];
+
+  if (!prev || prev === 'moviesPage' || prev === 'seriesPage' || prev === 'animePage' || prev === 'searchPage') {
+    const target = prev || lastPage || 'moviesPage';
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(target).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`[data-page="${target}"]`);
+    if (btn) btn.classList.add('active');
+    const hero = document.getElementById('heroBanner');
+    if (hero) hero.style.display = target === 'moviesPage' ? '' : 'none';
+  } else if (prev === 'networksListPage') {
+    pageHistory.pop();
+    openNetworksPage(1);
+  } else {
+    const target = lastPage || 'moviesPage';
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(target).classList.add('active');
+    const hero = document.getElementById('heroBanner');
+    if (hero) hero.style.display = target === 'moviesPage' ? '' : 'none';
+  }
+  window.scrollTo(0, 0);
 }
 
 // ===== جلب الأفلام =====
@@ -225,7 +253,7 @@ function renderGrid(items, gridId, type) {
   items.forEach(item => {
     const title = type==='movie' ? (item.title||item.original_title)
                 : type==='tv'   ? (item.name||item.original_name)
-                : (item.title.native||item.title.romaji);
+                : (item.title?.native||item.title?.romaji||'');
     const image = type==='anime' ? item.coverImage.extraLarge
                 : item.poster_path ? `${IMG_BASE}${item.poster_path}`
                 : 'https://via.placeholder.com/300x450/111/555?text=No+Image';
@@ -250,7 +278,14 @@ function renderGrid(items, gridId, type) {
 }
 
 // ===== صفحة المنصة =====
+const providerMap = {
+  213:8, 49:384, 2739:337, 1024:119, 2552:350,
+  4330:531, 3353:386, 453:15, 283:283, 64:43,
+  56:37, 318:526, 510:510, 361:39
+};
+
 async function openNetwork(networkId, networkName, color) {
+  pageHistory.push('networkPage');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('networkPage');
   page.classList.add('active');
@@ -258,25 +293,33 @@ async function openNetwork(networkId, networkName, color) {
   if (hero) hero.style.display = 'none';
   window.scrollTo(0, 0);
 
-  const providerMap = {
-    213:8, 49:384, 2739:337, 1024:119, 2552:350,
-    4330:531, 3353:386, 453:15, 283:283, 174:174,
-    6:6, 16:16, 67:67, 71:71, 19:19, 64:64,
-    2:2, 56:56, 359:359
-  };
-  const pid = providerMap[networkId] || networkId;
+  const pid = providerMap[networkId];
 
   async function loadNetworkPage(type, pageNum) {
     window.scrollTo(0, 0);
     const grid = document.getElementById('nGrid');
+    if (!grid) return;
     grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
 
-    const endpoint = type === 'tv' ? 'tv' : 'movie';
-    const res = await fetch(`${TMDB_BASE}/discover/${endpoint}?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=${pageNum}`).then(r=>r.json());
+    let url;
+    if (type === 'tv') {
+      url = `${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=${pageNum}`;
+    } else {
+      if (pid) {
+        url = `${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=${pageNum}`;
+      } else {
+        url = `${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&sort_by=popularity.desc&page=${pageNum}`;
+      }
+    }
+
+    const res = await fetch(url).then(r=>r.json());
     const items = (res.results||[]).filter(x=>x.poster_path);
     const totalPages = Math.min(res.total_pages||1, 135);
 
     grid.innerHTML = '';
+    if (!items.length) {
+      grid.innerHTML = '<div class="loading">لا يوجد محتوى متاح</div>';
+    }
     items.forEach(item => {
       const title = type==='tv' ? (item.name||item.original_name) : (item.title||item.original_title);
       const rating = item.vote_average ? item.vote_average.toFixed(1) : '';
@@ -302,23 +345,22 @@ async function openNetwork(networkId, networkName, color) {
   }
 
   window._nLoad = loadNetworkPage;
-  window._nType = 'tv';
 
   page.innerHTML = `
     <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
     <div class="network-header" style="border-color:${color||'var(--primary)'}">
-      <div class="network-logo-big" style="color:${color||'var(--primary)'}; font-size:2rem; padding:20px 0;">${networkName}</div>
+      <div class="network-logo-big" style="color:${color||'var(--primary)'};">${networkName}</div>
     </div>
     <div class="network-tabs">
       <button class="ntab active" id="nTabTv" onclick="
         document.getElementById('nTabTv').classList.add('active');
         document.getElementById('nTabMov').classList.remove('active');
-        window._nType='tv'; window._nLoad('tv',1);
+        window._nLoad('tv',1);
       ">📺 المسلسلات</button>
       <button class="ntab" id="nTabMov" onclick="
         document.getElementById('nTabMov').classList.add('active');
         document.getElementById('nTabTv').classList.remove('active');
-        window._nType='movie'; window._nLoad('movie',1);
+        window._nLoad('movie',1);
       ">🎬 الأفلام</button>
     </div>
     <div class="container" style="padding-top:10px">
@@ -329,16 +371,10 @@ async function openNetwork(networkId, networkName, color) {
 
   loadNetworkPage('tv', 1);
 }
-function switchNetworkTab(btn, targetId) {
-  document.querySelectorAll('.ntab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('ntv').style.display = 'none';
-  document.getElementById('nmov').style.display = 'none';
-  document.getElementById(targetId).style.display = 'grid';
-}
 
 // ===== صفحة التفاصيل =====
 async function openDetails(id, type) {
+  pageHistory.push('detailPage');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('detailPage');
   page.classList.add('active');
@@ -384,6 +420,8 @@ async function renderTMDBDetails(id, type) {
   const cast       = (credits.cast||[]).slice(0,15);
   const similar2   = (similar.results||[]).filter(s=>s.poster_path).slice(0,12);
 
+  const isWatchlisted = isInWatchlist(id);
+
   let seasonsHTML = '';
   if (type==='tv' && detail.seasons) {
     seasonsHTML = await buildSeasonsHTML(id, detail.seasons);
@@ -407,6 +445,9 @@ async function renderTMDBDetails(id, type) {
           <div class="detail-btns">
             <button class="btn-watch" onclick="openPlayerFromDetail(${id},'${type}')">▶ مشاهدة</button>
             ${trailerKey?`<button class="btn-trailer" onclick="openTrailer('${trailerKey}')">🎬 تريلر</button>`:''}
+            <button class="btn-watchlist ${isWatchlisted?'active':''}" id="wlBtn${id}" onclick="toggleWatchlist(${id},'${title}','${poster}','${type}',this)">
+              ${isWatchlisted?'✅ في القائمة':'➕ قائمتي'}
+            </button>
           </div>
         </div>
       </div>
@@ -543,6 +584,27 @@ async function renderAnimeDetails(id) {
   initRowDrag('aRec'+id);
 }
 
+// ===== قائمة المشاهدة =====
+function getWatchlist() {
+  return JSON.parse(localStorage.getItem('watchlist') || '[]');
+}
+function isInWatchlist(id) {
+  return getWatchlist().some(i => i.id === id);
+}
+function toggleWatchlist(id, title, poster, type, btn) {
+  let list = getWatchlist();
+  if (isInWatchlist(id)) {
+    list = list.filter(i => i.id !== id);
+    btn.textContent = '➕ قائمتي';
+    btn.classList.remove('active');
+  } else {
+    list.push({ id, title, poster, type });
+    btn.textContent = '✅ في القائمة';
+    btn.classList.add('active');
+  }
+  localStorage.setItem('watchlist', JSON.stringify(list));
+}
+
 // ===== المشغل =====
 function openPlayerFromDetail(id, type) {
   currentServers = type==='movie' ? MOVIE_SERVERS(id) : TV_SERVERS(id);
@@ -626,114 +688,92 @@ async function doSearch() {
   } catch(e) { grid.innerHTML='<div class="loading">❌ خطأ في البحث</div>'; }
 }
 
-// ===== شريط المنصات =====
-function initPlatformsCarousel() {
-  const track=document.getElementById('pltTrack');
-  const outer=document.getElementById('pltOuter');
-  const btnP=document.getElementById('pltPrev');
-  const btnN=document.getElementById('pltNext');
-  if (!track||!outer||!btnP||!btnN) return;
-  let drag=false,sx=0,sl=0,cx=0;
-  const CW=132;
-  function clamp(v){ return Math.min(0,Math.max(-(track.scrollWidth-outer.clientWidth+40),v)); }
-  function setX(x){ cx=clamp(x); track.style.transform=`translateX(${cx}px)`; }
-  track.addEventListener('mousedown',e=>{ drag=true;sx=e.clientX;sl=cx;track.classList.add('is-dragging'); });
-  window.addEventListener('mousemove',e=>{ if(!drag) return; setX(sl+(e.clientX-sx)); });
-  window.addEventListener('mouseup',()=>{ drag=false;track.classList.remove('is-dragging'); });
-  track.addEventListener('touchstart',e=>{ sx=e.touches[0].clientX;sl=cx; },{passive:true});
-  track.addEventListener('touchmove',e=>{ setX(sl+(e.touches[0].clientX-sx)); },{passive:true});
-  btnN.addEventListener('click',()=>setX(cx-CW*3));
-  btnP.addEventListener('click',()=>setX(cx+CW*3));
+// ===== زر الأعلى =====
+function initScrollTop() {
+  const btn = document.createElement('button');
+  btn.id = 'scrollTopBtn';
+  btn.innerHTML = '↑';
+  btn.onclick = () => window.scrollTo({top:0,behavior:'smooth'});
+  document.body.appendChild(btn);
+  window.addEventListener('scroll', () => {
+    btn.style.opacity = window.scrollY > 400 ? '1' : '0';
+    btn.style.pointerEvents = window.scrollY > 400 ? 'all' : 'none';
+  });
 }
-
-// ===== تهيئة =====
-window.onload = () => {
-  loadSettings();
-  initHero();
-  // ===== إخفاء السبلاش =====
-  setTimeout(function() {
-  var s = document.getElementById('splash-screen');
-  if (s) s.classList.add('hide');
-  setTimeout(function() {
-    var s2 = document.getElementById('splash-screen');
-    if (s2) s2.remove();
-  }, 700);
-}, 2500);
-  // ===========================
-  fetchMovies();
-  fetchSeries();
-  fetchAnime();
-  initPlatformsCarousel();
-  document.getElementById('searchInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
-  document.getElementById('playerModal').addEventListener('click',function(e){ if(e.target===this) closePlayer(); });
-  document.getElementById('settingsModal').addEventListener('click',function(e){ if(e.target===this) closeSettings(); });
-};
 
 // ===== HERO BANNER =====
 let heroMovies = [];
-let heroIndex = 0;
-let heroTimer = null;
+let heroIndex  = 0;
+let heroTimer  = null;
 
 async function initHero() {
   try {
     const res = await fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=ar-SA&page=1`);
     const data = await res.json();
-    heroMovies = (data.results || []).filter(m => m.backdrop_path && m.overview).slice(0, 8);
+    heroMovies = (data.results||[]).filter(m=>m.backdrop_path&&m.overview).slice(0,8);
     if (!heroMovies.length) return;
     buildHeroDots();
     showHero(0);
-    heroTimer = setInterval(() => {
-      heroIndex = (heroIndex + 1) % heroMovies.length;
-      showHero(heroIndex);
-    }, 5000);
+    heroTimer = setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); }, 5000);
   } catch(e) {}
 }
-
 function buildHeroDots() {
   const dots = document.getElementById('heroDots');
   if (!dots) return;
   dots.innerHTML = '';
-  heroMovies.forEach((_, i) => {
+  heroMovies.forEach((_,i)=>{
     const d = document.createElement('div');
-    d.className = 'hero-dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => { clearInterval(heroTimer); showHero(i); heroIndex = i; heroTimer = setInterval(() => { heroIndex = (heroIndex+1)%heroMovies.length; showHero(heroIndex); }, 5000); };
+    d.className = 'hero-dot'+(i===0?' active':'');
+    d.onclick = ()=>{ clearInterval(heroTimer); showHero(i); heroIndex=i; heroTimer=setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); },5000); };
     dots.appendChild(d);
   });
 }
-
 function showHero(i) {
   const m = heroMovies[i];
   if (!m) return;
-  const banner = document.getElementById('heroBanner');
-  const title  = document.getElementById('heroTitle');
-  const desc   = document.getElementById('heroDesc');
-  const meta   = document.getElementById('heroMeta');
+  const banner   = document.getElementById('heroBanner');
+  const title    = document.getElementById('heroTitle');
+  const desc     = document.getElementById('heroDesc');
+  const meta     = document.getElementById('heroMeta');
   const watchBtn = document.getElementById('heroWatchBtn');
   const infoBtn  = document.getElementById('heroInfoBtn');
   if (!banner) return;
-
   banner.style.backgroundImage = `url('https://image.tmdb.org/t/p/original${m.backdrop_path}')`;
-  title.textContent = m.title || m.original_title;
+  title.textContent = m.title||m.original_title;
   desc.textContent  = m.overview;
-  const rating = m.vote_average ? m.vote_average.toFixed(1) : '';
-  const year   = (m.release_date || '').slice(0, 4);
+  const rating = m.vote_average?m.vote_average.toFixed(1):'';
+  const year   = (m.release_date||'').slice(0,4);
   meta.innerHTML = `
-    ${rating ? `<span class="hero-rating">⭐ ${rating}</span>` : ''}
-    ${year    ? `<span>📅 ${year}</span>` : ''}
+    ${rating?`<span class="hero-rating">⭐ ${rating}</span>`:''}
+    ${year?`<span>📅 ${year}</span>`:''}
     <span>🎬 فيلم</span>
   `;
-  watchBtn.onclick = () => openPlayerFromDetail(m.id, 'movie');
-  infoBtn.onclick  = () => openDetails(m.id, 'movie');
-
-  document.querySelectorAll('.hero-dot').forEach((d, idx) => {
-    d.classList.toggle('active', idx === i);
-  });
-
-  if (title) {
-    title.style.animation = 'none';
-    title.offsetHeight;
-    title.style.animation = 'heroFadeIn 0.8s ease';
-  }
+  watchBtn.onclick = ()=>openPlayerFromDetail(m.id,'movie');
+  infoBtn.onclick  = ()=>openDetails(m.id,'movie');
+  document.querySelectorAll('.hero-dot').forEach((d,idx)=>d.classList.toggle('active',idx===i));
+  if (title) { title.style.animation='none'; title.offsetHeight; title.style.animation='heroFadeIn 0.8s ease'; }
 }
 // ===== END HERO =====
+
+// ===== تهيئة =====
+window.onload = () => {
+  loadSettings();
+  // Splash
+  setTimeout(function() {
+    var s = document.getElementById('splash-screen');
+    if (s) { s.style.opacity='0'; s.style.visibility='hidden'; }
+    setTimeout(function() { var s2=document.getElementById('splash-screen'); if(s2) s2.remove(); }, 700);
+  }, 2500);
+
+  initHero();
+  initScrollTop();
+  fetchMovies();
+  fetchSeries();
+  fetchAnime();
+
+  document.getElementById('searchInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+  document.getElementById('playerModal').addEventListener('click',function(e){ if(e.target===this) closePlayer(); });
+  document.getElementById('settingsModal').addEventListener('click',function(e){ if(e.target===this) closeSettings(); });
+};
+
 setInterval(()=>{ fetchMovies(); fetchSeries(); fetchAnime(); }, 600000);
