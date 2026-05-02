@@ -163,18 +163,27 @@ async function openNetwork(networkId, networkName, color) {
   page.innerHTML = `<div class="loading" style="padding:120px 0">⏳ جاري تحميل ${networkName}...</div>`;
   window.scrollTo(0, 0);
 
+  const providerMap = {
+    213:8, 49:384, 2739:337, 1024:119, 2552:350,
+    4330:531, 3353:386, 453:15, 283:283, 174:174,
+    6:6, 16:16, 67:67, 71:71, 19:19, 64:64,
+    2:2, 56:56, 359:359
+  };
+  const pid = providerMap[networkId] || networkId;
+
   try {
-    const [tvRes1,tvRes2,tvRes3,tvRes4,tvRes5,movRes1,movRes2,movRes3,movRes4,movRes5] = await Promise.all([
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=4`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=5`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=4`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_companies=${networkId}&sort_by=popularity.desc&page=5`).then(r=>r.json()),
+    const [tvRes1,tvRes2,tvRes3,tvRes4,tvRes5,
+           movRes1,movRes2,movRes3,movRes4,movRes5] = await Promise.all([
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=1`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=2`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=3`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=4`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=5`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=1`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=2`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=3`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=4`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=5`).then(r=>r.json()),
     ]);
 
     const tvItems  = [tvRes1,tvRes2,tvRes3,tvRes4,tvRes5].flatMap(r=>r.results||[]).filter(x=>x.poster_path);
@@ -183,11 +192,11 @@ async function openNetwork(networkId, networkName, color) {
     page.innerHTML = `
       <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
       <div class="network-header" style="border-color:${color||'var(--primary)'}">
-        <div class="network-logo-big" style="color:${color||'var(--primary)'}">${networkName}</div>
+        <div class="network-logo-big" style="color:${color||'var(--primary)'}">  ${networkName}</div>
       </div>
       <div class="network-tabs">
-        <button class="ntab active" onclick="switchNetworkTab(this,'ntv')">📺 المسلسلات</button>
-        <button class="ntab" onclick="switchNetworkTab(this,'nmov')">🎬 الأفلام</button>
+        <button class="ntab active" onclick="switchNetworkTab(this,'ntv')">📺 المسلسلات (${tvItems.length})</button>
+        <button class="ntab" onclick="switchNetworkTab(this,'nmov')">🎬 الأفلام (${movItems.length})</button>
       </div>
       <div class="container" style="padding-top:10px">
         <div class="grid" id="ntv">
@@ -236,8 +245,7 @@ async function openNetwork(networkId, networkName, color) {
   } catch(e) {
     page.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
-}
-
+      }
 function switchNetworkTab(btn, targetId) {
   document.querySelectorAll('.ntab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
