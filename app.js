@@ -860,13 +860,14 @@ async function initHero() {
   try {
     const res = await fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=ar-SA&page=1`);
     const data = await res.json();
-    heroMovies = (data.results||[]).filter(m=>m.backdrop_path&&m.overview).slice(0,8);
+    heroMovies = (data.results||[]).filter(m=>m.poster_path).slice(0,8);
     if (!heroMovies.length) return;
     buildHeroDots();
     showHero(0);
     heroTimer = setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); }, 5000);
   } catch(e) {}
 }
+
 function buildHeroDots() {
   const dots = document.getElementById('heroDots');
   if (!dots) return;
@@ -874,35 +875,61 @@ function buildHeroDots() {
   heroMovies.forEach((_,i)=>{
     const d = document.createElement('div');
     d.className = 'hero-dot'+(i===0?' active':'');
-    d.onclick = ()=>{ clearInterval(heroTimer); showHero(i); heroIndex=i; heroTimer=setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); },5000); };
+    d.onclick = ()=>{
+      clearInterval(heroTimer); showHero(i); heroIndex=i;
+      heroTimer=setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); },5000);
+    };
     dots.appendChild(d);
   });
 }
-function showHero(i) {
-  const m = heroMovies[i];
-  if (!m) return;
-  const banner   = document.getElementById('heroBanner');
+
+function showHero(idx) {
+  const carousel = document.getElementById('heroCarousel');
   const title    = document.getElementById('heroTitle');
-  const desc     = document.getElementById('heroDesc');
+  const yearTag  = document.getElementById('heroYearTag');
   const meta     = document.getElementById('heroMeta');
   const watchBtn = document.getElementById('heroWatchBtn');
   const infoBtn  = document.getElementById('heroInfoBtn');
-  if (!banner) return;
-  banner.style.backgroundImage = `url('https://image.tmdb.org/t/p/original${m.backdrop_path}')`;
-  title.textContent = m.title||m.original_title;
-  desc.textContent  = m.overview;
-  const rating = m.vote_average?m.vote_average.toFixed(1):'';
+  if (!carousel || !heroMovies.length) return;
+
+  const total     = heroMovies.length;
+  const positions = ['left2','left1','center','right1','right2'];
+  const offsets   = [-2,-1,0,1,2];
+
+  carousel.innerHTML = '';
+  offsets.forEach((offset, pi) => {
+    const mi    = ((idx + offset) % total + total) % total;
+    const m     = heroMovies[mi];
+    if (!m || !m.poster_path) return;
+    const slide = document.createElement('div');
+    slide.className = `hero-slide ${positions[pi]}`;
+    slide.innerHTML = `<img src="${IMG_BASE}${m.poster_path}" alt="${m.title||''}" loading="lazy">`;
+    if (positions[pi] !== 'center') {
+      slide.onclick = () => {
+        clearInterval(heroTimer);
+        const newIdx = ((idx + offset) % total + total) % total;
+        showHero(newIdx); heroIndex = newIdx;
+        heroTimer = setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); },5000);
+      };
+    }
+    carousel.appendChild(slide);
+  });
+
+  const m = heroMovies[idx];
+  if (title)   title.textContent  = m.title || m.original_title || '';
   const year   = (m.release_date||'').slice(0,4);
-  meta.innerHTML = `
-    ${rating?`<span class="hero-rating">⭐ ${rating}</span>`:''}
-    ${year?`<span>📅 ${year}</span>`:''}
-    <span>🎬 فيلم</span>
+  if (yearTag) yearTag.textContent = year;
+  const rating = m.vote_average ? m.vote_average.toFixed(1) : '';
+  if (meta) meta.innerHTML = `
+    ${rating?`<span class="hero-tag rating-tag">⭐ ${rating}</span>`:''}
+    ${year?`<span class="hero-tag">📅 ${year}</span>`:''}
+    <span class="hero-tag">🎬 فيلم</span>
   `;
-  watchBtn.onclick = ()=>openPlayerFromDetail(m.id,'movie');
-  infoBtn.onclick  = ()=>openDetails(m.id,'movie');
-  document.querySelectorAll('.hero-dot').forEach((d,idx)=>d.classList.toggle('active',idx===i));
-  if (title) { title.style.animation='none'; title.offsetHeight; title.style.animation='heroFadeIn 0.8s ease'; }
+  if (watchBtn) watchBtn.onclick = ()=>openPlayerFromDetail(m.id,'movie');
+  if (infoBtn)  infoBtn.onclick  = ()=>openDetails(m.id,'movie');
+  document.querySelectorAll('.hero-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
 }
+// ===== END HERO =====
 // ===== END HERO =====
 
 // ===== تهيئة =====
