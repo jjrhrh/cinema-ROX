@@ -80,35 +80,32 @@ async function fetchMovies() {
   const grid = document.getElementById('moviesGrid');
   grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
   try {
-    const results = await Promise.all(
-      [1,2,3,4,5].map(p =>
-        fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${p}`)
-          .then(r=>r.json()).then(d=>d.results||[])
-      )
-    );
-    renderGrid(results.flat(), 'moviesGrid', 'movie');
+    const results = [];
+    for (const p of [1,2,3,4,5]) {
+      const r = await fetch(`${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${p}`).then(r=>r.json());
+      results.push(...(r.results||[]));
+    }
+    renderGrid(results, 'moviesGrid', 'movie');
   } catch(e) {
     grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
-}
+  }
 
 // ===== جلب المسلسلات =====
 async function fetchSeries() {
   const grid = document.getElementById('seriesGrid');
   grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
   try {
-    const results = await Promise.all(
-      [1,2,3,4,5].map(p =>
-        fetch(`${TMDB_BASE}/tv/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${p}`)
-          .then(r=>r.json()).then(d=>d.results||[])
-      )
-    );
-    renderGrid(results.flat(), 'seriesGrid', 'tv');
+    const results = [];
+    for (const p of [1,2,3,4,5]) {
+      const r = await fetch(`${TMDB_BASE}/tv/popular?api_key=${TMDB_KEY}&language=ar-SA&page=${p}`).then(r=>r.json());
+      results.push(...(r.results||[]));
+    }
+    renderGrid(results, 'seriesGrid', 'tv');
   } catch(e) {
     grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
   }
 }
-
 // ===== جلب الأنمي =====
 async function fetchAnime() {
   const grid = document.getElementById('animeGrid');
@@ -125,6 +122,8 @@ async function fetchAnime() {
   }
 }
 
+  }
+}
 // ===== رندر الكروت =====
 function renderGrid(items, gridId, type) {
   const grid = document.getElementById(gridId);
