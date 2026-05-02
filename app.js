@@ -912,6 +912,9 @@ async function initHero() {
     if (!heroMovies.length) return;
     buildHeroDots();
     showHero(0);
+    showHero(0);
+    initHeroSwipe();
+    heroTimer = setInterval(...
     heroTimer = setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); }, 5000);
   } catch(e) {}
 }
@@ -929,6 +932,22 @@ function buildHeroDots() {
     };
     dots.appendChild(d);
   });
+}
+
+function initHeroSwipe() {
+  const carousel = document.getElementById('heroCarousel');
+  if (!carousel) return;
+  let startX = 0;
+  carousel.addEventListener('touchstart', e=>{ startX = e.touches[0].clientX; }, {passive:true});
+  carousel.addEventListener('touchend', e=>{
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) < 50) return;
+    clearInterval(heroTimer);
+    if (diff > 0) { heroIndex=(heroIndex+1)%heroMovies.length; }
+    else          { heroIndex=(heroIndex-1+heroMovies.length)%heroMovies.length; }
+    showHero(heroIndex);
+    heroTimer=setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); },5000);
+  }, {passive:true});
 }
 
 function showHero(idx) {
