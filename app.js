@@ -550,6 +550,7 @@ function initPlatformsCarousel() {
 // ===== تهيئة =====
 window.onload = () => {
   loadSettings();
+  initHero();
   // ===== إخفاء السبلاش =====
   setTimeout(function() {
     var s = document.getElementById('splash-screen');
