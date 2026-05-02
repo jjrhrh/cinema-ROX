@@ -108,8 +108,7 @@ document.getElementById('bnavHome')?.classList.remove('active');
   document.getElementById('bnavProfile')?.classList.remove('active');
   if (tab === 'home') {
     document.getElementById('bnavHome').classList.add('active');
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('moviesPage')?.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));document.getElementById('homePage')?.classList.add('active');
     const hero = document.getElementById('heroBanner');
     if (hero) hero.style.display = '';
   } else if (tab === 'search') {
