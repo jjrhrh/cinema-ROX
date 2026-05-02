@@ -1,4 +1,4 @@
-
+const MOVIE_SERVERS = (id) => [
 const MOVIE_SERVERS = (id) => [
   `https://vidsrc.xyz/embed/movie?tmdb=${id}`,
   `https://vidsrc.to/embed/movie/${id}`,
