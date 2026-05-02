@@ -101,6 +101,7 @@ function bnavGo(tab) {
     document.getElementById('libraryPage').classList.add('active');
     const hero = document.getElementById('heroBanner');
     if (hero) hero.style.display = 'none';
+    document.getElementById('bnavLibrary')?.classList.remove('active');
     loadLibraryTab('libWatchlist');
   } else if (tab === 'profile') {
     document.getElementById('bnavProfile').classList.add('active');
