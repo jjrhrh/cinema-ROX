@@ -614,7 +614,38 @@ function toggleWatchlist(id, title, poster, type, btn) {
   }
   localStorage.setItem('watchlist', JSON.stringify(list));
 }
-
+// ===== صفحة قائمتي =====
+function openWatchlistPage() {
+  pageHistory.push('watchlistPage');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('watchlistPage').classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
+  window.scrollTo(0, 0);
+  const grid = document.getElementById('watchlistGrid');
+  const list = getWatchlist();
+  if (!list.length) {
+    grid.innerHTML = '<div class="loading">لا يوجد أفلام في قائمتك بعد ❤️</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${IMG_BASE}${item.poster}" alt="${item.title}" loading="lazy"
+             onerror="this.src='https://via.placeholder.com/300x450/111/555?text=No+Image'">
+        <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
+      </div>
+      <div class="card-info"><h4>${item.title}</h4>
+        <span class="type-badge">${item.type==='movie'?'🎬 فيلم':'📺 مسلسل'}</span>
+      </div>
+    `;
+    card.onclick = () => openDetails(item.id, item.type);
+    grid.appendChild(card);
+  });
+}
 // ===== المشغل =====
 function openPlayerFromDetail(id, type) {
   currentServers = type==='movie' ? MOVIE_SERVERS(id) : TV_SERVERS(id);
