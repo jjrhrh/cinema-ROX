@@ -54,6 +54,65 @@ function loadSettings() {
   if (bg2)   document.documentElement.style.setProperty('--bg2', bg2);
 }
 
+// ===== القائمة الجانبية =====
+function openSideMenu() {
+  document.getElementById('sideMenu').classList.add('open');
+  document.getElementById('sideMenuOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSideMenu() {
+  document.getElementById('sideMenu').classList.remove('open');
+  document.getElementById('sideMenuOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ===== صفحة الشبكات =====
+async function openNetworksPage(pageNum) {
+  if (!pageNum) pageNum = 1;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('networksListPage');
+  page.classList.add('active');
+  page.innerHTML = `
+    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+    <div class="networks-page-header">📡 الشبكات والقنوات</div>
+    <div class="networks-grid" id="networksGrid"><div class="loading">⏳ جاري التحميل...</div></div>
+    <div id="netsPagination" style="display:flex;justify-content:center;align-items:center;gap:16px;padding:24px 0;"></div>
+  `;
+  window.scrollTo(0, 0);
+  const letters = 'abcdefghijklmnopqrstuvwxyz';
+  const letter = letters[(pageNum - 1) % letters.length];
+  try {
+    const res = await fetch(`${TMDB_BASE}/search/network?api_key=${TMDB_KEY}&query=${letter}`).then(r=>r.json());
+    const items = res.results || [];
+    const grid = document.getElementById('networksGrid');
+    if (!grid) return;
+    if (!items.length) { grid.innerHTML = '<div class="loading">لا توجد نتائج</div>'; return; }
+    grid.innerHTML = '';
+    items.forEach(net => {
+      const card = document.createElement('div');
+      card.className = 'network-card';
+      if (net.logo_path) {
+        card.innerHTML = `<img src="https://image.tmdb.org/t/p/w185${net.logo_path}" alt="${net.name}"><span class="network-card-name">${net.name}</span>`;
+      } else {
+        card.innerHTML = `<span style="font-size:1.1rem;font-weight:700;color:#fff;text-align:center;">${net.name}</span>`;
+      }
+      card.onclick = () => openNetwork(net.id, net.name, 'var(--primary)');
+      grid.appendChild(card);
+    });
+    const pag = document.getElementById('netsPagination');
+    if (pag) {
+      pag.innerHTML = `
+        <button class="pag-btn" ${pageNum<=1?'disabled':''} onclick="openNetworksPage(${pageNum-1})">&#8249; السابق</button>
+        <span class="pag-info">${pageNum} من 26</span>
+        <button class="pag-btn" onclick="openNetworksPage(${pageNum+1})">التالي &#8250;</button>
+      `;
+    }
+  } catch(e) {
+    const grid = document.getElementById('networksGrid');
+    if (grid) grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
+  }
+}
+
 // ===== الصفحات =====
 function showPage(pageId) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
