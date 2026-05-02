@@ -1056,7 +1056,13 @@ function openWatchLaterPage() {
     grid.appendChild(card);
   });
 }
-
+function selectStar(movieId, stars) {
+  window['_selectedStar'+movieId] = stars;
+  for(let s=1;s<=5;s++){
+    const btn = document.getElementById(`star${movieId}_${s}`);
+    if(btn) btn.textContent = s<=stars ? '⭐' : '☆';
+  }
+}
 // ===== ملاحظاتي =====
 function getNotes() { return JSON.parse(localStorage.getItem('myNotes')||'{}'); }
 function saveNote(id, title, poster, text, stars) {
