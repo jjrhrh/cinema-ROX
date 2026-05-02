@@ -489,11 +489,19 @@ async function renderTMDBDetails(id, type) {
             ${trailerKey?`<button class="btn-trailer" onclick="openTrailer('${trailerKey}')">🎬 تريلر</button>`:''}
             <button class="btn-watchlist ${isWatchlisted?'active':''}" id="wlBtn${id}" onclick="toggleWatchlist(${id},'${title}','${poster}','${type}',this)">
               ${isWatchlisted?'✅ في القائمة':'➕ قائمتي'}
+    </button>
+            <button class="btn-watchlist ${getWatchLater().some(i=>i.id===id)?'active':''}" id="wlBtn2${id}" onclick="toggleWatchLater(${id},'${title}','${detail.poster_path||''}','${type}',this)">
+              ${getWatchLater().some(i=>i.id===id)?'✅ سأشاهده':'⏰ أريد مشاهدته'}
             </button>
           </div>
-        </div>
-      </div>
-    </div>
+          <div style="margin-top:12px;">
+            <textarea id="noteText${id}" placeholder="اكتب رأيك في الفيلم..." style="width:100%;padding:10px;border-radius:12px;border:2px solid #444;background:#111;color:#fff;font-family:inherit;font-size:.9rem;resize:none;min-height:70px;">${getNotes()[id]?.text||''}</textarea>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;">
+              <span style="opacity:.7;">تقييمك:</span>
+              ${[1,2,3,4,5].map(s=>`<button onclick="selectStar(${id},${s})" id="star${id}_${s}" style="background:none;border:none;font-size:1.4rem;cursor:pointer;">${(getNotes()[id]?.stars||0)>=s?'⭐':'☆'}</button>`).join('')}
+              <button onclick="saveNote(${id},'${title}','${detail.poster_path||''}',document.getElementById('noteText${id}').value,window._selectedStar${id}||${getNotes()[id]?.stars||0})" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:inherit;">💾 حفظ</button>
+            </div>
+          </div>
     <div class="detail-body">
       <section class="detail-section">
         <h2 class="detail-section-title">📖 القصة</h2>
