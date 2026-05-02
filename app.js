@@ -284,9 +284,8 @@ function renderGrid(items, gridId, type) {
     grid.appendChild(card);
   });
 }
-
 // ===== صفحة المنصة =====
-const providerMap = {
+const PROVIDER_MAP = {
   213:8, 49:384, 2739:337, 1024:119, 2552:350,
   4330:531, 3353:386, 453:15, 283:283, 64:43,
   56:37, 318:526, 510:510, 361:39
@@ -301,7 +300,7 @@ async function openNetwork(networkId, networkName, color) {
   if (hero) hero.style.display = 'none';
   window.scrollTo(0, 0);
 
-  const pid = providerMap[networkId];
+  const pid = PROVIDER_MAP[networkId];
 
   async function loadNetworkPage(type, pageNum) {
     window.scrollTo(0, 0);
@@ -313,43 +312,50 @@ async function openNetwork(networkId, networkName, color) {
     if (type === 'tv') {
       url = `${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=${pageNum}`;
     } else {
-      if (pid) {
-        url = `${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=${pageNum}`;
-      } else {
-        url = `${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&sort_by=popularity.desc&page=${pageNum}`;
+      if (!pid) {
+        grid.innerHTML = '<div class="loading">🎬 لا تتوفر أفلام لهذه القناة</div>';
+        document.getElementById('nPagination').innerHTML = '';
+        return;
       }
+      url = `${TMDB_BASE}/discover/movie?api_key=${TMDB_KEY}&language=ar-SA&with_watch_providers=${pid}&watch_region=US&sort_by=popularity.desc&page=${pageNum}`;
     }
 
-    const res = await fetch(url).then(r=>r.json());
-    const items = (res.results||[]).filter(x=>x.poster_path);
-    const totalPages = Math.min(res.total_pages||1, 135);
-
-    grid.innerHTML = '';
-    if (!items.length) {
-      grid.innerHTML = '<div class="loading">لا يوجد محتوى متاح</div>';
-    }
-    items.forEach(item => {
-      const title = type==='tv' ? (item.name||item.original_name) : (item.title||item.original_title);
-      const rating = item.vote_average ? item.vote_average.toFixed(1) : '';
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="card-img-wrap">
-          <img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">
-          ${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}
-          <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
-        </div>
-        <div class="card-info"><h4>${title}</h4></div>
+    try {
+      const res = await fetch(url).then(r => r.json());
+      const items = (res.results || []).filter(x => x.poster_path);
+      const totalPages = Math.min(res.total_pages || 1, 135);
+      grid.innerHTML = '';
+      if (!items.length) {
+        grid.innerHTML = '<div class="loading">لا يوجد محتوى متاح حالياً</div>';
+        document.getElementById('nPagination').innerHTML = '';
+        return;
+      }
+      items.forEach(item => {
+        const title = type === 'tv'
+          ? (item.name || item.original_name)
+          : (item.title || item.original_title);
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : '';
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-img-wrap">
+            <img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">
+            ${rating ? `<span class="card-rating">⭐ ${rating}</span>` : ''}
+            <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
+          </div>
+          <div class="card-info"><h4>${title}</h4></div>
+        `;
+        card.onclick = () => openDetails(item.id, type);
+        grid.appendChild(card);
+      });
+      document.getElementById('nPagination').innerHTML = `
+        <button class="pag-btn" ${pageNum<=1?'disabled':''} onclick="window._nLoad('${type}',${pageNum-1})">&#8249; السابق</button>
+        <span class="pag-info">${pageNum} من ${totalPages}</span>
+        <button class="pag-btn" ${pageNum>=totalPages?'disabled':''} onclick="window._nLoad('${type}',${pageNum+1})">التالي &#8250;</button>
       `;
-      card.onclick = () => openDetails(item.id, type);
-      grid.appendChild(card);
-    });
-
-    document.getElementById('nPagination').innerHTML = `
-      <button class="pag-btn" ${pageNum<=1?'disabled':''} onclick="window._nLoad('${type}',${pageNum-1})">&#8249; السابق</button>
-      <span class="pag-info">${pageNum} من ${totalPages}</span>
-      <button class="pag-btn" ${pageNum>=totalPages?'disabled':''} onclick="window._nLoad('${type}',${pageNum+1})">التالي &#8250;</button>
-    `;
+    } catch(e) {
+      grid.innerHTML = '<div class="loading">❌ خطأ في التحميل</div>';
+    }
   }
 
   window._nLoad = loadNetworkPage;
@@ -365,11 +371,11 @@ async function openNetwork(networkId, networkName, color) {
         document.getElementById('nTabMov').classList.remove('active');
         window._nLoad('tv',1);
       ">📺 المسلسلات</button>
-      <button class="ntab" id="nTabMov" onclick="
+      ${pid ? `<button class="ntab" id="nTabMov" onclick="
         document.getElementById('nTabMov').classList.add('active');
         document.getElementById('nTabTv').classList.remove('active');
         window._nLoad('movie',1);
-      ">🎬 الأفلام</button>
+      ">🎬 الأفلام</button>` : ''}
     </div>
     <div class="container" style="padding-top:10px">
       <div class="grid" id="nGrid"></div>
