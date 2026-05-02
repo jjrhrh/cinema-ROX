@@ -664,3 +664,24 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
 }
 .pag-btn:disabled { opacity: 0.3; cursor: default; }
 .pag-info { color: #fff; font-size: 1rem; font-family: 'Tajawal', sans-serif; }
+/* زر الأعلى */
+#scrollTopBtn {
+  position: fixed; bottom: 30px; left: 20px; z-index: 9999;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--primary); color: #fff; border: none;
+  font-size: 22px; font-weight: 900; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s, transform 0.2s;
+}
+#scrollTopBtn:hover { transform: scale(1.1); }
+
+/* زر قائمتي */
+.btn-watchlist {
+  background: rgba(255,255,255,0.1); color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  font-family: 'Tajawal',sans-serif; font-size: 14px; font-weight: 700;
+  padding: 10px 20px; border-radius: 30px; cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-watchlist.active { background: rgba(30,200,100,0.2); border-color: #1ce783; color: #1ce783; }
