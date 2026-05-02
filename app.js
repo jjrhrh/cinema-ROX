@@ -420,7 +420,19 @@ async function openDetails(id, type) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('detailPage');
   page.classList.add('active');
-  page.innerHTML = '<div class="loading" style="padding:120px 0">⏳ جاري التحميل...</div>';
+  page.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:20px;">
+    <div style="position:relative;width:90px;height:90px;">
+      <div style="position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:var(--primary);animation:spinRing 1s linear infinite;"></div>
+      <div style="position:absolute;inset:8px;border-radius:50%;border:3px solid transparent;border-top-color:#ff6b35;animation:spinRing 0.7s linear infinite reverse;"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:2rem;animation:pulseLogo 1.2s ease-in-out infinite;">🎬</div>
+    </div>
+    <div style="font-size:1rem;font-weight:700;color:var(--primary);letter-spacing:2px;animation:pulseLogo 1.2s ease-in-out infinite;">Cinema ROX</div>
+    <div style="font-size:.8rem;opacity:.5;">جاري التحميل...</div>
+  </div>
+  <style>
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+    @keyframes pulseLogo { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(0.95)} }
+  </style>`;
   const hero = document.getElementById('heroBanner');
   if (hero) hero.style.display = 'none';
   window.scrollTo(0, 0);
