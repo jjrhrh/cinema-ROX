@@ -136,6 +136,13 @@ document.getElementById('bnavHome')?.classList.remove('active');
     document.getElementById('profilePage').classList.add('active');
     const hero = document.getElementById('heroBanner');
     if (hero) hero.style.display = 'none';
+  } else if (tab === 'library') {
+    document.getElementById('bnavLibrary').classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('libraryPage').classList.add('active');
+    const hero = document.getElementById('heroBanner');
+    if (hero) hero.style.display = 'none';
+    renderLibraryPage();
   }
 }
 
@@ -1420,6 +1427,118 @@ async function openAIRecommendations() {
       card.className='card';
       card.innerHTML=`<div class="card-img-wrap"><img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}<div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div></div><div class="card-info"><h4>${title}</h4></div>`;
       card.onclick=()=>openDetails(item.id,'movie');
+      // ===== صفحة مكتبتي (Trakt Style) =====
+function renderLibraryPage() {
+  const page = document.getElementById('libraryPage');
+  if (!page) return;
+  window.scrollTo(0, 0);
+
+  const watchlist  = getWatchlist();
+  const watchLater = getWatchLater();
+  const notes      = Object.values(getNotes());
+
+  const movies   = watchlist.filter(i => (i.type||'movie') === 'movie');
+  const series   = watchlist.filter(i => i.type === 'tv');
+
+  function makeRow(items, sectionTitle, viewAllFn) {
+    if (!items.length) return '';
+    const cards = items.slice(0, 10).map(i => `
+      <div onclick="openDetails(${i.id},'${i.type||'movie'}')"
+           style="flex:0 0 110px;cursor:pointer;">
+        <div style="width:110px;height:160px;border-radius:12px;overflow:hidden;
+                    background:var(--bg2);border:1px solid rgba(255,255,255,0.08);
+                    position:relative;">
+          <img src="https://image.tmdb.org/t/p/w300${i.poster}" alt="${i.title}"
+               style="width:100%;height:100%;object-fit:cover;"
+               onerror="this.src='https://via.placeholder.com/110x160/111/555?text=?'">
+        </div>
+        <div style="font-size:11px;color:#ccc;margin-top:6px;
+                    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+                    width:110px;">${i.title}</div>
+        <div style="font-size:10px;color:#888;">${i.title}</div>
+      </div>
+    `).join('');
+
+    return `
+      <div style="margin-bottom:28px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;
+                    padding:0 4% 10px;">
+          <div style="font-size:16px;font-weight:800;border-bottom:2px solid var(--primary);
+                      padding-bottom:4px;">${sectionTitle}</div>
+          <button onclick="${viewAllFn}"
+                  style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+                         color:#fff;padding:6px 14px;border-radius:20px;cursor:pointer;
+                         font-family:'Tajawal',sans-serif;font-size:12px;">
+            عرض الكل ›
+          </button>
+        </div>
+        <div style="display:flex;gap:12px;overflow-x:auto;padding:4px 4% 8px;
+                    scrollbar-width:none;">
+          ${cards}
+        </div>
+      </div>
+    `;
+  }
+
+  function makeNotesRow() {
+    if (!notes.length) return '';
+    const cards = notes.slice(0, 10).map(n => `
+      <div onclick="openDetails(${n.id},'movie')" style="flex:0 0 110px;cursor:pointer;">
+        <div style="width:110px;height:160px;border-radius:12px;overflow:hidden;
+                    background:var(--bg2);border:1px solid rgba(255,255,255,0.08);">
+          <img src="https://image.tmdb.org/t/p/w300${n.poster}" alt="${n.title}"
+               style="width:100%;height:100%;object-fit:cover;"
+               onerror="this.src='https://via.placeholder.com/110x160/111/555?text=?'">
+        </div>
+        <div style="font-size:11px;color:#ccc;margin-top:6px;
+                    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+                    width:110px;">${n.title}</div>
+        <div style="font-size:10px;color:var(--gold);">${'⭐'.repeat(n.stars||0)}</div>
+      </div>
+    `).join('');
+    return `
+      <div style="margin-bottom:28px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;
+                    padding:0 4% 10px;">
+          <div style="font-size:16px;font-weight:800;border-bottom:2px solid var(--primary);
+                      padding-bottom:4px;">💬 ملاحظاتي</div>
+          <button onclick="openNotesPage()"
+                  style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+                         color:#fff;padding:6px 14px;border-radius:20px;cursor:pointer;
+                         font-family:'Tajawal',sans-serif;font-size:12px;">
+            عرض الكل ›
+          </button>
+        </div>
+        <div style="display:flex;gap:12px;overflow-x:auto;padding:4px 4% 8px;
+                    scrollbar-width:none;">
+          ${cards}
+        </div>
+      </div>
+    `;
+  }
+
+  const isEmpty = !watchlist.length && !watchLater.length && !notes.length;
+
+  page.innerHTML = `
+    <div style="padding-top:24px;padding-bottom:80px;">
+      <div style="padding:0 4% 20px;">
+        <h2 style="font-size:22px;font-weight:900;">📚 مكتبتي</h2>
+      </div>
+      ${isEmpty ? `
+        <div style="text-align:center;padding:80px 20px;opacity:.5;">
+          <div style="font-size:3rem;margin-bottom:16px;">📭</div>
+          <div style="font-size:1rem;">مكتبتك فارغة حتى الآن</div>
+          <div style="font-size:.85rem;margin-top:8px;">أضف أفلام ومسلسلات من صفحة التفاصيل</div>
+        </div>
+      ` : ''}
+      ${makeRow(watchlist,  '❤️ قائمتي',       'openWatchlistPage()')}
+      ${makeRow(watchLater, '⏰ سأشاهده لاحقاً', 'openWatchLaterPage()')}
+      ${makeRow(movies,     '🎥 أفلام',         'openWatchlistPage()')}
+      ${makeRow(series,     '📺 مسلسلات',       'openWatchlistPage()')}
+      ${makeNotesRow()}
+    </div>
+  `;
+}
       grid.appendChild(card);
     });
   } catch(e) {
