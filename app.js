@@ -166,7 +166,7 @@ async function openNetwork(networkId, networkName, color) {
   window.scrollTo(0, 0);
 
   try {
-    const [tvRes, movRes] = await Promise.all([
+    const [tvRes1,tvRes2,tvRes3,tvRes4,tvRes5,movRes1,movRes2,movRes3,movRes4,movRes5] = await Promise.all([
       fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=1`).then(r=>r.json()),
 fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=2`).then(r=>r.json()),
 fetch(`${TMDB_BASE}/discover/tv?api_key=${TMDB_KEY}&language=ar-SA&with_networks=${networkId}&sort_by=popularity.desc&page=3`).then(r=>r.json()),
