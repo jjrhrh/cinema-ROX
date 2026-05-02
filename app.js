@@ -435,34 +435,38 @@ async function openDetails(id, type) {
     page.innerHTML = '<div class="loading">❌ خطأ في تحميل التفاصيل</div>';
   }
 }
-
 async function renderTMDBDetails(id, type) {
   const ep = type==='movie' ? 'movie' : 'tv';
-  const [detail, credits, similar, videos, watch] = await Promise.all([
+  const [detail, credits, similar, videos, watch, reviews] = await Promise.all([
     fetch(`${TMDB_BASE}/${ep}/${id}?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json()),
     fetch(`${TMDB_BASE}/${ep}/${id}/credits?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json()),
     fetch(`${TMDB_BASE}/${ep}/${id}/similar?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json()),
     fetch(`${TMDB_BASE}/${ep}/${id}/videos?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json()),
     fetch(`${TMDB_BASE}/${ep}/${id}/watch/providers?api_key=${TMDB_KEY}`).then(r=>r.json()),
+    fetch(`${TMDB_BASE}/${ep}/${id}/reviews?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json()),
   ]);
 
   const title    = type==='movie' ? (detail.title||detail.original_title) : (detail.name||detail.original_name);
   const year     = type==='movie' ? (detail.release_date||'').slice(0,4) : (detail.first_air_date||'').slice(0,4);
-  const runtime  = type==='movie' ? (detail.runtime?`${detail.runtime} د`:'') : (detail.episode_run_time?.[0]?`${detail.episode_run_time[0]} د/حلقة`:'');
+  const runtime  = type==='movie' ? (detail.runtime ? `${Math.floor(detail.runtime/60)}س ${detail.runtime%60}د` : '') : (detail.episode_run_time?.[0]?`${detail.episode_run_time[0]} د/حلقة`:'');
   const rating   = detail.vote_average ? detail.vote_average.toFixed(1) : '';
   const genres   = (detail.genres||[]).map(g=>g.name).join(' · ');
   const overview = detail.overview || 'لا يوجد وصف متاح بالعربي';
   const backdrop = detail.backdrop_path ? `${IMG_ORIG}${detail.backdrop_path}` : '';
   const poster   = detail.poster_path  ? `${IMG_BASE}${detail.poster_path}`   : '';
-
-  const trailer    = (videos.results||[]).find(v=>v.type==='Trailer'&&v.site==='YouTube') || (videos.results||[])[0];
+  const director = (credits.crew||[]).find(c=>c.job==='Director');
+  const writers  = (credits.crew||[]).filter(c=>c.job==='Writer'||c.job==='Screenplay').slice(0,3);
+  const trailer  = (videos.results||[]).find(v=>v.type==='Trailer'&&v.site==='YouTube') || (videos.results||[])[0];
   const trailerKey = trailer ? trailer.key : null;
+  const allVideos  = (videos.results||[]).filter(v=>v.site==='YouTube').slice(0,6);
   const providers  = watch.results?.SA || watch.results?.US || watch.results?.AE || null;
   const streams    = providers?.flatrate || [];
   const cast       = (credits.cast||[]).slice(0,15);
   const similar2   = (similar.results||[]).filter(s=>s.poster_path).slice(0,12);
-
+  const reviewList = (reviews.results||[]).slice(0,5);
   const isWatchlisted = isInWatchlist(id);
+  const isWatchLater  = getWatchLater().some(i=>i.id===id);
+  const myNote = getNotes()[id];
 
   let seasonsHTML = '';
   if (type==='tv' && detail.seasons) {
@@ -472,62 +476,123 @@ async function renderTMDBDetails(id, type) {
   const page = document.getElementById('detailPage');
   page.innerHTML = `
     <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
-    <div class="detail-hero" style="background-image:url('${backdrop}')">
-      <div class="detail-hero-overlay"></div>
-      <div class="detail-hero-content">
-        ${poster?`<img class="detail-poster" src="${poster}" alt="${title}">`:''}
-        <div class="detail-meta">
-          <h1 class="detail-title">${title}</h1>
-          <div class="detail-badges">
-            ${year?`<span class="badge">📅 ${year}</span>`:''}
-            ${runtime?`<span class="badge">⏱ ${runtime}</span>`:''}
-            ${rating?`<span class="badge gold">⭐ ${rating}</span>`:''}
+
+    <!-- صورة البانر الكبيرة -->
+    <div style="position:relative;width:100%;min-height:340px;background:#000;overflow:hidden;">
+      ${backdrop?`<img src="${backdrop}" style="width:100%;height:340px;object-fit:cover;opacity:.5;">`:'' }
+      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,#0b0c10 100%);"></div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;display:flex;gap:16px;align-items:flex-end;">
+        ${poster?`<img src="${poster}" style="width:110px;border-radius:14px;box-shadow:0 8px 24px #000a;flex-shrink:0;">` :''}
+        <div style="flex:1;">
+          <h1 style="font-size:1.4rem;font-weight:900;margin-bottom:8px;line-height:1.3;">${title}</h1>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+            ${rating?`<span style="background:#f5a623;color:#000;padding:4px 10px;border-radius:20px;font-weight:700;font-size:.85rem;">⭐ ${rating}</span>`:''}
+            ${year?`<span style="background:#ffffff20;padding:4px 10px;border-radius:20px;font-size:.85rem;">📅 ${year}</span>`:''}
+            ${runtime?`<span style="background:#ffffff20;padding:4px 10px;border-radius:20px;font-size:.85rem;">⏱ ${runtime}</span>`:''}
           </div>
-          ${genres?`<div class="detail-genres">${genres}</div>`:''}
-          <div class="detail-btns">
-            <button class="btn-watch" onclick="openPlayerFromDetail(${id},'${type}')">▶ مشاهدة</button>
-            ${trailerKey?`<button class="btn-trailer" onclick="openTrailer('${trailerKey}')">🎬 تريلر</button>`:''}
-            <button class="btn-watchlist ${isWatchlisted?'active':''}" id="wlBtn${id}" onclick="toggleWatchlist(${id},'${title}','${poster}','${type}',this)">
-              ${isWatchlisted?'✅ في القائمة':'➕ قائمتي'}
-    </button>
-            <button class="btn-watchlist ${getWatchLater().some(i=>i.id===id)?'active':''}" id="wlBtn2${id}" onclick="toggleWatchLater(${id},'${title}','${detail.poster_path||''}','${type}',this)">
-              ${getWatchLater().some(i=>i.id===id)?'✅ سأشاهده':'⏰ أريد مشاهدته'}
-            </button>
-          </div>
-          <div style="margin-top:12px;">
-            <textarea id="noteText${id}" placeholder="اكتب رأيك في الفيلم..." style="width:100%;padding:10px;border-radius:12px;border:2px solid #444;background:#111;color:#fff;font-family:inherit;font-size:.9rem;resize:none;min-height:70px;">${getNotes()[id]?.text||''}</textarea>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;">
-              <span style="opacity:.7;">تقييمك:</span>
-              ${[1,2,3,4,5].map(s=>`<button onclick="selectStar(${id},${s})" id="star${id}_${s}" style="background:none;border:none;font-size:1.4rem;cursor:pointer;">${(getNotes()[id]?.stars||0)>=s?'⭐':'☆'}</button>`).join('')}
-              <button onclick="saveNote(${id},'${title}','${detail.poster_path||''}',document.getElementById('noteText${id}').value,window._selectedStar${id}||${getNotes()[id]?.stars||0})" style="padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:10px;cursor:pointer;font-family:inherit;">💾 حفظ</button>
-            </div>
-          </div>
+          ${genres?`<div style="opacity:.7;font-size:.85rem;">${genres}</div>`:''}
         </div>
       </div>
     </div>
-    <div class="detail-body">
-      <section class="detail-section">
-        <h2 class="detail-section-title">📖 القصة</h2>
-        <p class="detail-overview">${overview}</p>
-      </section>
+
+    <!-- أزرار الأكشن -->
+    <div style="display:flex;gap:10px;padding:16px;flex-wrap:wrap;">
+      <button onclick="openPlayerFromDetail(${id},'${type}')" style="flex:1;min-width:120px;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:14px;font-size:1rem;font-family:inherit;cursor:pointer;font-weight:700;">▶ مشاهدة</button>
+      ${trailerKey?`<button onclick="openTrailer('${trailerKey}')" style="flex:1;min-width:100px;padding:14px;background:#ffffff15;color:#fff;border:2px solid #ffffff30;border-radius:14px;font-size:1rem;font-family:inherit;cursor:pointer;">🎬 تريلر</button>`:''}
+      <button id="wlBtn${id}" onclick="toggleWatchlist(${id},'${title}','${detail.poster_path||''}','${type}',this)" style="flex:1;min-width:100px;padding:14px;background:${isWatchlisted?'var(--primary)':'#ffffff15'};color:#fff;border:2px solid ${isWatchlisted?'var(--primary)':'#ffffff30'};border-radius:14px;font-size:1rem;font-family:inherit;cursor:pointer;">${isWatchlisted?'✅ في القائمة':'➕ قائمتي'}</button>
+      <button id="wlBtn2${id}" onclick="toggleWatchLater(${id},'${title}','${detail.poster_path||''}','${type}',this)" style="flex:1;min-width:100px;padding:14px;background:${isWatchLater?'#1a6cff':'#ffffff15'};color:#fff;border:2px solid ${isWatchLater?'#1a6cff':'#ffffff30'};border-radius:14px;font-size:1rem;font-family:inherit;cursor:pointer;">${isWatchLater?'✅ سأشاهده':'⏰ أريد مشاهدته'}</button>
+    </div>
+
+    <!-- تقييمي وملاحظتي -->
+    <div style="margin:0 16px 20px;background:#ffffff08;border-radius:16px;padding:16px;">
+      <div style="font-weight:700;margin-bottom:10px;">💬 رأيك في الفيلم</div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;">
+        ${[1,2,3,4,5].map(s=>`<button onclick="selectStar(${id},${s})" id="star${id}_${s}" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">${(myNote?.stars||0)>=s?'⭐':'☆'}</button>`).join('')}
+      </div>
+      <textarea id="noteText${id}" placeholder="اكتب رأيك هنا..." style="width:100%;padding:10px;border-radius:12px;border:2px solid #444;background:#111;color:#fff;font-family:inherit;font-size:.9rem;resize:none;min-height:60px;box-sizing:border-box;">${myNote?.text||''}</textarea>
+      <button onclick="saveNote(${id},'${title}','${detail.poster_path||''}',document.getElementById('noteText${id}').value,window._selectedStar${id}||${myNote?.stars||0});this.textContent='✅ تم الحفظ'" style="margin-top:8px;padding:10px 20px;background:var(--primary);color:#fff;border:none;border-radius:12px;cursor:pointer;font-family:inherit;">💾 حفظ</button>
+    </div>
+
+    <div style="padding:0 16px;">
+
+      <!-- القصة -->
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--primary);">📖 القصة</h2>
+        <p style="line-height:1.8;opacity:.85;">${overview}</p>
+      </div>
+
+      <!-- المخرج والكتّاب -->
+      ${director||writers.length?`
+      <div style="margin-bottom:24px;">
+        ${director?`<div style="margin-bottom:6px;"><span style="opacity:.6;">المخرج: </span><span style="font-weight:700;">${director.name}</span></div>`:''}
+        ${writers.length?`<div><span style="opacity:.6;">الكتابة: </span><span style="font-weight:700;">${writers.map(w=>w.name).join('، ')}</span></div>`:''}
+      </div>`:''}
+
+      <!-- أين تشاهده -->
       ${streams.length?`
-      <section class="detail-section">
-        <h2 class="detail-section-title">📺 أين تشاهده</h2>
-        <div class="providers-row">
-          ${streams.map(p=>`<div class="provider-chip"><img src="https://image.tmdb.org/t/p/w92${p.logo_path}" alt="${p.provider_name}"><span>${p.provider_name}</span></div>`).join('')}
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--primary);">📺 أين تشاهده</h2>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          ${streams.map(p=>`<div style="display:flex;align-items:center;gap:8px;background:#ffffff10;padding:8px 14px;border-radius:12px;"><img src="https://image.tmdb.org/t/p/w92${p.logo_path}" style="width:28px;border-radius:6px;"><span style="font-size:.9rem;">${p.provider_name}</span></div>`).join('')}
         </div>
-      </section>`:''}
+      </div>`:''}
+
+      <!-- الممثلون -->
       ${cast.length?`
-      <section class="detail-section">
-        <h2 class="detail-section-title">🎭 الممثلون</h2>
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--primary);">🎭 الممثلون</h2>
         <div class="cast-row" id="castRow${id}">
-          ${cast.map(a=>`<div class="cast-card"><img src="${a.profile_path?IMG_BASE+a.profile_path:'https://via.placeholder.com/100x150/1a1a2e/555?text=👤'}" alt="${a.name}" loading="lazy"><span class="cast-name">${a.name}</span><span class="cast-char">${a.character||''}</span></div>`).join('')}
+          ${cast.map(a=>`
+            <div style="text-align:center;min-width:80px;max-width:80px;">
+              <img src="${a.profile_path?IMG_BASE+a.profile_path:'https://via.placeholder.com/100x100/1a1a2e/555?text=👤'}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:6px;" loading="lazy">
+              <div style="font-size:.75rem;font-weight:700;line-height:1.2;">${a.name}</div>
+              <div style="font-size:.7rem;opacity:.6;line-height:1.2;">${a.character||''}</div>
+            </div>`).join('')}
         </div>
-      </section>`:''}
+      </div>`:''}
+
+      <!-- المواسم -->
       ${seasonsHTML}
+
+      <!-- التعليقات -->
+      ${reviewList.length?`
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--primary);">💬 تعليقات المشاهدين</h2>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          ${reviewList.map(r=>`
+            <div style="background:#ffffff08;border-radius:14px;padding:14px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;">${r.author?.charAt(0).toUpperCase()||'؟'}</div>
+                <div>
+                  <div style="font-weight:700;font-size:.9rem;">${r.author||'مجهول'}</div>
+                  ${r.author_details?.rating?`<div style="font-size:.8rem;opacity:.7;">⭐ ${r.author_details.rating}/10</div>`:''}
+                </div>
+              </div>
+              <p style="font-size:.85rem;line-height:1.7;opacity:.85;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;">${r.content||''}</p>
+            </div>`).join('')}
+        </div>
+      </div>`:''}
+
+      <!-- التريلرات -->
+      ${allVideos.length?`
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--primary);">🎞️ مقاطع الفيديو</h2>
+        <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;">
+          ${allVideos.map(v=>`
+            <div onclick="openTrailer('${v.key}')" style="flex-shrink:0;width:200px;cursor:pointer;">
+              <div style="position:relative;border-radius:12px;overflow:hidden;">
+                <img src="https://img.youtube.com/vi/${v.key}/mqdefault.jpg" style="width:200px;height:112px;object-fit:cover;">
+                <div style="position:absolute;inset:0;background:#0006;display:flex;align-items:center;justify-content:center;font-size:2rem;">▶</div>
+              </div>
+              <div style="font-size:.8rem;margin-top:6px;opacity:.8;">${v.name}</div>
+            </div>`).join('')}
+        </div>
+      </div>`:''}
+
+      <!-- مشابهة -->
       ${similar2.length?`
-      <section class="detail-section">
-        <h2 class="detail-section-title">🎬 مشابهة</h2>
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--primary);">🎬 مشابهة</h2>
         <div class="similar-row" id="simRow${id}">
           ${similar2.map(s=>{
             const st=type==='movie'?(s.title||s.original_title):(s.name||s.original_name);
@@ -535,12 +600,13 @@ async function renderTMDBDetails(id, type) {
             return `<div class="similar-card" onclick="openDetails(${s.id},'${type}')"><div class="similar-img-wrap"><img src="${IMG_BASE}${s.poster_path}" alt="${st}" loading="lazy">${sr?`<span class="card-rating">⭐ ${sr}</span>`:''}<div class="card-overlay"><span class="play-btn">▶</span></div></div><span class="similar-title">${st}</span></div>`;
           }).join('')}
         </div>
-      </section>`:''}
+      </div>`:''}
+
     </div>
   `;
   initRowDrag('castRow'+id);
   initRowDrag('simRow'+id);
-}
+                                                                                                                                                                                                                                                 }
 
 async function buildSeasonsHTML(seriesId, seasons) {
   const real = seasons.filter(s=>s.season_number>0);
