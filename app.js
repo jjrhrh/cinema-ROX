@@ -1468,28 +1468,27 @@ function toggleRoxMenu() {
 }
 // ===== END FLOATING MENU =====
 window.onload = () => {
-  loadSettings();
-applyLang();
-  // Splash
-  setTimeout(function() {
-    var s = document.getElementById('splash-screen');
-    if (s) {
-      s.style.transition = 'opacity 0.6s ease, visibility 0.6s ease';
-      s.style.opacity = '0';
-      s.style.visibility = 'hidden';
-      s.style.pointerEvents = 'none';
+  // إخفاء السبلاش أولاً بشكل مضمون
+  var splashEl = document.getElementById('splash-screen');
+  if (splashEl) {
+    splashEl.style.transition = 'opacity 0.6s ease';
+    setTimeout(function() {
+      splashEl.style.opacity = '0';
+      splashEl.style.pointerEvents = 'none';
       setTimeout(function() {
-        var s2 = document.getElementById('splash-screen');
-        if (s2) s2.style.display = 'none';
-      }, 700);
-    }
-  }, 2500);
-  initHero();
-  loadHomePage();
-  initScrollTop();
-  fetchMovies();
-  fetchSeries();
-  fetchAnime();
+        splashEl.style.display = 'none';
+      }, 650);
+    }, 2500);
+  }
+
+  try { loadSettings(); } catch(e){}
+  try { applyLang(); } catch(e){}
+  try { initHero(); } catch(e){}
+  try { loadHomePage(); } catch(e){}
+  try { initScrollTop(); } catch(e){}
+  try { fetchMovies(); } catch(e){}
+  try { fetchSeries(); } catch(e){}
+  try { fetchAnime(); } catch(e){}
 
   const si = document.getElementById('searchInput');
   if(si) si.addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
