@@ -1992,24 +1992,31 @@ function openAiPage() {
         <div style="text-align:center;padding:80px 20px;opacity:.6;">❌ حاول مرة ثانية</div>`;
     });
 }
-// ===== goBack =====
 function goBack() {
-  if (pageHistory.length > 0) {
-    const prev = pageHistory.pop();
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const prevPage = document.getElementById(prev);
-    if (prevPage) prevPage.classList.add('active');
-    const hero = document.getElementById('heroBanner');
-    const isHome = prev === 'moviesPage' || prev === 'homePage';
-    if (hero) hero.style.display = isHome ? '' : 'none';
-    if (isHome) {
-      document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
-      document.getElementById('bnavHome')?.classList.add('active');
-    }
-    window.scrollTo(0,0);
+  // امسح كل detailPage متكررة
+  while (pageHistory.length > 0 && pageHistory[pageHistory.length-1] === 'detailPage') {
+    pageHistory.pop();
+  }
+  
+  const prev = pageHistory.length > 0 ? pageHistory.pop() : null;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  
+  if (!prev || prev === 'moviesPage' || prev === 'homePage') {
+    bnavGo('home');
+    return;
+  }
+
+  const prevPage = document.getElementById(prev);
+  if (prevPage) {
+    prevPage.classList.add('active');
   } else {
     bnavGo('home');
+    return;
   }
+
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
+  window.scrollTo(0,0);
 }
 
 function showPage(pageId) {
