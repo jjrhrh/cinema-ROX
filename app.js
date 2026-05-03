@@ -1151,7 +1151,10 @@ watchPage.innerHTML = `
       el.innerHTML = `<div class="watch-data-table">
         ${rows.map(r=>`
           <div class="watch-data-row">
-            <span style="opacity:.55;font-size:.85rem;font-family:'Cairo',sans-serif;">${r.icon} ${r.label}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:32px;height:32px;border-radius:10px;background:${r.color}22;border:1px solid ${r.color}44;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">${r.icon}</div>
+              <span style="opacity:.65;font-size:.85rem;font-family:'Cairo',sans-serif;">${r.label}</span>
+            </div>
             <span style="font-weight:${r.bold?'900':'700'};font-size:${r.bold?'1rem':'.88rem'};color:${r.color};font-family:'Cairo',sans-serif;">${r.val}</span>
           </div>`).join('')}
       </div>`;
