@@ -12,7 +12,46 @@ body, * { font-family:'Cairo','Tajawal',sans-serif !important; }
 .plt-card { background:rgba(0,0,0,0.5) !important; backdrop-filter:blur(10px) !important; -webkit-backdrop-filter:blur(10px) !important; }
 .plt-card:active { transform:scale(0.95) !important; }
 /* ===== END MASTER ===== */
-  
+  /* ===== FINAL TOUCH v5 ===== */
+
+/* 1. Neon Blast للمنصات - يُطبَّق من app.js */
+
+/* 2. العناوين - Cairo Extra Bold + فاصل متوهج */
+.section-title {
+  font-family:'Cairo','Tajawal',sans-serif !important;
+  font-size:23px !important;
+  font-weight:900 !important;
+  letter-spacing:-0.5px !important;
+  border-right:4px solid var(--primary) !important;
+  box-shadow:3px 0 15px var(--primary) !important;
+  text-shadow:none !important;
+}
+
+/* 3. كبسولة التقييم الزجاجية */
+.card-rating {
+  position:absolute !important;
+  bottom:10px !important; right:10px !important;
+  left:auto !important; top:auto !important;
+  background:rgba(0,0,0,0.78) !important;
+  backdrop-filter:blur(15px) !important;
+  -webkit-backdrop-filter:blur(15px) !important;
+  border:1px solid rgba(255,255,255,0.22) !important;
+  color:#f5c518 !important;
+  font-size:11px !important; font-weight:800 !important;
+  padding:5px 13px !important;
+  border-radius:50px !important;
+  box-shadow:0 4px 14px rgba(0,0,0,0.6) !important;
+}
+
+/* 4. Pulse animation للمنصات */
+@keyframes neonPulse {
+  0%,100% { opacity:1; }
+  50% { opacity:0.7; }
+}
+.plt-card { animation:neonPulse 3s ease-in-out infinite !important; }
+.plt-card:hover, .plt-card:active { animation:none !important; opacity:1 !important; }
+
+/* ===== END v5 ===== */
 :root {
   --bg: #0b0c10;
   --bg2: #12141c;
