@@ -603,7 +603,9 @@ async function renderTMDBDetails(id, type) {
       ${backdrop?`<img src="${backdrop}" style="width:100%;height:480px;object-fit:cover;opacity:.6;">`:'' }
       <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,#0b0c10 100%);"></div>
       <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;display:flex;gap:16px;align-items:flex-end;">
-        ${poster?`<img src="${poster}" style="width:110px;border-radius:14px;box-shadow:0 8px 24px #000a;flex-shrink:0;">` :''}
+        <div style="position:relative;flex-shrink:0;">
+          ${poster?`<img src="${poster}" style="width:110px;border-radius:14px;box-shadow:0 8px 24px #000a;">` :''}
+        </div>
         <div style="flex:1;">
           <h1 style="font-size:1.4rem;font-weight:900;margin-bottom:8px;line-height:1.3;">${title}</h1>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
