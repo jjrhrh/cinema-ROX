@@ -1329,9 +1329,12 @@ applyLang();
   fetchSeries();
   fetchAnime();
 
-  document.getElementById('searchInput').addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
-  document.getElementById('playerModal').addEventListener('click',function(e){ if(e.target===this) closePlayer(); });
-  document.getElementById('settingsModal').addEventListener('click',function(e){ if(e.target===this) closeSettings(); });
+  const si = document.getElementById('searchInput');
+  if(si) si.addEventListener('keydown',e=>{ if(e.key==='Enter') doSearch(); });
+  const pm = document.getElementById('playerModal');
+  if(pm) pm.addEventListener('click',function(e){ if(e.target===this) closePlayer(); });
+  const sm = document.getElementById('settingsModal');
+  if(sm) sm.addEventListener('click',function(e){ if(e.target===this) closeSettings(); });
 };
 
 setInterval(()=>{ fetchMovies(); fetchSeries(); fetchAnime(); }, 600000);
