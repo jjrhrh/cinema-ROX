@@ -1833,19 +1833,12 @@ async function loadHomePage() {
         const poster = item.coverImage?.extraLarge || '';
         const rating = item.averageScore ? (item.averageScore/10).toFixed(1) : '';
         return `
-          <div onclick="openDetails(${item.id},'anime')"
-               style="flex:0 0 110px;cursor:pointer;">
-            <div style="width:110px;height:160px;border-radius:12px;overflow:hidden;
-                        background:#1a1a2e;position:relative;">
-              <img src="${poster}" alt="${title}" loading="lazy"
-                   style="width:100%;height:100%;object-fit:cover;">
-              ${rating ? `<span style="position:absolute;bottom:6px;right:6px;
-                background:rgba(0,0,0,.7);color:#f5a623;font-size:10px;
-                padding:2px 6px;border-radius:8px;">⭐${rating}</span>` : ''}
+          <div onclick="openDetails(${item.id},'anime')">
+            <div style="width:150px;height:220px;border-radius:20px;overflow:hidden;background:#1a1a2e;position:relative;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+              <img src="${poster}" alt="${title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+              ${rating?`<span style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.82);backdrop-filter:blur(8px);color:#f5c518;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;border:1px solid rgba(245,197,24,0.25);">⭐ ${rating}</span>`:''}
             </div>
-            <div style="font-size:11px;color:#ccc;margin-top:6px;
-                        white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-                        width:110px;">${title}</div>
+            <div style="font-size:12px;color:#ddd;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:150px;font-weight:600;padding:0 2px;">${title}</div>
           </div>`;
       }).join('');
     } catch(e) { animeEl.innerHTML = ''; }
