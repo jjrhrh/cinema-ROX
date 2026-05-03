@@ -1,3 +1,43 @@
+/* ===== LUXURY UPGRADE v2 ===== */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+
+body, * { font-family: 'Cairo', 'Tajawal', sans-serif !important; }
+
+/* إخفاء كل النصوص تحت البوستر */
+.card-info, .card-title, .card-info h4, .card-info *, .similar-title { display:none !important; }
+
+/* التقييم - زاوية علوية يسرى - Glassmorphism صغير */
+.card-rating {
+  position:absolute !important;
+  top:8px !important; left:8px !important;
+  bottom:auto !important;
+  background:rgba(0,0,0,0.55) !important;
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+  border:1px solid rgba(255,255,255,0.18) !important;
+  color:#f5c518 !important;
+  font-size:11px !important; font-weight:800 !important;
+  padding:3px 9px !important; border-radius:14px !important;
+  letter-spacing:0.3px !important;
+}
+
+/* عناوين الأقسام أكبر وذهبية */
+.section-title {
+  font-size:22px !important; font-weight:900 !important;
+  color:#fff !important;
+  text-shadow:0 0 18px rgba(245,166,35,0.35) !important;
+  letter-spacing:0.5px !important;
+}
+.section-title::before {
+  background:var(--gold) !important;
+  box-shadow:0 0 10px rgba(245,166,35,0.6) !important;
+}
+
+/* مسافة أكبر بين الأقسام */
+.section-title { margin-top:36px !important; margin-bottom:18px !important; }
+.grid { margin-bottom:12px !important; }
+
+/* ===== END LUXURY v2 ===== */
 /* ===== AGGRESSIVE CINEMATIC OVERRIDE ===== */
 .grid { display:flex !important; flex-direction:row !important; overflow-x:auto !important; flex-wrap:nowrap !important; gap:14px !important; padding-bottom:12px !important; scroll-snap-type:x mandatory !important; -webkit-overflow-scrolling:touch !important; scrollbar-width:none !important; }
 .grid::-webkit-scrollbar { display:none !important; }
