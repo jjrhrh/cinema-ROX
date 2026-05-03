@@ -1132,3 +1132,160 @@ min-height: 720px;
 .home-container h2.section-title {
   animation: fadeInUp 0.5s ease both;
   }
+/* ============================
+   HOME REDESIGN - ULTRA UI
+   ============================ */
+.home-container {
+  padding: 0 0 100px;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(229,9,20,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 30% at 80% 60%, rgba(245,166,35,0.04) 0%, transparent 60%);
+}
+
+.home-section {
+  margin-bottom: 8px;
+  padding: 24px 0 8px;
+  position: relative;
+}
+
+.home-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px 16px;
+}
+
+.home-section-bar {
+  display: inline-block;
+  width: 4px;
+  height: 28px;
+  border-radius: 4px;
+  background: linear-gradient(to bottom, var(--primary), var(--gold));
+  box-shadow: 0 0 12px rgba(229,9,20,0.6);
+  flex-shrink: 0;
+}
+
+.home-section-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+/* BIG ROW - السلايدر الأفقي الكبير */
+.big-row {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 20px 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+.big-row::-webkit-scrollbar { display: none; }
+
+/* بطاقة البوستر الكبيرة */
+.big-row > div {
+  flex: 0 0 150px;
+  scroll-snap-align: start;
+  cursor: pointer;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.big-row > div:hover,
+.big-row > div:active {
+  transform: scale(1.06) translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.7), 0 0 0 2px rgba(229,9,20,0.4);
+  z-index: 2;
+}
+.big-row > div > div {
+  width: 150px;
+  height: 220px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  background: #1a1a2e;
+}
+.big-row > div > div img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.big-row > div:hover > div img {
+  transform: scale(1.08);
+}
+
+/* تقييم البوستر - بطاقة زجاجية */
+.big-row > div > div span {
+  position: absolute !important;
+  bottom: 8px !important;
+  right: 8px !important;
+  top: auto !important;
+  left: auto !important;
+  background: rgba(0,0,0,0.75) !important;
+  backdrop-filter: blur(8px) !important;
+  color: #f5c518 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  padding: 4px 10px !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(245,197,24,0.25) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4) !important;
+}
+
+/* اسم الفيلم */
+.big-row > div > div + div,
+.big-row > div > div:last-child {
+  font-size: 12px;
+  color: #ccc;
+  margin-top: 8px;
+  padding: 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 150px;
+  font-weight: 600;
+}
+
+/* منصات Glassmorphism */
+.platforms-section .platforms-row {
+  padding: 0 20px 8px;
+}
+
+.plt-card {
+  background: rgba(255,255,255,0.04) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 20px !important;
+  transition: all 0.3s ease !important;
+}
+.plt-card:hover {
+  background: rgba(255,255,255,0.1) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px var(--gc, rgba(229,9,20,0.3)) !important;
+  transform: translateY(-6px) scale(1.04) !important;
+}
+
+/* مسافات بين الأقسام */
+.home-section + .home-section {
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Ripple عند الضغط */
+.big-row > div::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.big-row > div:active::after {
+  opacity: 1;
+  }
