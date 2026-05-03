@@ -1,3 +1,13 @@
+/* ===== AGGRESSIVE CINEMATIC OVERRIDE ===== */
+.grid { display:flex !important; flex-direction:row !important; overflow-x:auto !important; flex-wrap:nowrap !important; gap:14px !important; padding-bottom:12px !important; scroll-snap-type:x mandatory !important; -webkit-overflow-scrolling:touch !important; scrollbar-width:none !important; }
+.grid::-webkit-scrollbar { display:none !important; }
+.card { flex:0 0 180px !important; min-width:180px !important; max-width:180px !important; border-radius:25px !important; overflow:hidden !important; box-shadow:0 10px 30px rgba(0,0,0,0.8) !important; scroll-snap-align:start !important; position:relative !important; }
+.card-img-wrap img { width:100% !important; height:265px !important; object-fit:cover !important; display:block !important; border-radius:25px !important; }
+.card-info { display:none !important; }
+.card-title { display:none !important; }
+.type-badge { display:none !important; }
+.card-rating { position:absolute !important; bottom:12px !important; left:10px !important; top:auto !important; background:rgba(255,255,255,0.15) !important; backdrop-filter:blur(12px) !important; border:1px solid rgba(255,255,255,0.25) !important; color:#f5c518 !important; font-size:12px !important; font-weight:800 !important; padding:5px 12px !important; border-radius:20px !important; }
+/* ===== END OVERRIDE ===== */
 :root {
   --bg: #0b0c10;
   --bg2: #12141c;
