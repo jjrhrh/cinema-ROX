@@ -84,9 +84,8 @@ function setLang(lang) {
   fetchAnime();
 }
 // ===== القائمة الجانبية =====
-function openSideMenu() {
-  document.getElementById('sideMenu').classList.add('open');
-  document.getElementById('sideMenuOverlay').classList.add('open');
+function openSideMenu() {document.getElementById('sideMenu')?.classList.add('open');
+  document.getElementById('sideMenuOverlay')?.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 function closeSideMenu() {
