@@ -1039,6 +1039,7 @@ async function openPlayerFromDetail(id, type, season, episode, titleIn, posterIn
       </div>
 
     </div>
+  `;
 watchPage.innerHTML = `
     <button class="back-btn" onclick="goBack()" style="z-index:200;position:fixed;top:14px;right:14px;">&#8594; رجوع</button>
 
