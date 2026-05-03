@@ -1609,13 +1609,11 @@ async function loadHomePage() {
       <div onclick="openNetwork(${p.id},'${p.name}','${p.color}')"
            style="flex:0 0 100px;cursor:pointer;text-align:center;">
         <div style="width:100px;height:60px;border-radius:12px;
-                    background:${p.color}22;border:1px solid ${p.color}44;
+                    background:${p.color}33;border:2px solid ${p.color}66;
                     display:flex;align-items:center;justify-content:center;">
-          <img src="${p.logo}" alt="${p.name}"
-               style="width:80px;height:45px;object-fit:contain;"
-               onerror="this.parentElement.innerHTML='<span style=color:#fff;font-size:12px;font-weight:700>${p.name}</span>'">
+          <span style="color:#fff;font-size:13px;font-weight:900;
+                       text-align:center;padding:4px;">${p.name}</span>
         </div>
-        <div style="font-size:11px;color:#ccc;margin-top:6px;">${p.name}</div>
       </div>
     `).join('');
         }
