@@ -1478,7 +1478,7 @@ window.onload = () => {
       setTimeout(function() {
         splashEl.style.display = 'none';
       }, 650);
-    }, 2500);
+    }, 1500);
   }
 
   try { loadSettings(); } catch(e){}
