@@ -617,7 +617,7 @@ async function renderTMDBDetails(id, type) {
         </div>
       </div>
     </div>
-
+${fanartLogo?`<img src="${fanartLogo}" style="max-width:160px;max-height:50px;object-fit:contain;margin-top:10px;filter:drop-shadow(0 2px 8px #000a);" onerror="this.style.display='none'">`:''}
     <!-- أزرار الأكشن -->
     <div style="display:flex;gap:10px;padding:16px;flex-wrap:wrap;">
       <button onclick="openPlayerFromDetail(${id},'${type}')" style="flex:1;min-width:120px;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:14px;font-size:1rem;font-family:inherit;cursor:pointer;font-weight:700;">▶ مشاهدة</button>
