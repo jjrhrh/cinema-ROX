@@ -40,7 +40,27 @@
     <span class="bnav-label">حسابي</span>
   </button>
 </nav>
-
+<!-- ===== FLOATING ROX MENU ===== -->
+<div class="rox-overlay" id="roxOverlay" onclick="toggleRoxMenu()"></div>
+<div class="rox-menu" id="roxMenu">
+  <div class="rox-item" onclick="toggleRoxMenu();openMovieOfDayPage()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#e50914,#8B0000);box-shadow:0 4px 18px rgba(229,9,20,0.55);">🎥</div>
+    <span class="rox-label">فيلم اليوم</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openStatsPage()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);box-shadow:0 4px 18px rgba(26,108,255,0.55);">📊</div>
+    <span class="rox-label">إحصائياتي</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openSurprisePage()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#f5a623,#c47d0e);box-shadow:0 4px 18px rgba(245,166,35,0.55);">🎲</div>
+    <span class="rox-label">فاجئني</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openAiPage()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#1ce783,#0a8f4a);box-shadow:0 4px 18px rgba(28,231,131,0.55);">🤖</div>
+    <span class="rox-label">اختياري</span>
+  </div>
+</div>
+<!-- ===== END FLOATING MENU ===== -->
 <!-- صفحة البحث -->
 <div class="page" id="searchPage">
   <div class="container" style="padding-top:80px;">
