@@ -306,7 +306,7 @@ function goBack() {
   pageHistory.pop();
   const prev = pageHistory[pageHistory.length - 1];
 
-  if (!prev || prev === 'moviesPage' || prev === 'seriesPage' || prev === 'animePage' || prev === 'searchPage') {
+  if (!prev || prev === 'homePage' || prev === 'seriesPage' || prev === 'animePage' || prev === 'searchPage') {
     const target = prev || lastPage || 'moviesPage';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(target).classList.add('active');
