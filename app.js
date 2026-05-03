@@ -311,26 +311,20 @@ function goHome() {
 function goBack() {
   pageHistory.pop();
   const prev = pageHistory[pageHistory.length - 1];
+  const allPages = document.querySelectorAll('.page');
 
-if (!prev || prev === 'homePage' || prev === 'seriesPage' || prev === 'animePage' || prev === 'searchPage' || prev === 'surprisePage') {
-    const target = prev || lastPage || 'homePage';
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(target).classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    const btn = document.querySelector(`[data-page="${target}"]`);
-    if (btn) btn.classList.add('active');
-    const hero = document.getElementById('heroBanner');
-    if (hero) hero.style.display = target === 'homePage' ? '' : 'none';
-  } else if (prev === 'networksListPage') {
+  if (prev === 'networksListPage') {
     pageHistory.pop();
     openNetworksPage(1);
-  } else {
-    const target = lastPage || 'homePage';
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(target).classList.add('active');
-    const hero = document.getElementById('heroBanner');
-    if (hero) hero.style.display = target === 'homePage' ? '' : 'none';
+    return;
   }
+
+  const target = prev || 'homePage';
+  allPages.forEach(p => p.classList.remove('active'));
+  const targetEl = document.getElementById(target);
+  if (targetEl) targetEl.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = target === 'homePage' ? '' : 'none';
   window.scrollTo(0, 0);
 }
 
