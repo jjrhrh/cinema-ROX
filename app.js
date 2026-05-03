@@ -643,7 +643,17 @@ ${fanartLogo?`<img src="${fanartLogo}" style="max-width:160px;max-height:50px;ob
         <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--primary);">📖 القصة</h2>
         <p style="line-height:1.8;opacity:.85;">${overview}</p>
       </div>
-
+<!-- جدول بيانات الإنتاج -->
+      ${(detail.budget||detail.revenue||(detail.production_companies?.length))?`
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:12px;color:var(--primary);">🏭 بيانات الإنتاج</h2>
+        <div style="background:#ffffff08;border-radius:16px;overflow:hidden;border:1px solid #ffffff10;">
+          ${detail.budget>0?`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #ffffff08;"><span style="opacity:.6;">💰 الميزانية</span><span style="font-weight:700;color:#1ce783;">${(detail.budget/1e6).toFixed(1)}M$</span></div>`:''}
+          ${detail.revenue>0?`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #ffffff08;"><span style="opacity:.6;">📈 الإيرادات</span><span style="font-weight:700;color:#f5a623;">${(detail.revenue/1e6).toFixed(1)}M$</span></div>`:''}
+          ${detail.budget>0&&detail.revenue>0?`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #ffffff08;"><span style="opacity:.6;">📊 الربح</span><span style="font-weight:700;color:${detail.revenue>detail.budget?'#1ce783':'#e50914'};">${detail.revenue>detail.budget?'+':''}${((detail.revenue-detail.budget)/1e6).toFixed(1)}M$</span></div>`:''}
+          ${detail.production_companies?.length?`<div style="padding:12px 16px;"><span style="opacity:.6;display:block;margin-bottom:8px;">🎬 شركات الإنتاج</span><div style="display:flex;gap:8px;flex-wrap:wrap;">${detail.production_companies.slice(0,4).map(c=>`<span style="background:#ffffff10;padding:4px 12px;border-radius:20px;font-size:.8rem;">${c.name}</span>`).join('')}</div></div>`:''}
+        </div>
+      </div>`:''}
       <!-- المخرج والكتّاب -->
       ${director||writers.length?`
       <div style="margin-bottom:24px;">
