@@ -824,3 +824,83 @@ min-height: 720px;
   transition: transform 0.32s cubic-bezier(0.34, 1.48, 0.64, 1) !important;
 }
 /* ===== END FLOATING MENU ===== */
+/* ===== NEWS SECTION ===== */
+.news-row {
+  display: flex; gap: 14px;
+  overflow-x: auto; padding: 6px 0 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.news-row::-webkit-scrollbar { display: none; }
+.news-card {
+  flex: 0 0 230px; border-radius: 18px;
+  overflow: hidden; cursor: pointer;
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.07);
+  transition: transform 0.2s;
+}
+.news-card:hover { transform: translateY(-5px); }
+.news-img-wrap {
+  position: relative; height: 130px; overflow: hidden;
+}
+.news-img-wrap img {
+  width:100%; height:100%; object-fit:cover; display:block;
+}
+.news-gradient {
+  position:absolute; inset:0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.7) 100%);
+}
+.news-info { padding: 10px 12px 12px; }
+.news-source {
+  display:inline-block; font-size:10px; font-weight:700;
+  color: var(--primary); background: rgba(229,9,20,0.12);
+  border-radius: 20px; padding: 2px 10px; margin-bottom:6px;
+}
+.news-title {
+  font-size: 12px; font-weight: 700; line-height: 1.5;
+  color: #ddd; margin-bottom: 6px;
+}
+.news-date { font-size: 10px; opacity: .4; }
+
+/* ===== WATCH PAGE ===== */
+.watch-player-wrap {
+  width: 100%; background: #000;
+  padding-top: 56px;
+  position: relative;
+}
+.watch-player-wrap iframe {
+  position: absolute; top:0; left:0;
+  width:100%; height:100%; border:none;
+}
+.server-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.server-card {
+  position: relative; overflow: hidden;
+  border-radius: 18px; padding: 14px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.08);
+  cursor: pointer; transition: all 0.3s ease;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.server-card.active {
+  border-color: var(--primary);
+  background: rgba(229,9,20,0.1);
+  box-shadow: 0 0 20px rgba(229,9,20,0.2);
+}
+.server-card:hover { transform: translateY(-3px); }
+.server-glow {
+  position:absolute; inset:0; border-radius:18px;
+  border:2px solid transparent;
+  pointer-events:none;
+}
+.server-icon { font-size: 1.6rem; }
+.server-name { font-size: .88rem; font-weight: 800; color:#fff; }
+.server-badge {
+  font-size: .7rem; font-weight: 700;
+  padding: 3px 10px; border-radius: 20px;
+  align-self: flex-start;
+}
+/* ===== END NEW STYLES ===== */
