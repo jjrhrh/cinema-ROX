@@ -749,3 +749,24 @@ min-height: 720px;
   transition: all 0.2s;
 }
 .btn-watchlist.active { background: rgba(30,200,100,0.2); border-color: #1ce783; color: #1ce783; }
+/* ===== Home Page Rows ===== */
+.home-row {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 12px;
+  padding: 8px 4% 12px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.home-row::-webkit-scrollbar { display: none; }
+
+.platforms-row {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 14px;
+  padding: 8px 4% 12px;
+  scrollbar-width: none;
+}
+.platforms-row::-webkit-scrollbar { display: none; }
