@@ -904,3 +904,231 @@ min-height: 720px;
   align-self: flex-start;
 }
 /* ===== END NEW STYLES ===== */
+
+/* ============================
+   ULTRA HIGH-END UI UPGRADE
+   ============================ */
+
+/* 1. خطوط فخمة */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Tajawal:wght@400;700;900&display=swap');
+
+.section-title {
+  font-size: 20px;
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--primary), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  border-right: 4px solid var(--primary);
+  padding-right: 12px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+/* 2. Home Row - Horizontal Cards كبيرة مع Card Scaling */
+.home-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 8px 4% 16px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+.home-row::-webkit-scrollbar { display: none; }
+.home-row > div {
+  scroll-snap-align: center;
+  flex: 0 0 130px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.home-row > div:hover {
+  transform: scale(1.08) translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+}
+.home-row > div > div {
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.home-row > div > div img {
+  width: 100%;
+  height: 175px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.home-row > div:hover > div img {
+  transform: scale(1.05);
+}
+
+/* 3. Card Upgrade */
+.card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.7), 0 0 0 1px var(--primary)44;
+}
+.card-img-wrap img {
+  height: 230px;
+  transition: transform 0.4s ease;
+}
+.card:hover .card-img-wrap img {
+  transform: scale(1.05);
+}
+.card-rating {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  left: auto;
+  top: auto;
+  background: rgba(0,0,0,0.85);
+  color: #f5c518;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(245,197,24,0.3);
+}
+
+/* 4. Radial Gradients خلف الأقسام */
+.home-container {
+  padding: 16px 0 100px;
+  position: relative;
+}
+.home-container::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 50vh;
+  background: radial-gradient(ellipse at 50% 0%, rgba(229,9,20,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.home-container > * { position: relative; z-index: 1; }
+
+/* 5. Section title container */
+.home-container h2.section-title {
+  padding: 0 4%;
+  margin-bottom: 8px;
+}
+
+/* 6. Ripple effect على البوسترات */
+.card-img-wrap, .home-row > div > div {
+  overflow: hidden;
+  position: relative;
+}
+.card-img-wrap::after, .home-row > div > div::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.card:active .card-img-wrap::after,
+.home-row > div:active > div::after {
+  opacity: 1;
+}
+
+/* 7. نجمة تقييم ذهبية مضيئة */
+.card-rating::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(circle, rgba(245,197,24,0.2), transparent);
+  pointer-events: none;
+}
+
+/* 8. Similar cards upgrade */
+.similar-card {
+  flex: 0 0 140px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.similar-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+}
+.similar-img-wrap img {
+  height: 200px;
+  transition: transform 0.4s ease;
+}
+.similar-card:hover .similar-img-wrap img {
+  transform: scale(1.06);
+}
+
+/* 9. Glassmorphism للأزرار */
+.btn-trailer {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.btn-watchlist {
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* 10. Smooth scroll للـ rows */
+.cast-row, .similar-row, .home-row, .news-row {
+  scroll-behavior: smooth;
+}
+
+/* 11. تأثير إضاءة على الكارد النشطة */
+@keyframes cardGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(229,9,20,0.3); }
+  50% { box-shadow: 0 0 25px rgba(229,9,20,0.6); }
+}
+.card:hover { animation: none; }
+
+/* 12. تحسين News Cards */
+.news-card {
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+.news-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+}
+.news-img-wrap img {
+  transition: transform 0.4s ease;
+}
+.news-card:hover .news-img-wrap img {
+  transform: scale(1.08);
+}
+
+/* 13. تحسين Bottom Nav */
+.bottom-nav {
+  background: rgba(7,9,15,0.95);
+  backdrop-filter: blur(30px);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 -4px 30px rgba(0,0,0,0.5);
+}
+.bnav-btn.active .bnav-icon {
+  filter: drop-shadow(0 0 8px var(--primary));
+}
+
+/* 14. Parallax sections */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.home-container h2.section-title {
+  animation: fadeInUp 0.5s ease both;
+  }
