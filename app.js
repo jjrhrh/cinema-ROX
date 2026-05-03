@@ -89,7 +89,7 @@ function openSideMenu() {document.getElementById('sideMenu')?.classList.add('ope
   document.body.style.overflow = 'hidden';
 }
 function closeSideMenu() {
-  document.getElementById('sideMenu').classList.remove('open');document.getElementById('sideMenuOverlay')?.classList.remove('open');
+  document.getElementById('sideMenu')?.classList.remove('open');document.getElementById('sideMenuOverlay')?.classList.remove('open');
   document.body.style.overflow = '';
 }
 // ===== BOTTOM NAV =====
