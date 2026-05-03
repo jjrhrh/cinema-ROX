@@ -1744,40 +1744,42 @@ async function loadHomePage() {
   if (newsEl) {
     newsEl.innerHTML = '<div style="padding:20px;opacity:.5;">⏳</div>';
     try {
-      const nRes = await fetch(`https://newsapi.org/v2/everything?q=cinema+movies&language=ar&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_KEY}`).then(r=>r.json());
-      const articles = (nRes.articles||[]).filter(a=>a.urlToImage&&a.title);
-      if (articles.length) {
-        newsEl.innerHTML = articles.map(a=>`
-          <div onclick="window.open('${a.url}','_blank')" class="news-card">
+      const lang = currentLang==='ar'?'ar-SA':'en-US';
+      const [nowPlaying, upcoming] = await Promise.all([
+        fetch(`${TMDB_BASE}/movie/now_playing?api_key=${TMDB_KEY}&language=${lang}&page=1`).then(r=>r.json()),
+        fetch(`${TMDB_BASE}/movie/upcoming?api_key=${TMDB_KEY}&language=${lang}&page=1`).then(r=>r.json()),
+      ]);
+      const allNews = [
+        ...(nowPlaying.results||[]).map(m=>({...m,_tag:'🎬 في السينما الآن'})),
+        ...(upcoming.results||[]).map(m=>({...m,_tag:'🔜 قريباً'})),
+      ].filter(m=>m.backdrop_path||m.poster_path).slice(0,12);
+
+      if (!allNews.length) { newsEl.innerHTML=''; return; }
+      newsEl.innerHTML = allNews.map(m=>{
+        const title = m.title||m.original_title;
+        const img   = m.backdrop_path
+          ? `https://image.tmdb.org/t/p/w500${m.backdrop_path}`
+          : `https://image.tmdb.org/t/p/w342${m.poster_path}`;
+        const date  = m.release_date
+          ? new Date(m.release_date).toLocaleDateString('ar-SA')
+          : '';
+        const overview = (m.overview||'').slice(0,80)||title;
+        return `
+          <div onclick="openDetails(${m.id},'movie')" class="news-card">
             <div class="news-img-wrap">
-              <img src="${a.urlToImage}" alt="${a.title}" loading="lazy" onerror="this.parentElement.parentElement.style.display='none'">
+              <img src="${img}" alt="${title}" loading="lazy"
+                   onerror="this.src='https://via.placeholder.com/230x130/111/555?text=🎬'">
               <div class="news-gradient"></div>
             </div>
             <div class="news-info">
-              <span class="news-source">${a.source?.name||'أخبار'}</span>
-              <p class="news-title">${a.title.slice(0,70)}${a.title.length>70?'...':''}</p>
-              <span class="news-date">${new Date(a.publishedAt).toLocaleDateString('ar-SA')}</span>
+              <span class="news-source">${m._tag}</span>
+              <p class="news-title">${title}</p>
+              <span class="news-date">${date}</span>
             </div>
-          </div>`).join('');
-      } else {
-        // fallback: أخبار إنجليزية
-        const nRes2 = await fetch(`https://newsapi.org/v2/everything?q=movies+cinema+2025&language=en&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_KEY}`).then(r=>r.json());
-        const arts2 = (nRes2.articles||[]).filter(a=>a.urlToImage&&a.title);
-        newsEl.innerHTML = arts2.map(a=>`
-          <div onclick="window.open('${a.url}','_blank')" class="news-card">
-            <div class="news-img-wrap">
-              <img src="${a.urlToImage}" alt="${a.title}" loading="lazy" onerror="this.parentElement.parentElement.style.display='none'">
-              <div class="news-gradient"></div>
-            </div>
-            <div class="news-info">
-              <span class="news-source">${a.source?.name||'News'}</span>
-              <p class="news-title">${a.title.slice(0,70)}${a.title.length>70?'...':''}</p>
-              <span class="news-date">${new Date(a.publishedAt).toLocaleDateString('ar-SA')}</span>
-            </div>
-          </div>`).join('');
-      }
+          </div>`;
+      }).join('');
     } catch(e) { newsEl.innerHTML = ''; }
-                }
+  }
       }
 function toggleCircle(id, fn) {
   const el = document.getElementById(id);
