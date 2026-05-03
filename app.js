@@ -1664,43 +1664,50 @@ function openCenterPage() {
   page.classList.add('active');
   window.scrollTo(0, 0);
   page.innerHTML = `
-    <div style="padding:24px 4% 100px;">
-      <h2 style="font-size:22px;font-weight:900;margin-bottom:24px;text-align:center;">
-        🎬 مركز Cinema ROX
-      </h2>
+    <div style="padding:50px 4% 100px;text-align:center;">
+      <h2 style="font-size:22px;font-weight:900;margin-bottom:40px;">🎬 مركز Cinema ROX</h2>
+      <div style="display:flex;justify-content:center;gap:30px;flex-wrap:wrap;">
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
-        <div onclick="openMovieOfDayPage()"
-             style="background:linear-gradient(135deg,#e50914,#8B0000);
-                    border-radius:18px;padding:24px 16px;text-align:center;cursor:pointer;">
-          <div style="font-size:2rem;margin-bottom:8px;">🎥</div>
-          <div style="font-weight:800;font-size:15px;">فيلم اليوم</div>
-          <div style="opacity:.7;font-size:12px;margin-top:4px;">اكتشف فيلم مميز</div>
+        <div style="text-align:center;cursor:pointer;" onclick="toggleCircle('movieCircle',openMovieOfDayPage)">
+          <div id="movieCircle" style="width:90px;height:90px;border-radius:50%;
+               background:linear-gradient(135deg,#e50914,#8B0000);
+               display:flex;align-items:center;justify-content:center;
+               margin:0 auto 10px;font-size:2.2rem;
+               box-shadow:0 4px 20px rgba(229,9,20,0.5);
+               transition:transform 0.2s;">🎥</div>
+          <div style="font-weight:700;font-size:13px;">فيلم اليوم</div>
         </div>
 
-        <div onclick="openStatsPage()"
-             style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);
-                    border-radius:18px;padding:24px 16px;text-align:center;cursor:pointer;">
-          <div style="font-size:2rem;margin-bottom:8px;">📊</div>
-          <div style="font-weight:800;font-size:15px;">إحصائياتي</div>
-          <div style="opacity:.7;font-size:12px;margin-top:4px;">تتبع مشاهداتك</div>
+        <div style="text-align:center;cursor:pointer;" onclick="toggleCircle('statsCircle',openStatsPage)">
+          <div id="statsCircle" style="width:90px;height:90px;border-radius:50%;
+               background:linear-gradient(135deg,#1a6cff,#0a3d8f);
+               display:flex;align-items:center;justify-content:center;
+               margin:0 auto 10px;font-size:2.2rem;
+               box-shadow:0 4px 20px rgba(26,108,255,0.5);
+               transition:transform 0.2s;">📊</div>
+          <div style="font-weight:700;font-size:13px;">إحصائياتي</div>
         </div>
 
-        <div onclick="openSurprisePage()"
-             style="background:linear-gradient(135deg,#f5a623,#c47d0e);
-                    border-radius:18px;padding:24px 16px;text-align:center;cursor:pointer;">
-          <div style="font-size:2rem;margin-bottom:8px;">🎲</div>
-          <div style="font-weight:800;font-size:15px;">فاجئني</div>
-          <div style="opacity:.7;font-size:12px;margin-top:4px;">فيلم عشوائي لك</div>
+        <div style="text-align:center;cursor:pointer;" onclick="toggleCircle('surpriseCircle',openSurprisePage)">
+          <div id="surpriseCircle" style="width:90px;height:90px;border-radius:50%;
+               background:linear-gradient(135deg,#f5a623,#c47d0e);
+               display:flex;align-items:center;justify-content:center;
+               margin:0 auto 10px;font-size:2.2rem;
+               box-shadow:0 4px 20px rgba(245,166,35,0.5);
+               transition:transform 0.2s;">🎲</div>
+          <div style="font-weight:700;font-size:13px;">فاجئني</div>
         </div>
 
-        <div onclick="openAiPage()"
-             style="background:linear-gradient(135deg,#1ce783,#0a8f4a);
-                    border-radius:18px;padding:24px 16px;text-align:center;cursor:pointer;">
-          <div style="font-size:2rem;margin-bottom:8px;">🤖</div>
-          <div style="font-weight:800;font-size:15px;">اختياري</div>
-          <div style="opacity:.7;font-size:12px;margin-top:4px;">توصيات ذكية</div>
+        <div style="text-align:center;cursor:pointer;" onclick="toggleCircle('aiCircle',openAiPage)">
+          <div id="aiCircle" style="width:90px;height:90px;border-radius:50%;
+               background:linear-gradient(135deg,#1ce783,#0a8f4a);
+               display:flex;align-items:center;justify-content:center;
+               margin:0 auto 10px;font-size:2.2rem;
+               box-shadow:0 4px 20px rgba(28,231,131,0.5);
+               transition:transform 0.2s;">🤖</div>
+          <div style="font-weight:700;font-size:13px;">اختياري</div>
         </div>
+
       </div>
     </div>
   `;
