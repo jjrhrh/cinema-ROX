@@ -1805,8 +1805,8 @@ async function loadHomePage() {
       { id: 4330, name: 'Paramount+', logo: 'https://image.tmdb.org/t/p/w92/fi83B1oztoS47xxcemFdPMhIzK.jpg',  color: '#0064FF' },
       { id: 453,  name: 'Hulu',       logo: 'https://image.tmdb.org/t/p/w92/zxrVdFjIjLqkfnwyghnfywTn3Lh.jpg', color: '#1CE783' },
     ];
-    platformsEl.innerHTML = platforms.map(p => `
-      <div onclick="openNetwork(${p.id},'${p.name}','${p.color}')"
+    box-shadow:0 0 10px ${p.color}, 0 0 20px ${p.color}66, inset 0 0 10px ${p.color}33;
+border:2.5px solid ${p.color};
            style="flex:0 0 110px;cursor:pointer;text-align:center;">
         <div style="
           width:110px;height:65px;border-radius:16px;
