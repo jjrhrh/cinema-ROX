@@ -309,6 +309,11 @@ function goHome() {
 }
 
 function goBack() {
+  // إيقاف كل الفيديوهات
+  const frame = document.getElementById('watchFrame');
+  if (frame) frame.src = '';
+  const pFrame = document.getElementById('playerFrame');
+  if (pFrame) { pFrame.src = ''; document.getElementById('playerModal')?.classList.remove('open'); document.body.style.overflow = ''; }
   pageHistory.pop();
   const prev = pageHistory[pageHistory.length - 1];
   const allPages = document.querySelectorAll('.page');
