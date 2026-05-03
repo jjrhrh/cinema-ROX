@@ -129,6 +129,12 @@ document.getElementById('bnavHome')?.classList.remove('active');
     const hero = document.getElementById('heroBanner');
     if (hero) hero.style.display = 'none';
     fetchMovies(); fetchSeries(); fetchAnime();
+  } else if (tab === 'center') {
+    document.getElementById('bnavBrowse').classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const hero = document.getElementById('heroBanner');
+    if (hero) hero.style.display = 'none';
+    openCenterPage();
   } else if (tab === 'profile') {
     document.getElementById('bnavProfile').classList.add('active');
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1651,3 +1657,95 @@ async function loadHomePage() {
     } catch(e) { animeEl.innerHTML = ''; }
   }
       }
+// ===== صفحة المركز =====
+function openCenterPage() {
+  pageHistory.push('surprisePage');
+  const page = document.getElementById('surprisePage');
+  page.classList.add('active');
+  window.scrollTo(0, 0);
+  page.innerHTML = `
+    <div style="padding:24px 4% 100px;">
+      <h2 style="font-size:22px;font-weight:900;margin-bottom:24px;text-align:center;">
+        🎬 مركز Cinema ROX
+      </h2>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+        <div onclick="openMovieOfDayPage()"
+             style="background:linear-gradient(135deg,#e50914,#8B0000);
+                    border-radius:18px;padding:24px 16px;text-align:center;cursor:pointer;">
+          <div style="font-size:2rem;margin-bottom:8px;">🎥</div>
+          <div style="font-weight:800;font-size:15px;">فيلم اليوم</div>
+          <div style="opacity:.7;font-size:12px;margin-top:4px;">اكتشف فيلم مميز</div>
+        </div>
+
+        <div onclick="openStatsPage()"
+             style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);
+                    border-radius:18px;padding:24px 16px;text-align:center;cursor:pointer;">
+          <div style="font-size:2rem;margin-bottom:8px;">📊</div>
+          <div style="font-weight:800;font-size:15px;">إحصائياتي</div>
+          <div style="opacity:.7;font-size:12px;margin-top:4px;">تتبع مشاهداتك</div>
+        </div>
+
+        <div onclick="openSurprisePage()"
+             style="background:linear-gradient(135deg,#f5a623,#c47d0e);
+                    border-radius:18px;padding:24px 16px;text-align:center;cursor:pointer;">
+          <div style="font-size:2rem;margin-bottom:8px;">🎲</div>
+          <div style="font-weight:800;font-size:15px;">فاجئني</div>
+          <div style="opacity:.7;font-size:12px;margin-top:4px;">فيلم عشوائي لك</div>
+        </div>
+
+        <div onclick="openAiPage()"
+             style="background:linear-gradient(135deg,#1ce783,#0a8f4a);
+                    border-radius:18px;padding:24px 16px;text-align:center;cursor:pointer;">
+          <div style="font-size:2rem;margin-bottom:8px;">🤖</div>
+          <div style="font-weight:800;font-size:15px;">اختياري</div>
+          <div style="opacity:.7;font-size:12px;margin-top:4px;">توصيات ذكية</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function openAiPage() {
+  pageHistory.push('surprisePage');
+  const page = document.getElementById('surprisePage');
+  page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
+  const list = getWatchlist();
+  if (!list.length) {
+    page.innerHTML = `
+      <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+      <div style="text-align:center;padding:80px 20px;opacity:.6;">
+        <div style="font-size:3rem;">🤖</div>
+        <div style="margin-top:16px;">أضف أفلام لقائمتك أولاً لأقترح عليك</div>
+      </div>`;
+    return;
+  }
+  const rand = list[Math.floor(Math.random() * list.length)];
+  fetch(`${TMDB_BASE}/movie/${rand.id}/recommendations?api_key=${TMDB_KEY}&language=${currentLang==='ar'?'ar-SA':'en-US'}`)
+    .then(r=>r.json()).then(data=>{
+      const items = (data.results||[]).filter(m=>m.poster_path).slice(0,12);
+      page.innerHTML = `
+        <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+        <div style="padding:60px 4% 100px;">
+          <div style="text-align:center;margin-bottom:20px;">
+            <div style="font-size:2rem;">🤖</div>
+            <h2 style="color:var(--primary);margin:8px 0 4px;">توصيات ذكية لك</h2>
+            <p style="opacity:.6;font-size:.85rem;">بناءً على "${rand.title}"</p>
+          </div>
+          <div class="grid">${items.map(m=>`
+            <div class="card" onclick="openDetails(${m.id},'movie')">
+              <div class="card-img-wrap">
+                <img src="${IMG_BASE}${m.poster_path}" alt="${m.title}" loading="lazy">
+                <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
+              </div>
+              <div class="card-info"><h4>${m.title||m.original_title}</h4></div>
+            </div>`).join('')}
+          </div>
+        </div>`;
+    }).catch(()=>{
+      page.innerHTML = `<button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+        <div style="text-align:center;padding:80px 20px;opacity:.6;">❌ حاول مرة ثانية</div>`;
+    });
+}
