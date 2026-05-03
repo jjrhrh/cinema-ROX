@@ -1744,10 +1744,10 @@ async function loadHomePage() {
   if (newsEl) {
     newsEl.innerHTML = '<div style="padding:20px;opacity:.5;">⏳</div>';
     try {
-      const lang = currentLang==='ar'?'ar-SA':'en-US';
+      const newsLang = currentLang==='ar'?'ar-SA':'en-US';
       const [nowPlaying, upcoming] = await Promise.all([
-        fetch(`${TMDB_BASE}/movie/now_playing?api_key=${TMDB_KEY}&language=${lang}&page=1`).then(r=>r.json()),
-        fetch(`${TMDB_BASE}/movie/upcoming?api_key=${TMDB_KEY}&language=${lang}&page=1`).then(r=>r.json()),
+        fetch(`${TMDB_BASE}/movie/now_playing?api_key=${TMDB_KEY}&language=${newsLang}&region=SA&page=1`).then(r=>r.json()),
+        fetch(`${TMDB_BASE}/movie/upcoming?api_key=${TMDB_KEY}&language=${newsLang}&region=SA&page=1`).then(r=>r.json()),
       ]);
       const allNews = [
         ...(nowPlaying.results||[]).map(m=>({...m,_tag:'🎬 في السينما الآن'})),
