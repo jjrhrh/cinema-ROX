@@ -1545,3 +1545,86 @@ function renderLibraryPage() {
     page.innerHTML='<div class="loading">❌ خطأ، حاول مرة ثانية</div>';
   }
 }
+// ===== تحميل الصفحة الرئيسية =====
+async function loadHomePage() {
+  const lang = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+
+  async function fillRow(id, url, type) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '<div style="padding:20px;opacity:.5;">⏳</div>';
+    try {
+      const r = await fetch(url).then(r => r.json());
+      const items = r.results || r.media || [];
+      if (!items.length) { el.innerHTML = ''; return; }
+      el.innerHTML = items.slice(0, 15).map(item => {
+        const title = type === 'movie' ? (item.title || item.original_title)
+                    : type === 'tv'   ? (item.name || item.original_name)
+                    : (item.title?.native || item.title?.romaji || '');
+        const poster = item.poster_path ? `https://image.tmdb.org/t/p/w300${item.poster_path}`
+                     : item.coverImage?.extraLarge || '';
+        const rating = item.vote_average ? item.vote_average.toFixed(1)
+                     : item.averageScore ? (item.averageScore/10).toFixed(1) : '';
+        return `
+          <div onclick="openDetails(${item.id},'${type}')"
+               style="flex:0 0 110px;cursor:pointer;">
+            <div style="width:110px;height:160px;border-radius:12px;overflow:hidden;
+                        background:#1a1a2e;position:relative;">
+              <img src="${poster}" alt="${title}" loading="lazy"
+                   style="width:100%;height:100%;object-fit:cover;"
+                   onerror="this.src='https://via.placeholder.com/110x160/111/555?text=?'">
+              ${rating ? `<span style="position:absolute;bottom:6px;right:6px;
+                background:rgba(0,0,0,.7);color:#f5a623;font-size:10px;
+                padding:2px 6px;border-radius:8px;">⭐${rating}</span>` : ''}
+            </div>
+            <div style="font-size:11px;color:#ccc;margin-top:6px;
+                        white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+                        width:110px;">${title}</div>
+          </div>`;
+      }).join('');
+    } catch(e) { if (el) el.innerHTML = ''; }
+  }
+
+  fillRow('homeMoviesTrending',
+    `${TMDB_BASE}/trending/movie/week?api_key=${TMDB_KEY}&language=${lang}`, 'movie');
+  fillRow('homeMoviesPopular',
+    `${TMDB_BASE}/movie/popular?api_key=${TMDB_KEY}&language=${lang}`, 'movie');
+  fillRow('homeMoviesTopRated',
+    `${TMDB_BASE}/movie/top_rated?api_key=${TMDB_KEY}&language=${lang}`, 'movie');
+  fillRow('homeSeriesTrending',
+    `${TMDB_BASE}/trending/tv/week?api_key=${TMDB_KEY}&language=${lang}`, 'tv');
+
+  // الأنمي
+  const animeEl = document.getElementById('homeAnime');
+  if (animeEl) {
+    animeEl.innerHTML = '<div style="padding:20px;opacity:.5;">⏳</div>';
+    try {
+      const q = `query{Page(perPage:15){media(type:ANIME,sort:POPULARITY_DESC){id title{romaji native}coverImage{extraLarge}averageScore}}}`;
+      const res = await fetch('https://graphql.anilist.co', {
+        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({query:q})
+      });
+      const data = await res.json();
+      const animes = data.data.Page.media || [];
+      animeEl.innerHTML = animes.map(item => {
+        const title = item.title?.native || item.title?.romaji || '';
+        const poster = item.coverImage?.extraLarge || '';
+        const rating = item.averageScore ? (item.averageScore/10).toFixed(1) : '';
+        return `
+          <div onclick="openDetails(${item.id},'anime')"
+               style="flex:0 0 110px;cursor:pointer;">
+            <div style="width:110px;height:160px;border-radius:12px;overflow:hidden;
+                        background:#1a1a2e;position:relative;">
+              <img src="${poster}" alt="${title}" loading="lazy"
+                   style="width:100%;height:100%;object-fit:cover;">
+              ${rating ? `<span style="position:absolute;bottom:6px;right:6px;
+                background:rgba(0,0,0,.7);color:#f5a623;font-size:10px;
+                padding:2px 6px;border-radius:8px;">⭐${rating}</span>` : ''}
+            </div>
+            <div style="font-size:11px;color:#ccc;margin-top:6px;
+                        white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+                        width:110px;">${title}</div>
+          </div>`;
+      }).join('');
+    } catch(e) { animeEl.innerHTML = ''; }
+  }
+      }
