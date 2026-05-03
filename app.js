@@ -1673,6 +1673,45 @@ async function loadHomePage() {
       }).join('');
     } catch(e) { animeEl.innerHTML = ''; }
   }
+  // ===== أخبار السينما =====
+  const newsEl = document.getElementById('homeNews');
+  if (newsEl) {
+    newsEl.innerHTML = '<div style="padding:20px;opacity:.5;">⏳</div>';
+    try {
+      const nRes = await fetch(`https://newsapi.org/v2/everything?q=cinema+movies&language=ar&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_KEY}`).then(r=>r.json());
+      const articles = (nRes.articles||[]).filter(a=>a.urlToImage&&a.title);
+      if (articles.length) {
+        newsEl.innerHTML = articles.map(a=>`
+          <div onclick="window.open('${a.url}','_blank')" class="news-card">
+            <div class="news-img-wrap">
+              <img src="${a.urlToImage}" alt="${a.title}" loading="lazy" onerror="this.parentElement.parentElement.style.display='none'">
+              <div class="news-gradient"></div>
+            </div>
+            <div class="news-info">
+              <span class="news-source">${a.source?.name||'أخبار'}</span>
+              <p class="news-title">${a.title.slice(0,70)}${a.title.length>70?'...':''}</p>
+              <span class="news-date">${new Date(a.publishedAt).toLocaleDateString('ar-SA')}</span>
+            </div>
+          </div>`).join('');
+      } else {
+        // fallback: أخبار إنجليزية
+        const nRes2 = await fetch(`https://newsapi.org/v2/everything?q=movies+cinema+2025&language=en&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_KEY}`).then(r=>r.json());
+        const arts2 = (nRes2.articles||[]).filter(a=>a.urlToImage&&a.title);
+        newsEl.innerHTML = arts2.map(a=>`
+          <div onclick="window.open('${a.url}','_blank')" class="news-card">
+            <div class="news-img-wrap">
+              <img src="${a.urlToImage}" alt="${a.title}" loading="lazy" onerror="this.parentElement.parentElement.style.display='none'">
+              <div class="news-gradient"></div>
+            </div>
+            <div class="news-info">
+              <span class="news-source">${a.source?.name||'News'}</span>
+              <p class="news-title">${a.title.slice(0,70)}${a.title.length>70?'...':''}</p>
+              <span class="news-date">${new Date(a.publishedAt).toLocaleDateString('ar-SA')}</span>
+            </div>
+          </div>`).join('');
+      }
+    } catch(e) { newsEl.innerHTML = ''; }
+                }
       }
 function toggleCircle(id, fn) {
   const el = document.getElementById(id);
