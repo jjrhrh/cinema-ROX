@@ -13,7 +13,22 @@ body, * { font-family:'Cairo','Tajawal',sans-serif !important; }
 .plt-card:active { transform:scale(0.95) !important; }
 /* ===== END MASTER ===== */
   /* ===== FINAL TOUCH v5 ===== */
+/* ===== FINAL v6 ===== */
 
+/* 1. Glow للمنصات - يُطبق من JS */
+
+/* 2. العناوين Extra Bold */
+.section-title { font-weight:900 !important; font-size:24px !important; font-family:'Cairo',sans-serif !important; letter-spacing:-0.5px !important; }
+
+/* 3. مسافات بين العناوين والقوائم */
+.section-title { margin-top:32px !important; margin-bottom:14px !important; }
+
+/* 4. الشريط السفلي - الأيقونة النشطة متوهجة */
+.bnav-btn.active .bnav-icon { filter:drop-shadow(0 0 6px var(--primary)) !important; }
+.bnav-btn.active .bnav-label { color:var(--primary) !important; font-weight:700 !important; }
+.bnav-btn.active { color:var(--primary) !important; }
+
+/* ===== END v6 ===== */
 /* 1. Neon Blast للمنصات - يُطبَّق من app.js */
 
 /* 2. العناوين - Cairo Extra Bold + فاصل متوهج */
