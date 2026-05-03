@@ -1,3 +1,21 @@
+/* ===== UPGRADE v4 ===== */
+
+/* 1. المنصات - Glassmorphism + Neon Glow */
+.plt-card { background:rgba(255,255,255,0.06) !important; backdrop-filter:blur(16px) !important; -webkit-backdrop-filter:blur(16px) !important; border:1px solid rgba(255,255,255,0.12) !important; transition:transform 0.2s, box-shadow 0.2s !important; }
+.plt-card:active { transform:scale(0.95) !important; }
+
+/* 2. كبسولة التقييم - Pill Shape أسفل يمين */
+.card-rating { position:absolute !important; bottom:10px !important; right:10px !important; left:auto !important; top:auto !important; background:rgba(0,0,0,0.72) !important; backdrop-filter:blur(20px) !important; -webkit-backdrop-filter:blur(20px) !important; border:1px solid rgba(255,255,255,0.18) !important; color:#f5c518 !important; font-size:11px !important; font-weight:800 !important; padding:4px 10px !important; border-radius:30px !important; box-shadow:0 2px 12px rgba(0,0,0,0.5) !important; letter-spacing:0.2px !important; }
+
+/* 3. العناوين - Extra Bold + فاصل ملون */
+.section-title { font-size:22px !important; font-weight:900 !important; letter-spacing:-0.5px !important; border-right:4px solid var(--primary) !important; box-shadow:2px 0 12px var(--primary) !important; }
+
+/* 4. تأثير اللمس Scale على الكروت والمنصات */
+.card { transition:transform 0.18s cubic-bezier(0.25,0.46,0.45,0.94) !important; }
+.card:active { transform:scale(0.95) !important; }
+.plt-card:active { transform:scale(0.95) !important; }
+
+/* ===== END v4 ===== */
 /* ===== UPGRADE v3 ===== */
 .section-title { font-size:24px !important; font-weight:900 !important; letter-spacing:-0.5px !important; }
 
