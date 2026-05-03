@@ -1116,6 +1116,7 @@ applyLang();
   }, 2500);
 
   initHero();
+  loadHomePage();
   initScrollTop();
   fetchMovies();
   fetchSeries();
