@@ -558,7 +558,15 @@ async function renderTMDBDetails(id, type) {
     fetch(`${TMDB_BASE}/${ep}/${id}/watch/providers?api_key=${TMDB_KEY}`).then(r=>r.json()),
     fetch(`${TMDB_BASE}/${ep}/${id}/reviews?api_key=${TMDB_KEY}`).then(r=>r.json()),
   ]);
-
+// جلب Fanart Logo
+  let fanartLogo = '';
+  if (detail.imdb_id) {
+    try {
+      const ftRes = await fetch(`https://webservice.fanart.tv/v3/movies/${detail.imdb_id}?api_key=${FANART_KEY}`).then(r=>r.json());
+      const logos = ftRes.hdmovielogo||ftRes.movielogo||[];
+      if (logos.length) fanartLogo = logos[0].url;
+    } catch(e){}
+  }
   const title    = type==='movie' ? (detail.title||detail.original_title) : (detail.name||detail.original_name);
   const year     = type==='movie' ? (detail.release_date||'').slice(0,4) : (detail.first_air_date||'').slice(0,4);
   const runtime  = type==='movie' ? (detail.runtime ? `${Math.floor(detail.runtime/60)}س ${detail.runtime%60}د` : '') : (detail.episode_run_time?.[0]?`${detail.episode_run_time[0]} د/حلقة`:'');
