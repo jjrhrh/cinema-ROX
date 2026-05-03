@@ -1047,12 +1047,80 @@ function openPlayerEpisode(sid, s, e) {
   document.getElementById('playerModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-function openAnimePlayer(id) {
-  currentServers = [`https://aniwatch.to/watch/${id}`,`https://9anime.to/watch/${id}`];
+function openAnimePlayer(id, title, poster, score, year) {
+  const servers = [
+    `https://aniwatch.to/watch/${id}`,
+    `https://9anime.to/watch/${id}`,
+    `https://gogoanime.cl/category/${id}`,
+    `https://animepahe.ru/anime/${id}`,
+  ];
+  currentServers = servers;
   currentServerIndex = 0;
-  loadServer(0);
-  document.getElementById('playerModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+
+  const serverDefs = [
+    {name:'AniWatch',   icon:'⚡', color:'#e50914', desc:'سريع وموثوق', free:true},
+    {name:'9Anime',     icon:'🔥', color:'#f5a623', desc:'جودة عالية',  free:true},
+    {name:'GogoAnime',  icon:'🌐', color:'#1a6cff', desc:'الجيل القادم',free:true},
+    {name:'AnimePahe',  icon:'🎬', color:'#1ce783', desc:'Ultra HD',    free:true},
+  ];
+
+  const watchPage = document.getElementById('watchPage');
+  if (!watchPage) return;
+  pageHistory.push('watchPage');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  watchPage.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display='none';
+  window.scrollTo(0,0);
+
+  watchPage.innerHTML = `
+    <button class="back-btn" onclick="goBack()" style="z-index:10;">&#8594; رجوع</button>
+    <div style="width:100%;background:#000;position:relative;">
+      <iframe id="watchFrame" src="${servers[0]}"
+        allowfullscreen allow="autoplay;fullscreen;picture-in-picture"
+        style="width:100%;aspect-ratio:16/9;border:none;display:block;background:#000;">
+      </iframe>
+    </div>
+    ${title?`
+    <div style="padding:20px;">
+      <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:8px;">${title}</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${score?`<span style="background:#f5a62320;color:#f5a623;padding:4px 10px;border-radius:20px;font-size:.8rem;font-weight:700;">⭐ ${score}</span>`:''}
+        ${year?`<span style="background:#ffffff15;padding:4px 10px;border-radius:20px;font-size:.8rem;">📅 ${year}</span>`:''}
+        <span style="background:#1a6cff20;color:#1a6cff;padding:4px 10px;border-radius:20px;font-size:.8rem;">✨ أنمي</span>
+      </div>
+    </div>`:''}
+    <div style="padding:0 16px 100px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#1ce783;"></div>
+        <span style="font-size:.85rem;font-weight:700;opacity:.8;">مصادر البث</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+        ${serverDefs.map((sv,i)=>`
+          <div id="srvA${i}" onclick="switchServerAnime(${i})"
+            style="background:${i===0?sv.color+'22':'#ffffff08'};border:2px solid ${i===0?sv.color+'66':'#ffffff15'};
+                   border-radius:16px;padding:16px;cursor:pointer;text-align:center;position:relative;">
+            <div style="font-size:1.8rem;margin-bottom:6px;">${sv.icon}</div>
+            <div style="font-weight:700;font-size:.9rem;margin-bottom:2px;">${sv.name}</div>
+            <div style="font-size:.75rem;opacity:.6;margin-bottom:8px;">${sv.desc}</div>
+            <div style="display:inline-block;background:${sv.color}22;color:${sv.color};padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;">${sv.free?'مجاني':'مميز'}</div>
+          </div>`).join('')}
+      </div>
+      <p style="font-size:.78rem;opacity:.35;text-align:center;">إذا لم يعمل السيرفر جرب آخر ↑</p>
+    </div>
+  `;
+
+  window.switchServerAnime = function(i) {
+    currentServerIndex = i;
+    document.getElementById('watchFrame').src = servers[i];
+    serverDefs.forEach((_,idx)=>{
+      const el = document.getElementById('srvA'+idx);
+      if (!el) return;
+      const sv = serverDefs[idx];
+      el.style.background = idx===i ? sv.color+'22' : '#ffffff08';
+      el.style.borderColor = idx===i ? sv.color+'66' : '#ffffff15';
+    });
+  };
 }
 function openTrailer(key) {
   currentServers = [`https://www.youtube.com/embed/${key}?autoplay=1`];
