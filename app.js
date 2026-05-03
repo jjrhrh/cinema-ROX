@@ -15,7 +15,7 @@ const TV_SERVERS = (id, s=1, e=1) => [
 let currentServers = [];
 let currentServerIndex = 0;
 let pageHistory = [];
-let lastPage = 'moviesPage';
+let lastPage = 'homePage';
 
 // ===== الإعدادات =====
 function openSettings() {
