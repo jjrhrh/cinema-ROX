@@ -1473,10 +1473,17 @@ applyLang();
   // Splash
   setTimeout(function() {
     var s = document.getElementById('splash-screen');
-    if (s) { s.style.opacity='0'; s.style.visibility='hidden'; }
-    setTimeout(function() { var s2=document.getElementById('splash-screen'); if(s2) s2.remove(); }, 700);
+    if (s) {
+      s.style.transition = 'opacity 0.6s ease, visibility 0.6s ease';
+      s.style.opacity = '0';
+      s.style.visibility = 'hidden';
+      s.style.pointerEvents = 'none';
+      setTimeout(function() {
+        var s2 = document.getElementById('splash-screen');
+        if (s2) s2.style.display = 'none';
+      }, 700);
+    }
   }, 2500);
-
   initHero();
   loadHomePage();
   initScrollTop();
