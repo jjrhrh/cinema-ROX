@@ -937,16 +937,16 @@ function openWatchlistPage() {
   });
 }
 // ===== المشغل =====
-function openPlayerFromDetail(id, type, season, episode) {
+async function openPlayerFromDetail(id, type, season, episode, titleIn, posterIn, ratingIn, yearIn, genresIn) {
   const s = season||1, e = episode||1;
   currentServers = type==='movie' ? MOVIE_SERVERS(id) : TV_SERVERS(id,s,e);
   currentServerIndex = 0;
 
   const serverDefs = [
-    {name:'VidSrc 1',   icon:'⚡', color:'#e50914', free:true},
-    {name:'VidSrc 2',   icon:'🔥', color:'#f5a623', free:true},
-    {name:'MultiEmbed', icon:'🌐', color:'#1a6cff', free:true},
-    {name:'2Embed',     icon:'🎬', color:'#1ce783', free:true},
+    {name:'VidSrc 1',   icon:'⚡', color:'#e50914', desc:'سريع وموثوق',   free:true},
+    {name:'VidSrc 2',   icon:'🔥', color:'#f5a623', desc:'جودة عالية',    free:true},
+    {name:'MultiEmbed', icon:'🌐', color:'#1a6cff', desc:'الجيل القادم',   free:true},
+    {name:'2Embed',     icon:'🎬', color:'#1ce783', desc:'Ultra HD',       free:true},
   ];
 
   const watchPage = document.getElementById('watchPage');
@@ -958,26 +958,70 @@ function openPlayerFromDetail(id, type, season, episode) {
   if (hero) hero.style.display='none';
   window.scrollTo(0,0);
 
+  // جلب معلومات الفيلم إذا ما عندنا
+  let title = titleIn||'', poster = posterIn||'', rating = ratingIn||'', year = yearIn||'', genres = genresIn||'';
+  if (!title) {
+    try {
+      const ep = type==='movie'?'movie':'tv';
+      const d = await fetch(`${TMDB_BASE}/${ep}/${id}?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json());
+      title   = type==='movie'?(d.title||d.original_title):(d.name||d.original_name);
+      poster  = d.backdrop_path ? `${IMG_ORIG}${d.backdrop_path}` : (d.poster_path?`${IMG_BASE}${d.poster_path}`:'');
+      rating  = d.vote_average?d.vote_average.toFixed(1):'';
+      year    = (d.release_date||d.first_air_date||'').slice(0,4);
+      genres  = (d.genres||[]).map(g=>g.name).join(' · ');
+    } catch(e){}
+  }
+
   watchPage.innerHTML = `
-    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
-    <div class="watch-player-wrap">
+    <button class="back-btn" onclick="goBack()" style="z-index:10;">&#8594; رجوع</button>
+
+    <!-- مشغل الفيديو -->
+    <div style="width:100%;background:#000;position:relative;">
       <iframe id="watchFrame" src="${currentServers[0]}"
         allowfullscreen allow="autoplay;fullscreen;picture-in-picture"
-        style="width:100%;aspect-ratio:16/9;border:none;border-radius:0;display:block;background:#000;">
+        style="width:100%;aspect-ratio:16/9;border:none;display:block;background:#000;">
       </iframe>
     </div>
-    <div style="padding:16px;">
-      <h2 style="font-size:1rem;font-weight:800;margin-bottom:14px;opacity:.8;">🖥️ اختر السيرفر</h2>
-      <div class="server-grid" id="serverGrid">
-        ${serverDefs.map((s,i)=>`
-          <div class="server-card ${i===0?'active':''}" id="srv${i}" onclick="switchServer(${i})">
-            <div class="server-glow" style="background:${s.color}22;border-color:${s.color}55;"></div>
-            <span class="server-icon" style="color:${s.color};">${s.icon}</span>
-            <span class="server-name">${s.name}</span>
-            <span class="server-badge" style="background:${s.color}33;color:${s.color};">${s.free?'مجاني':'مميز'}</span>
+
+    <!-- معلومات الفيلم -->
+    ${poster||title?`
+    <div style="position:relative;overflow:hidden;">
+      ${poster?`<img src="${poster}" style="width:100%;height:200px;object-fit:cover;opacity:.3;position:absolute;top:0;left:0;filter:blur(8px);">`:'' }
+      <div style="position:relative;padding:20px;display:flex;gap:14px;align-items:flex-start;background:linear-gradient(to bottom,rgba(0,0,0,0.5),var(--bg));">
+        <div style="flex:1;">
+          <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:8px;">${title}</h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            ${rating?`<span style="background:#f5a62320;color:#f5a623;padding:4px 10px;border-radius:20px;font-size:.8rem;font-weight:700;">⭐ ${rating}</span>`:''}
+            ${year?`<span style="background:#ffffff15;padding:4px 10px;border-radius:20px;font-size:.8rem;">📅 ${year}</span>`:''}
+            ${type==='movie'?`<span style="background:var(--primary)20;color:var(--primary);padding:4px 10px;border-radius:20px;font-size:.8rem;">🎬 فيلم</span>`:`<span style="background:#1a6cff20;color:#1a6cff;padding:4px 10px;border-radius:20px;font-size:.8rem;">📺 مسلسل</span>`}
+          </div>
+          ${genres?`<div style="margin-top:6px;font-size:.8rem;opacity:.6;">${genres}</div>`:''}
+        </div>
+      </div>
+    </div>`:''}
+
+    <!-- السيرفرات -->
+    <div style="padding:16px 16px 100px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:#1ce783;animation:pulse 1.5s infinite;"></div>
+        <span style="font-size:.85rem;font-weight:700;opacity:.8;">مصادر البث</span>
+      </div>
+
+      <div style="margin-bottom:10px;opacity:.5;font-size:.75rem;font-weight:700;letter-spacing:1px;">🔒 السيرفرات</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+        ${serverDefs.map((sv,i)=>`
+          <div id="srv${i}" onclick="switchServer(${i})"
+            style="background:${i===0?sv.color+'22':'#ffffff08'};border:2px solid ${i===0?sv.color+'66':'#ffffff15'};
+                   border-radius:16px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;">
+            <div style="font-size:1.8rem;margin-bottom:6px;">${sv.icon}</div>
+            <div style="font-weight:700;font-size:.9rem;margin-bottom:2px;">${sv.name}</div>
+            <div style="font-size:.75rem;opacity:.6;margin-bottom:8px;">${sv.desc}</div>
+            <div style="display:inline-block;background:${sv.color}22;color:${sv.color};padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;">${sv.free?'مجاني':'مميز'}</div>
+            ${i===0?`<div style="position:absolute;top:10px;left:10px;background:${sv.color};color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;">✓</div>`:''}
           </div>`).join('')}
       </div>
-      <p style="font-size:.78rem;opacity:.4;text-align:center;margin-top:12px;">
+
+      <p style="font-size:.78rem;opacity:.35;text-align:center;">
         إذا لم يعمل السيرفر جرب آخر ↑
       </p>
     </div>
@@ -986,7 +1030,13 @@ function openPlayerFromDetail(id, type, season, episode) {
   window._switchServer = function(i) {
     currentServerIndex = i;
     document.getElementById('watchFrame').src = currentServers[i];
-    document.querySelectorAll('.server-card').forEach((c,idx)=>c.classList.toggle('active',idx===i));
+    serverDefs.forEach((_,idx)=>{
+      const el = document.getElementById('srv'+idx);
+      if (!el) return;
+      const sv = serverDefs[idx];
+      el.style.background = idx===i ? sv.color+'22' : '#ffffff08';
+      el.style.borderColor = idx===i ? sv.color+'66' : '#ffffff15';
+    });
   };
 }
 function switchServer(i){ window._switchServer && window._switchServer(i); }
