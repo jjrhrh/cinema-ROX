@@ -1354,29 +1354,95 @@ function initRowDrag(id) {
 }
 
 // ===== البحث =====
-async function doSearch() {
-  const q = document.getElementById('searchInput').value.trim();
+let _searchPageNum = 1;
+let _searchTotalPg = 1;
+let _searchLastQ   = '';
+let _searchObs     = null;
+
+async function doSearch(reset = true) {
+  const q = document.getElementById('searchInput')?.value?.trim();
   if (!q) return;
   const grid = document.getElementById('searchGrid');
-  grid.innerHTML = '<div class="loading">⏳ جاري البحث...</div>';
+  const sqLinks = document.getElementById('searchQuickLinks');
+  if (!grid) return;
+  if (sqLinks) sqLinks.style.display = 'none';
+
+  if (reset) {
+    _searchPageNum = 1;
+    _searchLastQ   = q;
+    grid.innerHTML = '<div class="loading">⏳ جاري البحث...</div>';
+  }
+
   try {
-    const [m, t] = await Promise.all([
-      fetch(`${TMDB_BASE}/search/movie?api_key=${TMDB_KEY}&language=ar-SA&query=${encodeURIComponent(q)}`).then(r=>r.json()),
-      fetch(`${TMDB_BASE}/search/tv?api_key=${TMDB_KEY}&language=ar-SA&query=${encodeURIComponent(q)}`).then(r=>r.json()),
+    const lang = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+    const [mRes, tRes] = await Promise.all([
+      fetch(`${TMDB_BASE}/search/movie?api_key=${TMDB_KEY}&language=${lang}&query=${encodeURIComponent(q)}&page=${_searchPageNum}`).then(r=>r.json()),
+      fetch(`${TMDB_BASE}/search/tv?api_key=${TMDB_KEY}&language=${lang}&query=${encodeURIComponent(q)}&page=${_searchPageNum}`).then(r=>r.json()),
     ]);
-    const all = [...(m.results||[]).map(r=>({...r,_type:'movie'})),...(t.results||[]).map(r=>({...r,_type:'tv'}))].filter(r=>r.poster_path);
-    grid.innerHTML = '';
-    if (!all.length) { grid.innerHTML='<div class="loading">لا توجد نتائج</div>'; return; }
-    all.forEach(item=>{
-      const title=item._type==='movie'?(item.title||item.original_title):(item.name||item.original_name);
-      const rating=item.vote_average?item.vote_average.toFixed(1):'';
-      const card=document.createElement('div');
-      card.className='card';
-      card.innerHTML=`<div class="card-img-wrap"><img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}<div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div></div><div class="card-info"><h4>${title}</h4><span class="type-badge">${item._type==='movie'?'🎬 فيلم':'📺 مسلسل'}</span></div>`;
-      card.onclick=()=>openDetails(item.id,item._type);
+    _searchTotalPg = Math.max(mRes.total_pages||1, tRes.total_pages||1);
+
+    // بحث أنمي عبر AniList (فقط في الصفحة الأولى)
+    let animeResults = [];
+    if (reset) {
+      try {
+        const aQuery = `query($q:String){Page(perPage:6){media(search:$q,type:ANIME){id title{romaji native}coverImage{extraLarge}averageScore}}}`;
+        const aRes = await fetch('https://graphql.anilist.co',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:aQuery,variables:{q}})}).then(r=>r.json());
+        animeResults = aRes?.data?.Page?.media || [];
+      } catch(e) {}
+    }
+
+    const movies  = (mRes.results||[]).filter(r=>r.poster_path).map(r=>({...r,_type:'movie'}));
+    const series  = (tRes.results||[]).filter(r=>r.poster_path).map(r=>({...r,_type:'tv'}));
+    const all = [...movies, ...series];
+
+    if (reset) grid.innerHTML = '';
+    if (!all.length && !animeResults.length && reset) {
+      grid.innerHTML = '<div class="loading">لا توجد نتائج</div>'; return;
+    }
+
+    // عرض الأنمي أولاً (صفحة 1 فقط)
+    if (reset && animeResults.length) {
+      animeResults.forEach(a => {
+        const t = a.title?.native || a.title?.romaji || '';
+        const r = a.averageScore ? (a.averageScore/10).toFixed(1) : '';
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div class="card-img-wrap"><img src="${a.coverImage?.extraLarge}" alt="${t}" loading="lazy">${r?`<span class="card-rating">⭐ ${r}</span>`:''}<div class="card-overlay"><span class="play-btn">▶</span></div></div><span class="card-title">✨ ${t}</span>`;
+        card.onclick = () => openDetails(a.id, 'anime');
+        grid.appendChild(card);
+      });
+    }
+
+    all.forEach(item => {
+      const title = item._type==='movie'?(item.title||item.original_title):(item.name||item.original_name);
+      const rating = item.vote_average ? item.vote_average.toFixed(1) : '';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<div class="card-img-wrap"><img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}<div class="card-overlay"><span class="play-btn">▶</span></div></div><span class="card-title">${title}</span>`;
+      card.onclick = () => openDetails(item.id, item._type);
       grid.appendChild(card);
     });
-  } catch(e) { grid.innerHTML='<div class="loading">❌ خطأ في البحث</div>'; }
+
+    // Infinite scroll sentinel
+    let sentinel = document.getElementById('searchSentinel');
+    if (!sentinel) {
+      sentinel = document.createElement('div');
+      sentinel.id = 'searchSentinel';
+      sentinel.style.height = '20px';
+      grid.after(sentinel);
+    }
+    if (_searchObs) _searchObs.disconnect();
+    if (_searchPageNum < _searchTotalPg) {
+      _searchObs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && document.getElementById('searchInput')?.value?.trim() === _searchLastQ) {
+          _searchPageNum++;
+          _searchObs.disconnect();
+          doSearch(false);
+        }
+      }, {threshold: 0.1});
+      _searchObs.observe(sentinel);
+    }
+  } catch(e) { if(reset) grid.innerHTML = '<div class="loading">❌ خطأ في البحث</div>'; }
 }
 
 // ===== زر الأعلى =====
