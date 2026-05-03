@@ -1813,7 +1813,7 @@ async function loadHomePage() {
           backdrop-filter:blur(10px);
           -webkit-backdrop-filter:blur(10px);
           border:1.5px solid ${p.color};
-          box-shadow:0 0 14px ${p.color}66, inset 0 0 8px ${p.color}22;
+box-shadow:0 0 16px ${p.color}, 0 0 30px ${p.color}88;
           display:flex;align-items:center;justify-content:center;
           transition:transform 0.15s, box-shadow 0.15s;
           active-transform:scale(0.95);"
