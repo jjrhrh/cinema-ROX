@@ -1991,3 +1991,100 @@ function openAiPage() {
         <div style="text-align:center;padding:80px 20px;opacity:.6;">❌ حاول مرة ثانية</div>`;
     });
 }
+// ===== goBack =====
+function goBack() {
+  if (pageHistory.length > 0) {
+    const prev = pageHistory.pop();
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const prevPage = document.getElementById(prev);
+    if (prevPage) prevPage.classList.add('active');
+    const hero = document.getElementById('heroBanner');
+    const isHome = prev === 'moviesPage' || prev === 'homePage';
+    if (hero) hero.style.display = isHome ? '' : 'none';
+    if (isHome) {
+      document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('active'));
+      document.getElementById('bnavHome')?.classList.add('active');
+    }
+    window.scrollTo(0,0);
+  } else {
+    bnavGo('home');
+  }
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById(pageId);
+  if (page) page.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  const isHome = pageId === 'moviesPage' || pageId === 'homePage';
+  if (hero) hero.style.display = isHome ? '' : 'none';
+  window.scrollTo(0,0);
+}
+
+// ===== صفحة قائمتي الكاملة =====
+function openWatchlistPage() {
+  pageHistory.push('libraryPage');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
+  window.scrollTo(0,0);
+
+  let page = document.getElementById('watchlistFullPage');
+  if (!page) {
+    page = document.createElement('div');
+    page.id = 'watchlistFullPage';
+    page.className = 'page';
+    document.body.appendChild(page);
+  }
+  page.classList.add('active');
+
+  const items = getWatchlist();
+  page.innerHTML = `
+    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+    <div class="container" style="padding-top:70px;">
+      <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:20px;color:var(--primary);">❤️ قائمتي المفضلة (${items.length})</h2>
+      ${items.length ? `<div class="grid">${items.map(i=>`
+        <div class="card" onclick="openDetails(${i.id},'${i.type||'movie'}')">
+          <div class="card-img-wrap">
+            <img src="https://image.tmdb.org/t/p/w500${i.poster}" alt="${i.title}" loading="lazy">
+            <div class="card-overlay"><span class="play-btn">▶</span></div>
+          </div>
+          <span class="card-title">${i.title}</span>
+        </div>`).join('')}</div>`
+      : '<div style="text-align:center;opacity:.4;padding:40px;">لا توجد أفلام في قائمتك بعد</div>'}
+    </div>`;
+}
+
+// ===== صفحة سأشاهده لاحقاً الكاملة =====
+function openWatchLaterPage() {
+  pageHistory.push('libraryPage');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = 'none';
+  window.scrollTo(0,0);
+
+  let page = document.getElementById('watchLaterFullPage');
+  if (!page) {
+    page = document.createElement('div');
+    page.id = 'watchLaterFullPage';
+    page.className = 'page';
+    document.body.appendChild(page);
+  }
+  page.classList.add('active');
+
+  const items = getWatchLater();
+  page.innerHTML = `
+    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+    <div class="container" style="padding-top:70px;">
+      <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:20px;color:var(--primary);">⏰ سأشاهده لاحقاً (${items.length})</h2>
+      ${items.length ? `<div class="grid">${items.map(i=>`
+        <div class="card" onclick="openDetails(${i.id},'${i.type||'movie'}')">
+          <div class="card-img-wrap">
+            <img src="https://image.tmdb.org/t/p/w500${i.poster}" alt="${i.title}" loading="lazy">
+            <div class="card-overlay"><span class="play-btn">▶</span></div>
+          </div>
+          <span class="card-title">${i.title}</span>
+        </div>`).join('')}</div>`
+      : '<div style="text-align:center;opacity:.4;padding:40px;">لا توجد أفلام بعد</div>'}
+    </div>`;
+}
