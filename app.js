@@ -937,13 +937,59 @@ function openWatchlistPage() {
   });
 }
 // ===== المشغل =====
-function openPlayerFromDetail(id, type) {
-  currentServers = type==='movie' ? MOVIE_SERVERS(id) : TV_SERVERS(id);
+function openPlayerFromDetail(id, type, season, episode) {
+  const s = season||1, e = episode||1;
+  currentServers = type==='movie' ? MOVIE_SERVERS(id) : TV_SERVERS(id,s,e);
   currentServerIndex = 0;
-  loadServer(0);
-  document.getElementById('playerModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
+
+  const serverDefs = [
+    {name:'VidSrc 1',   icon:'⚡', color:'#e50914', free:true},
+    {name:'VidSrc 2',   icon:'🔥', color:'#f5a623', free:true},
+    {name:'MultiEmbed', icon:'🌐', color:'#1a6cff', free:true},
+    {name:'2Embed',     icon:'🎬', color:'#1ce783', free:true},
+  ];
+
+  const watchPage = document.getElementById('watchPage');
+  if (!watchPage) return;
+  pageHistory.push('watchPage');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  watchPage.classList.add('active');
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display='none';
+  window.scrollTo(0,0);
+
+  watchPage.innerHTML = `
+    <button class="back-btn" onclick="goBack()">&#8594; رجوع</button>
+    <div class="watch-player-wrap">
+      <iframe id="watchFrame" src="${currentServers[0]}"
+        allowfullscreen allow="autoplay;fullscreen;picture-in-picture"
+        style="width:100%;aspect-ratio:16/9;border:none;border-radius:0;display:block;background:#000;">
+      </iframe>
+    </div>
+    <div style="padding:16px;">
+      <h2 style="font-size:1rem;font-weight:800;margin-bottom:14px;opacity:.8;">🖥️ اختر السيرفر</h2>
+      <div class="server-grid" id="serverGrid">
+        ${serverDefs.map((s,i)=>`
+          <div class="server-card ${i===0?'active':''}" id="srv${i}" onclick="switchServer(${i})">
+            <div class="server-glow" style="background:${s.color}22;border-color:${s.color}55;"></div>
+            <span class="server-icon" style="color:${s.color};">${s.icon}</span>
+            <span class="server-name">${s.name}</span>
+            <span class="server-badge" style="background:${s.color}33;color:${s.color};">${s.free?'مجاني':'مميز'}</span>
+          </div>`).join('')}
+      </div>
+      <p style="font-size:.78rem;opacity:.4;text-align:center;margin-top:12px;">
+        إذا لم يعمل السيرفر جرب آخر ↑
+      </p>
+    </div>
+  `;
+
+  window._switchServer = function(i) {
+    currentServerIndex = i;
+    document.getElementById('watchFrame').src = currentServers[i];
+    document.querySelectorAll('.server-card').forEach((c,idx)=>c.classList.toggle('active',idx===i));
+  };
 }
+function switchServer(i){ window._switchServer && window._switchServer(i); }
 function openPlayerEpisode(sid, s, e) {
   currentServers = TV_SERVERS(sid, s, e);
   currentServerIndex = 0;
