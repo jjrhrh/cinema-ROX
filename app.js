@@ -1657,6 +1657,14 @@ async function loadHomePage() {
     } catch(e) { animeEl.innerHTML = ''; }
   }
       }
+function toggleCircle(id, fn) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.style.transform = 'scale(0.88)';
+    setTimeout(() => { el.style.transform = 'scale(1)'; }, 150);
+  }
+  setTimeout(() => { fn(); }, 200);
+}
 // ===== صفحة المركز =====
 function openCenterPage() {
   pageHistory.push('surprisePage');
