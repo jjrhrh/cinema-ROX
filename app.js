@@ -1063,7 +1063,7 @@ watchPage.innerHTML = `
       <div class="watch-glass-card" style="position:relative;overflow:hidden;padding:0;">
         ${poster?`<img src="${poster}" style="width:100%;height:200px;object-fit:cover;opacity:0.18;position:absolute;top:0;left:0;filter:blur(14px);transform:scale(1.1);">` : ''}
         <div style="position:relative;padding:20px 18px;">
-          <h2 style="font-size:1.35rem;font-weight:900;font-family:'Cairo',sans-serif;margin-bottom:12px;line-height:1.3;">${title}</h2>
+          <h2 style="font-size:1.35rem;font-weight:900;font-family:'Cairo',sans-serif;margin-bottom:12px;line-height:1.3;text-shadow:0 2px 18px rgba(229,9,20,0.35),0 1px 4px rgba(0,0,0,0.8);">${title}</h2>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
             ${rating?`<span class="watch-tag" style="background:rgba(245,166,35,0.15);color:#f5a623;border-color:rgba(245,166,35,0.35);">⭐ ${rating}</span>`:''}
             ${year?`<span class="watch-tag">📅 ${year}</span>`:''}
