@@ -1109,8 +1109,25 @@ function showHero(idx) {
 }
 // ===== END HERO =====
 // ===== END HERO =====
-
 // ===== تهيئة =====
+// ===== FLOATING ROX MENU =====
+let roxMenuOpen = false;
+function toggleRoxMenu() {
+  roxMenuOpen = !roxMenuOpen;
+  const menu    = document.getElementById('roxMenu');
+  const overlay = document.getElementById('roxOverlay');
+  const btn     = document.getElementById('bnavBrowse');
+  if (roxMenuOpen) {
+    menu.classList.add('open');
+    overlay.classList.add('open');
+    if (btn) btn.style.transform = 'rotate(45deg) scale(1.12)';
+  } else {
+    menu.classList.remove('open');
+    overlay.classList.remove('open');
+    if (btn) btn.style.transform = '';
+  }
+}
+// ===== END FLOATING MENU =====
 window.onload = () => {
   loadSettings();
 applyLang();
