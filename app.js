@@ -168,32 +168,71 @@ function liveSearch() {
   if (q && q.length > 1) doSearch();
 }
 
-async function applyFilters() {
-  const type   = document.getElementById('filterType')?.value;
-  const genre  = document.getElementById('filterGenre')?.value;
-  const year   = document.getElementById('filterYear')?.value;
-  const sort   = document.getElementById('filterSort')?.value || 'popularity.desc';
-  const grid   = document.getElementById('searchGrid');
+let searchPage = 1;
+let searchTotalPages = 1;
+let searchCurrentParams = {};
+let searchObserver = null;
+
+async function applyFilters(reset = true) {
+  const type  = document.getElementById('filterType')?.value  || '';
+  const genre = document.getElementById('filterGenre')?.value || '';
+  const year  = document.getElementById('filterYear')?.value  || '';
+  const sort  = document.getElementById('filterSort')?.value  || 'popularity.desc';
+  const lang  = document.getElementById('filterLang')?.value  || '';
+  const grid  = document.getElementById('searchGrid');
   const sqLinks = document.getElementById('searchQuickLinks');
-  if (sqLinks) sqLinks.style.display = 'none';
   if (!grid) return;
-  grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
+  if (sqLinks) sqLinks.style.display = 'none';
+
+  if (reset) {
+    searchPage = 1;
+    searchCurrentParams = {type, genre, year, sort, lang};
+    grid.innerHTML = '<div class="loading">⏳ جاري التحميل...</div>';
+  }
+
   const ep = type === 'tv' ? 'tv' : 'movie';
-  let url = `${TMDB_BASE}/discover/${ep}?api_key=${TMDB_KEY}&language=ar-SA&sort_by=${sort}&page=1`;
+  let url = `${TMDB_BASE}/discover/${ep}?api_key=${TMDB_KEY}&language=ar-SA&sort_by=${sort}&page=${searchPage}`;
   if (genre) url += `&with_genres=${genre}`;
   if (year && ep === 'movie') url += `&primary_release_year=${year}`;
   if (year && ep === 'tv')    url += `&first_air_date_year=${year}`;
+  if (lang)  url += `&with_original_language=${lang}`;
+
   try {
     const data = await fetch(url).then(r=>r.json());
+    searchTotalPages = data.total_pages || 1;
     const results = (data.results||[]).filter(i=>i.poster_path);
-    if (!results.length) { grid.innerHTML = '<div class="loading">لا توجد نتائج</div>'; return; }
-    grid.innerHTML = results.map(i => {
+    if (reset) grid.innerHTML = '';
+    if (!results.length && reset) { grid.innerHTML = '<div class="loading">لا توجد نتائج</div>'; return; }
+    results.forEach(i => {
       const t = i.title||i.name||i.original_title||'';
-      const r = i.vote_average?i.vote_average.toFixed(1):'';
-      return `<div class="card" onclick="openDetails(${i.id},'${type||'movie'}')"><div class="card-img-wrap"><img src="https://image.tmdb.org/t/p/w500${i.poster_path}" alt="${t}" loading="lazy">${r?`<span class="card-rating">⭐ ${r}</span>`:''}<div class="card-overlay"><span class="play-btn">▶</span></div></div><span class="card-title">${t}</span></div>`;
-    }).join('');
-  } catch(e) { grid.innerHTML = '<div class="loading">❌ خطأ</div>'; }
-      }
+      const r = i.vote_average ? i.vote_average.toFixed(1) : '';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<div class="card-img-wrap"><img src="https://image.tmdb.org/t/p/w500${i.poster_path}" alt="${t}" loading="lazy">${r?`<span class="card-rating">⭐ ${r}</span>`:''}<div class="card-overlay"><span class="play-btn">▶</span></div></div><span class="card-title">${t}</span>`;
+      card.onclick = () => openDetails(i.id, type||'movie');
+      grid.appendChild(card);
+    });
+    // إضافة sentinel للـ infinite scroll
+    let sentinel = document.getElementById('searchSentinel');
+    if (!sentinel) {
+      sentinel = document.createElement('div');
+      sentinel.id = 'searchSentinel';
+      sentinel.style.height = '20px';
+      grid.after(sentinel);
+    }
+    if (searchObserver) searchObserver.disconnect();
+    if (searchPage < searchTotalPages) {
+      searchObserver = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          searchPage++;
+          searchObserver.disconnect();
+          applyFilters(false);
+        }
+      }, {threshold: 0.1});
+      searchObserver.observe(sentinel);
+    }
+  } catch(e) { if(reset) grid.innerHTML = '<div class="loading">❌ خطأ</div>'; }
+}
 // ===== صفحة الشبكات =====
 async function openNetworksPage(pageNum) {
   if (!pageNum) pageNum = 1;
