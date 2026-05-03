@@ -1291,3 +1291,28 @@ min-height: 720px;
 .big-row > div:active::after {
   opacity: 1;
   }
+/* FINAL FIX - إزالة الفراغ */
+.big-row {
+  align-items: flex-start !important;
+}
+.big-row > div {
+  height: auto !important;
+  flex: 0 0 150px !important;
+  width: 150px !important;
+}
+.big-row > div > div {
+  height: 220px !important;
+  flex-shrink: 0 !important;
+}
+.big-row > div > div + div {
+  height: auto !important;
+  min-height: unset !important;
+  max-height: none !important;
+  flex-shrink: 0 !important;
+  background: transparent !important;
+}
+.big-row > div > div:last-child {
+  height: auto !important;
+  min-height: unset !important;
+  background: transparent !important;
+}
