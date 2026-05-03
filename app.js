@@ -1778,6 +1778,10 @@ async function loadHomePage() {
               ${rating ? `<span class="card-rating">⭐ ${rating}</span>` : ''}
             </div>
           </div>`;
+      }).join('');
+    } catch(e) { if (el) el.innerHTML = ''; }
+  }
+
   fillRow('homeMoviesTrending',
     `${TMDB_BASE}/trending/movie/week?api_key=${TMDB_KEY}&language=${lang}`, 'movie');
   fillRow('homeMoviesPopular',
