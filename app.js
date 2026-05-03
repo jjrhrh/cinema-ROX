@@ -1039,56 +1039,161 @@ async function openPlayerFromDetail(id, type, season, episode, titleIn, posterIn
       </div>
 
     </div>
+watchPage.innerHTML = `
+    <button class="back-btn" onclick="goBack()" style="z-index:200;position:fixed;top:14px;right:14px;">&#8594; رجوع</button>
+
+    <!-- المشغل السينمائي مع الباكدروب -->
+    <div class="watch-cinema-hero" style="${poster?`background-image:url('${poster}')`:''}" id="watchHero">
+      <div class="watch-cinema-overlay"></div>
+      <div class="watch-cinema-play" onclick="document.getElementById('watchFrameWrap').style.display='block';document.getElementById('watchHero').style.display='none';">
+        <div class="watch-play-circle">▶</div>
+        <div style="font-size:.9rem;font-weight:700;opacity:.8;margin-top:8px;">اضغط للمشاهدة</div>
+      </div>
+    </div>
+    <div id="watchFrameWrap" style="display:none;width:100%;background:#000;position:sticky;top:0;z-index:100;">
+      <iframe id="watchFrame" src="${currentServers[0]}"
+        allowfullscreen allow="autoplay;fullscreen;picture-in-picture"
+        style="width:100%;aspect-ratio:16/9;border:none;display:block;background:#000;">
+      </iframe>
+    </div>
+
+    <div class="watch-body">
+
+      <!-- معلومات الفيلم -->
+      ${title ? `
+      <div class="watch-glass-card" style="position:relative;overflow:hidden;padding:0;">
+        ${poster?`<img src="${poster}" style="width:100%;height:200px;object-fit:cover;opacity:0.18;position:absolute;top:0;left:0;filter:blur(14px);transform:scale(1.1);">` : ''}
+        <div style="position:relative;padding:20px 18px;">
+          <h2 style="font-size:1.35rem;font-weight:900;font-family:'Cairo',sans-serif;margin-bottom:12px;line-height:1.3;">${title}</h2>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            ${rating?`<span class="watch-tag" style="background:rgba(245,166,35,0.15);color:#f5a623;border-color:rgba(245,166,35,0.35);">⭐ ${rating}</span>`:''}
+            ${year?`<span class="watch-tag">📅 ${year}</span>`:''}
+            ${type==='movie'?`<span class="watch-tag" style="background:rgba(229,9,20,0.15);color:var(--primary);border-color:rgba(229,9,20,0.35);">🎬 فيلم</span>`:`<span class="watch-tag" style="background:rgba(26,108,255,0.15);color:#1a6cff;border-color:rgba(26,108,255,0.35);">📺 مسلسل</span>`}
+          </div>
+          ${genres?`<div style="font-size:.82rem;opacity:.5;font-family:'Cairo',sans-serif;">${genres}</div>`:''}
+        </div>
+      </div>` : ''}
+
+      <!-- قصة الفيلم Synopsis -->
+      <div class="watch-glass-card" id="watchSynopsisCard">
+        <div class="watch-section-header">
+          <span style="font-weight:900;font-size:1rem;font-family:'Cairo',sans-serif;">📖 القصة</span>
+        </div>
+        <div id="watchSynopsisContent" style="font-size:.9rem;line-height:1.85;color:rgba(255,255,255,0.75);font-family:'Cairo',sans-serif;">
+          <div style="opacity:.4;text-align:center;padding:10px;">⏳ جاري التحميل...</div>
+        </div>
+      </div>
+
+      <!-- السيرفرات -->
+      <div class="watch-glass-card">
+        <div class="watch-section-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:9px;height:9px;border-radius:50%;background:#1ce783;box-shadow:0 0 10px #1ce783;animation:pulse 1.5s infinite;flex-shrink:0;"></div>
+            <span style="font-weight:900;font-size:1rem;font-family:'Cairo',sans-serif;">مصادر البث</span>
+          </div>
+        </div>
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:2px;opacity:.35;margin-bottom:14px;">🔒 السيرفرات الخاصة</div>
+        <div class="watch-servers-grid">
+          ${serverDefs.map((sv,i)=>`
+            <div class="watch-server-btn ${i===0?'watch-server-active':''}" id="srv${i}" onclick="switchServer(${i})" style="--sv-color:${sv.color};">
+              ${i===0?`<div class="watch-server-check">✓</div>`:''}
+              <div style="font-size:1.7rem;margin-bottom:6px;">${sv.icon}</div>
+              <div style="font-weight:900;font-size:.88rem;margin-bottom:3px;font-family:'Cairo',sans-serif;">${sv.name}</div>
+              <div style="font-size:.72rem;opacity:.5;margin-bottom:10px;font-family:'Cairo',sans-serif;">${sv.desc}</div>
+              <span class="watch-server-badge" style="background:${sv.color}22;color:${sv.color};border:1px solid ${sv.color}44;">${sv.free?'مجاني':'مميز'}</span>
+            </div>`).join('')}
+        </div>
+        <p style="font-size:.73rem;opacity:.28;text-align:center;margin-top:16px;font-family:'Cairo',sans-serif;">إذا لم يعمل السيرفر جرب آخر ↑</p>
+      </div>
+
+      <!-- بيانات الإنتاج -->
+      <div class="watch-glass-card" id="watchExtraData">
+        <div class="watch-section-header">
+          <span style="font-weight:900;font-size:1rem;font-family:'Cairo',sans-serif;">📊 بيانات الإنتاج</span>
+        </div>
+        <div id="watchExtraContent">
+          <div style="text-align:center;padding:20px;opacity:.35;font-size:.85rem;">⏳ جاري التحميل...</div>
+        </div>
+      </div>
+
+    </div>
   `;
 
-  // جلب بيانات الإنتاج
+  // جلب القصة وبيانات الإنتاج
   try {
     const ep2 = type==='movie'?'movie':'tv';
-    const full = await fetch(`${TMDB_BASE}/${ep2}/${id}?api_key=${TMDB_KEY}&language=ar-SA&append_to_response=production_companies`).then(r=>r.json());
-    const budget   = full.budget   ? '$'+Number(full.budget).toLocaleString()   : null;
-    const revenue  = full.revenue  ? '$'+Number(full.revenue).toLocaleString()  : null;
-    const companies= (full.production_companies||[]).slice(0,4).map(c=>c.name).join(' · ') || null;
-    const status   = full.status   || null;
-    const lang     = full.original_language ? full.original_language.toUpperCase() : null;
-    const runtime  = full.runtime  ? `${full.runtime} د` : (full.episode_run_time?.[0] ? `${full.episode_run_time[0]} د/حلقة` : null);
+    const full = await fetch(`${TMDB_BASE}/${ep2}/${id}?api_key=${TMDB_KEY}&language=ar-SA`).then(r=>r.json());
+
+    // القصة
+    const synEl = document.getElementById('watchSynopsisContent');
+    if (synEl) {
+      synEl.textContent = full.overview || 'لا يوجد وصف متاح بالعربي';
+    }
+
+    // بيانات الإنتاج
+    const budget    = full.budget   ? '$'+Number(full.budget).toLocaleString()  : null;
+    const revenue   = full.revenue  ? '$'+Number(full.revenue).toLocaleString() : null;
+    const companies = (full.production_companies||[]).slice(0,4).map(c=>c.name).join(' · ') || null;
+    const status    = full.status   || null;
+    const lang      = full.original_language ? full.original_language.toUpperCase() : null;
+    const runtime   = full.runtime  ? `${full.runtime} د` : (full.episode_run_time?.[0] ? `${full.episode_run_time[0]} د/حلقة` : null);
 
     const rows = [
-      budget    ? ['💰 الميزانية',   budget,   '#1ce783'] : null,
-      revenue   ? ['📈 الإيرادات',   revenue,  '#f5a623'] : null,
-      companies ? ['🏢 شركات الإنتاج', companies, '#1a6cff'] : null,
-      status    ? ['🎬 الحالة',       status,   '#e50914'] : null,
-      lang      ? ['🌐 اللغة',        lang,     '#c084fc'] : null,
-      runtime   ? ['⏱ المدة',         runtime,  '#f5a623'] : null,
+      budget    ? {icon:'💰', label:'الميزانية',      val:budget,    color:'#f5a623', bold:true} : null,
+      revenue   ? {icon:'📈', label:'الإيرادات',      val:revenue,   color:'#1ce783', bold:true} : null,
+      companies ? {icon:'🏢', label:'شركات الإنتاج',  val:companies, color:'#1a6cff', bold:false}: null,
+      status    ? {icon:'🎬', label:'الحالة',          val:status,    color:'#e50914', bold:false}: null,
+      lang      ? {icon:'🌐', label:'اللغة',           val:lang,      color:'#c084fc', bold:false}: null,
+      runtime   ? {icon:'⏱', label:'المدة',            val:runtime,   color:'#f5a623', bold:false}: null,
     ].filter(Boolean);
 
     const el = document.getElementById('watchExtraContent');
-    if (el) {
-      el.innerHTML = rows.length ? `
-        <div class="watch-data-table">
-          ${rows.map(([label,val,color])=>`
-            <div class="watch-data-row">
-              <span style="opacity:.6;font-size:.85rem;">${label}</span>
-              <span style="font-weight:700;font-size:.9rem;color:${color};">${val}</span>
-            </div>`).join('')}
-        </div>` : '<div style="opacity:.3;text-align:center;padding:10px;font-size:.85rem;">لا توجد بيانات</div>';
+    if (el && rows.length) {
+      el.innerHTML = `<div class="watch-data-table">
+        ${rows.map(r=>`
+          <div class="watch-data-row">
+            <span style="opacity:.55;font-size:.85rem;font-family:'Cairo',sans-serif;">${r.icon} ${r.label}</span>
+            <span style="font-weight:${r.bold?'900':'700'};font-size:${r.bold?'1rem':'.88rem'};color:${r.color};font-family:'Cairo',sans-serif;">${r.val}</span>
+          </div>`).join('')}
+      </div>`;
+    } else if (el) {
+      el.innerHTML = '<div style="opacity:.3;text-align:center;padding:10px;font-size:.85rem;">لا توجد بيانات</div>';
     }
   } catch(e) {
+    const synEl = document.getElementById('watchSynopsisContent');
+    if (synEl) synEl.textContent = 'لا يوجد وصف متاح';
     const el = document.getElementById('watchExtraContent');
     if (el) el.innerHTML = '<div style="opacity:.3;text-align:center;padding:10px;">❌ خطأ في التحميل</div>';
   }
 
   window._switchServer = function(i) {
     currentServerIndex = i;
+    // تشغيل الإطار إذا كان مخفياً
+    document.getElementById('watchFrameWrap').style.display = 'block';
+    document.getElementById('watchHero') && (document.getElementById('watchHero').style.display = 'none');
     document.getElementById('watchFrame').src = currentServers[i];
     serverDefs.forEach((_,idx)=>{
       const el = document.getElementById('srv'+idx);
       if (!el) return;
       const sv = serverDefs[idx];
-      el.style.background = idx===i ? sv.color+'22' : '#ffffff08';
-      el.style.borderColor = idx===i ? sv.color+'66' : '#ffffff15';
+      if (idx===i) {
+        el.classList.add('watch-server-active');
+        el.classList.remove('watch-server-inactive');
+        // أضف check mark
+        if (!el.querySelector('.watch-server-check')) {
+          const chk = document.createElement('div');
+          chk.className = 'watch-server-check';
+          chk.textContent = '✓';
+          el.prepend(chk);
+        }
+      } else {
+        el.classList.remove('watch-server-active');
+        el.querySelector('.watch-server-check')?.remove();
+      }
     });
   };
 }
+function switchServer(i){ window._switchServer && window._switchServer(i); }
 function switchServer(i){ window._switchServer && window._switchServer(i); }
 function openPlayerEpisode(sid, s, e) {
   currentServers = TV_SERVERS(sid, s, e);
