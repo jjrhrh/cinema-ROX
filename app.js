@@ -1639,7 +1639,6 @@ async function openAIRecommendations() {
 }
 // ===== صفحة مكتبتي (Trakt Style) =====
 function renderLibraryPage() {
-function renderLibraryPage() {
   const page = document.getElementById('libraryPage');
   if (!page) return;
   window.scrollTo(0, 0);
