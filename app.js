@@ -1749,12 +1749,7 @@ function renderLibraryPage() {
     </div>
   `;
 }
-      grid.appendChild(card);
-    });
-  } catch(e) {
-    page.innerHTML='<div class="loading">❌ خطأ، حاول مرة ثانية</div>';
-  }
-}
+
 // ===== تحميل الصفحة الرئيسية =====
 async function loadHomePage() {
   const lang = currentLang === 'ar' ? 'ar-SA' : 'en-US';
