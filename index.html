@@ -258,8 +258,20 @@
 <div class="page" id="watchLaterPage"></div>
 <div class="page" id="notesPage"></div>
 <!-- صفحة المكتبة -->
-<div class="page" id="libraryPage"></div>
-
+<div class="page" id="libraryPage">
+  <div class="container" style="padding-top:80px;padding-bottom:100px;">
+    <div class="library-tabs">
+      <button class="lib-tab active" onclick="switchLibTab(this,'libWatchlist')">❤️ المفضلة</button>
+      <button class="lib-tab" onclick="switchLibTab(this,'libWatchLater')">⏰ لاحقاً</button>
+      <button class="lib-tab" onclick="switchLibTab(this,'libNotes')">💬 ملاحظاتي</button>
+      <button class="lib-tab" onclick="switchLibTab(this,'libStats')">📊 إحصائياتي</button>
+    </div>
+    <div class="lib-panel" id="libWatchlist"><div class="grid" id="libWatchlistGrid"></div></div>
+    <div class="lib-panel" id="libWatchLater" style="display:none"><div class="grid" id="libWatchLaterGrid"></div></div>
+    <div class="lib-panel" id="libNotes" style="display:none"><div id="libNotesList"></div></div>
+    <div class="lib-panel" id="libStats" style="display:none"><div id="libStatsContent"></div></div>
+  </div>
+</div>
 <!-- صفحة التفاصيل -->
 <div class="page" id="detailPage"></div>
 
