@@ -289,17 +289,17 @@ function showPage(pageId) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const btn = document.querySelector(`[data-page="${pageId}"]`);
   if (btn) btn.classList.add('active');
-  if (['moviesPage','seriesPage','animePage','searchPage'].includes(pageId)) {
+  if (['homePage','seriesPage','animePage','searchPage'].includes(pageId)) {
     lastPage = pageId;
   }
   const hero = document.getElementById('heroBanner');
-  if (hero) hero.style.display = pageId === 'moviesPage' ? '' : 'none';
+  if (hero) hero.style.display = pageId === 'homePage' ? '' : 'none';
   window.scrollTo(0, 0);
 }
 
 function goHome() {
   pageHistory = [];
-  showPage('moviesPage');
+  showPage('homePage');
 }
 
 function goBack() {
