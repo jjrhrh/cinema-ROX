@@ -1807,12 +1807,21 @@ async function loadHomePage() {
     ];
     platformsEl.innerHTML = platforms.map(p => `
       <div onclick="openNetwork(${p.id},'${p.name}','${p.color}')"
-           style="flex:0 0 100px;cursor:pointer;text-align:center;">
-        <div style="width:100px;height:60px;border-radius:12px;
-                    background:${p.color}33;border:2px solid ${p.color}66;
-                    display:flex;align-items:center;justify-content:center;">
-          <span style="color:#fff;font-size:13px;font-weight:900;
-                       text-align:center;padding:4px;">${p.name}</span>
+           style="flex:0 0 110px;cursor:pointer;text-align:center;">
+        <div style="
+          width:110px;height:65px;border-radius:16px;
+          background:rgba(0,0,0,0.5);
+          backdrop-filter:blur(10px);
+          -webkit-backdrop-filter:blur(10px);
+          border:1.5px solid ${p.color};
+          box-shadow:0 0 14px ${p.color}66, inset 0 0 8px ${p.color}22;
+          display:flex;align-items:center;justify-content:center;
+          transition:transform 0.15s, box-shadow 0.15s;
+          active-transform:scale(0.95);"
+          onpointerdown="this.style.transform='scale(0.95)'"
+          onpointerup="this.style.transform='scale(1)'"
+          onpointerleave="this.style.transform='scale(1)'">
+          <span style="color:#fff;font-size:13px;font-weight:900;text-align:center;padding:4px;text-shadow:0 0 10px ${p.color};">${p.name}</span>
         </div>
       </div>
     `).join('');
