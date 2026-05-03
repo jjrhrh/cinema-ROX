@@ -63,21 +63,77 @@
 <!-- ===== END FLOATING MENU ===== -->
 <!-- صفحة البحث -->
 <div class="page" id="searchPage">
-  <div class="container" style="padding-top:80px;">
-    <input type="text" id="searchInput" placeholder="🔍 ابحث عن فيلم أو مسلسل..." oninput="liveSearch()" style="width:100%;padding:14px 18px;border-radius:16px;border:2px solid #333;background:#1a1a2e;color:#fff;font-family:'Tajawal',sans-serif;font-size:1rem;margin-bottom:16px;box-sizing:border-box;">
-    <div class="filter-bar">
-      <select id="filterType" onchange="applyFilters()"><option value="">🎬 الكل</option><option value="movie">🎥 أفلام</option><option value="tv">📺 مسلسلات</option></select>
-      <select id="filterGenre" onchange="applyFilters()"><option value="">🎭 التصنيف</option><option value="28">أكشن</option><option value="35">كوميديا</option><option value="18">دراما</option><option value="27">رعب</option><option value="10749">رومانسي</option><option value="878">خيال علمي</option><option value="16">أنمي</option></select><select id="filterYear" onchange="applyFilters()"><option value="">📅 السنة</option><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option><option value="2020">2020</option></select>
-      <select id="filterLang" onchange="applyFilters()"><option value="">🌐 اللغة</option><option value="ar">🇸🇦 عربي</option><option value="en">🇺🇸 إنجليزي</option><option value="ja">🇯🇵 ياباني</option><option value="ko">🇰🇷 كوري</option><option value="fr">🇫🇷 فرنسي</option><option value="es">🇪🇸 إسباني</option><option value="tr">🇹🇷 تركي</option></select>
-      <select id="filterSort" onchange="applyFilters()"><option value="popularity.desc">🔥 الأكثر شيوعاً</option><option value="vote_average.desc">⭐ الأعلى تقييماً</option><option value="release_date.desc">🆕 الأحدث</option></select>
+  <div class="search-page-wrap">
+
+    <!-- شريط البحث الأسطوري -->
+    <div class="search-hero">
+      <div class="search-input-wrap" id="searchInputWrap">
+        <span class="search-icon-inner">🔍</span>
+        <input type="text" id="searchInput"
+          placeholder="ابحث عن فيلم أو مسلسل..."
+          oninput="liveSearch()"
+          autocomplete="off"
+          class="search-neo-input">
+      </div>
+
+      <!-- كبسولات الفلاتر -->
+      <div class="filter-pills-row">
+        <select id="filterType"   class="filter-pill" onchange="applyFilters()">
+          <option value="">🎬 الكل</option>
+          <option value="movie">🎥 أفلام</option>
+          <option value="tv">📺 مسلسلات</option>
+        </select>
+        <select id="filterGenre"  class="filter-pill" onchange="applyFilters()">
+          <option value="">🎭 التصنيف</option>
+          <option value="28">أكشن</option>
+          <option value="35">كوميديا</option>
+          <option value="18">دراما</option>
+          <option value="27">رعب</option>
+          <option value="10749">رومانسي</option>
+          <option value="878">خيال علمي</option>
+          <option value="16">أنمي</option>
+          <option value="80">جريمة</option>
+          <option value="99">وثائقي</option>
+        </select>
+        <select id="filterYear"   class="filter-pill" onchange="applyFilters()">
+          <option value="">📅 السنة</option>
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+        </select>
+        <select id="filterLang"   class="filter-pill" onchange="applyFilters()">
+          <option value="">🌐 اللغة</option>
+          <option value="ar">🇸🇦 عربي</option>
+          <option value="en">🇺🇸 إنجليزي</option>
+          <option value="ja">🇯🇵 ياباني</option>
+          <option value="ko">🇰🇷 كوري</option>
+          <option value="fr">🇫🇷 فرنسي</option>
+          <option value="es">🇪🇸 إسباني</option>
+          <option value="tr">🇹🇷 تركي</option>
+        </select>
+        <select id="filterSort"   class="filter-pill" onchange="applyFilters()">
+          <option value="popularity.desc">🔥 الأكثر شيوعاً</option>
+          <option value="vote_average.desc">⭐ الأعلى تقييماً</option>
+          <option value="release_date.desc">🆕 الأحدث</option>
+        </select>
+      </div>
     </div>
-    <div id="searchQuickLinks">
-      <h3 class="section-title">❤️ قائمتي</h3>
-      <div class="grid" id="watchlistGrid"></div>
-      <h3 class="section-title" style="margin-top:20px;">⏰ سأشاهده لاحقاً</h3>
-      <div class="grid" id="watchLaterGrid2"></div>
+
+    <!-- نتائج البحث / روابط سريعة -->
+    <div class="search-results-area">
+      <div id="searchQuickLinks" class="search-quick">
+        <h3 class="section-title">❤️ قائمتي</h3>
+        <div class="grid" id="watchlistGrid"></div>
+        <h3 class="section-title" style="margin-top:20px;">⏰ سأشاهده لاحقاً</h3>
+        <div class="grid" id="watchLaterGrid2"></div>
+      </div>
+      <div class="search-big-grid" id="searchGrid"></div>
     </div>
-    <div class="grid" id="searchGrid"></div>
+
   </div>
 </div>
 
