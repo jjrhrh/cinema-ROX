@@ -1,3 +1,8 @@
+/* ===== FINAL OVERRIDE ===== */
+.section-title { font-size:22px !important; font-weight:900 !important; }
+.card-rating { position:absolute !important; bottom:10px !important; right:10px !important; left:auto !important; top:auto !important; background:rgba(0,0,0,0.72) !important; backdrop-filter:blur(20px) !important; -webkit-backdrop-filter:blur(20px) !important; border:1px solid rgba(255,255,255,0.2) !important; color:#f5c518 !important; font-size:11px !important; font-weight:800 !important; padding:4px 12px !important; border-radius:30px !important; }
+.card:active { transform:scale(0.95) !important; }
+/* ===== END FINAL ===== */
 /* ===== UPGRADE v4 ===== */
 
 /* 1. المنصات - Glassmorphism + Neon Glow */
