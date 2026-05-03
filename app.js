@@ -307,7 +307,7 @@ function goBack() {
   const prev = pageHistory[pageHistory.length - 1];
 
   if (!prev || prev === 'homePage' || prev === 'seriesPage' || prev === 'animePage' || prev === 'searchPage') {
-    const target = prev || lastPage || 'moviesPage';
+    const target = prev || lastPage || 'homePage';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(target).classList.add('active');
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
