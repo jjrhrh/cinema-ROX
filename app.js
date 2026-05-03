@@ -976,56 +976,106 @@ async function openPlayerFromDetail(id, type, season, episode, titleIn, posterIn
     <button class="back-btn" onclick="goBack()" style="z-index:10;">&#8594; رجوع</button>
 
     <!-- مشغل الفيديو -->
-    <div style="width:100%;background:#000;position:relative;">
+    <div class="watch-player-wrap">
       <iframe id="watchFrame" src="${currentServers[0]}"
         allowfullscreen allow="autoplay;fullscreen;picture-in-picture"
         style="width:100%;aspect-ratio:16/9;border:none;display:block;background:#000;">
       </iframe>
     </div>
 
-    <!-- معلومات الفيلم -->
-    ${poster||title?`
-    <div style="position:relative;overflow:hidden;">
-      ${poster?`<img src="${poster}" style="width:100%;height:200px;object-fit:cover;opacity:.3;position:absolute;top:0;left:0;filter:blur(8px);">`:'' }
-      <div style="position:relative;padding:20px;display:flex;gap:14px;align-items:flex-start;background:linear-gradient(to bottom,rgba(0,0,0,0.5),var(--bg));">
-        <div style="flex:1;">
-          <h2 style="font-size:1.2rem;font-weight:900;margin-bottom:8px;">${title}</h2>
+    <!-- معلومات الفيلم - Glass Card -->
+    <div class="watch-body">
+
+      ${poster||title ? `
+      <div class="watch-glass-card" style="position:relative;overflow:hidden;padding:0;">
+        ${poster?`<img src="${poster}" style="width:100%;height:180px;object-fit:cover;opacity:0.25;position:absolute;top:0;left:0;filter:blur(12px);transform:scale(1.1);">` : ''}
+        <div style="position:relative;padding:20px;">
+          <h2 style="font-size:1.3rem;font-weight:900;margin-bottom:10px;">${title}</h2>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            ${rating?`<span style="background:#f5a62320;color:#f5a623;padding:4px 10px;border-radius:20px;font-size:.8rem;font-weight:700;">⭐ ${rating}</span>`:''}
-            ${year?`<span style="background:#ffffff15;padding:4px 10px;border-radius:20px;font-size:.8rem;">📅 ${year}</span>`:''}
-            ${type==='movie'?`<span style="background:var(--primary)20;color:var(--primary);padding:4px 10px;border-radius:20px;font-size:.8rem;">🎬 فيلم</span>`:`<span style="background:#1a6cff20;color:#1a6cff;padding:4px 10px;border-radius:20px;font-size:.8rem;">📺 مسلسل</span>`}
+            ${rating?`<span class="watch-tag" style="background:rgba(245,166,35,0.15);color:#f5a623;border-color:rgba(245,166,35,0.3);">⭐ ${rating}</span>`:''}
+            ${year?`<span class="watch-tag">📅 ${year}</span>`:''}
+            ${type==='movie'?`<span class="watch-tag" style="background:rgba(229,9,20,0.15);color:var(--primary);border-color:rgba(229,9,20,0.3);">🎬 فيلم</span>`:`<span class="watch-tag" style="background:rgba(26,108,255,0.15);color:#1a6cff;border-color:rgba(26,108,255,0.3);">📺 مسلسل</span>`}
           </div>
-          ${genres?`<div style="margin-top:6px;font-size:.8rem;opacity:.6;">${genres}</div>`:''}
+          ${genres?`<div style="margin-top:8px;font-size:.82rem;opacity:.55;">${genres}</div>`:''}
+        </div>
+      </div>` : ''}
+
+      <!-- السيرفرات - Glass Card -->
+      <div class="watch-glass-card">
+        <div class="watch-section-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#1ce783;box-shadow:0 0 8px #1ce783;animation:pulse 1.5s infinite;"></div>
+            <span style="font-weight:800;font-size:1rem;">مصادر البث</span>
+          </div>
+        </div>
+
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:2px;opacity:.4;margin-bottom:12px;padding:0 2px;">🔒 السيرفرات الخاصة</div>
+        <div class="watch-servers-grid">
+          ${serverDefs.map((sv,i)=>`
+            <div class="watch-server-btn ${i===0?'active':''}" id="srv${i}"
+              onclick="switchServer(${i})"
+              style="--sv-color:${sv.color};">
+              ${i===0?`<div class="watch-server-check">✓</div>`:''}
+              <div style="font-size:1.6rem;margin-bottom:6px;">${sv.icon}</div>
+              <div style="font-weight:800;font-size:.85rem;margin-bottom:2px;">${sv.name}</div>
+              <div style="font-size:.72rem;opacity:.55;margin-bottom:8px;">${sv.desc}</div>
+              <span class="watch-server-badge" style="background:rgba(${sv.color.replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)).join(',')},0.2);color:${sv.color};">${sv.free?'مجاني':'مميز'}</span>
+            </div>`).join('')}
+        </div>
+
+        <p style="font-size:.75rem;opacity:.3;text-align:center;margin-top:14px;">
+          إذا لم يعمل السيرفر جرب آخر ↑
+        </p>
+      </div>
+
+      <!-- بيانات الإنتاج -->
+      <div class="watch-glass-card" id="watchExtraData">
+        <div class="watch-section-header">
+          <span style="font-weight:800;font-size:1rem;">📊 بيانات الإنتاج</span>
+        </div>
+        <div id="watchExtraContent">
+          <div style="text-align:center;padding:20px;opacity:.4;font-size:.85rem;">⏳ جاري التحميل...</div>
         </div>
       </div>
-    </div>`:''}
 
-    <!-- السيرفرات -->
-    <div style="padding:16px 16px 100px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-        <div style="width:8px;height:8px;border-radius:50%;background:#1ce783;animation:pulse 1.5s infinite;"></div>
-        <span style="font-size:.85rem;font-weight:700;opacity:.8;">مصادر البث</span>
-      </div>
-
-      <div style="margin-bottom:10px;opacity:.5;font-size:.75rem;font-weight:700;letter-spacing:1px;">🔒 السيرفرات</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-        ${serverDefs.map((sv,i)=>`
-          <div id="srv${i}" onclick="switchServer(${i})"
-            style="background:${i===0?sv.color+'22':'#ffffff08'};border:2px solid ${i===0?sv.color+'66':'#ffffff15'};
-                   border-radius:16px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;">
-            <div style="font-size:1.8rem;margin-bottom:6px;">${sv.icon}</div>
-            <div style="font-weight:700;font-size:.9rem;margin-bottom:2px;">${sv.name}</div>
-            <div style="font-size:.75rem;opacity:.6;margin-bottom:8px;">${sv.desc}</div>
-            <div style="display:inline-block;background:${sv.color}22;color:${sv.color};padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;">${sv.free?'مجاني':'مميز'}</div>
-            ${i===0?`<div style="position:absolute;top:10px;left:10px;background:${sv.color};color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;">✓</div>`:''}
-          </div>`).join('')}
-      </div>
-
-      <p style="font-size:.78rem;opacity:.35;text-align:center;">
-        إذا لم يعمل السيرفر جرب آخر ↑
-      </p>
     </div>
   `;
+
+  // جلب بيانات الإنتاج
+  try {
+    const ep2 = type==='movie'?'movie':'tv';
+    const full = await fetch(`${TMDB_BASE}/${ep2}/${id}?api_key=${TMDB_KEY}&language=ar-SA&append_to_response=production_companies`).then(r=>r.json());
+    const budget   = full.budget   ? '$'+Number(full.budget).toLocaleString()   : null;
+    const revenue  = full.revenue  ? '$'+Number(full.revenue).toLocaleString()  : null;
+    const companies= (full.production_companies||[]).slice(0,4).map(c=>c.name).join(' · ') || null;
+    const status   = full.status   || null;
+    const lang     = full.original_language ? full.original_language.toUpperCase() : null;
+    const runtime  = full.runtime  ? `${full.runtime} د` : (full.episode_run_time?.[0] ? `${full.episode_run_time[0]} د/حلقة` : null);
+
+    const rows = [
+      budget    ? ['💰 الميزانية',   budget,   '#1ce783'] : null,
+      revenue   ? ['📈 الإيرادات',   revenue,  '#f5a623'] : null,
+      companies ? ['🏢 شركات الإنتاج', companies, '#1a6cff'] : null,
+      status    ? ['🎬 الحالة',       status,   '#e50914'] : null,
+      lang      ? ['🌐 اللغة',        lang,     '#c084fc'] : null,
+      runtime   ? ['⏱ المدة',         runtime,  '#f5a623'] : null,
+    ].filter(Boolean);
+
+    const el = document.getElementById('watchExtraContent');
+    if (el) {
+      el.innerHTML = rows.length ? `
+        <div class="watch-data-table">
+          ${rows.map(([label,val,color])=>`
+            <div class="watch-data-row">
+              <span style="opacity:.6;font-size:.85rem;">${label}</span>
+              <span style="font-weight:700;font-size:.9rem;color:${color};">${val}</span>
+            </div>`).join('')}
+        </div>` : '<div style="opacity:.3;text-align:center;padding:10px;font-size:.85rem;">لا توجد بيانات</div>';
+    }
+  } catch(e) {
+    const el = document.getElementById('watchExtraContent');
+    if (el) el.innerHTML = '<div style="opacity:.3;text-align:center;padding:10px;">❌ خطأ في التحميل</div>';
+  }
 
   window._switchServer = function(i) {
     currentServerIndex = i;
