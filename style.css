@@ -1,3 +1,56 @@
+/* ===== BOTTOM NAV UPGRADE - MASTER OVERRIDE ===== */
+.bottom-nav {
+  background: rgba(0,0,0,0.55) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-top: 1px solid rgba(255,255,255,0.08) !important;
+}
+.bnav-btn {
+  color: rgba(255,255,255,0.35) !important;
+  transition: all 0.25s ease !important;
+}
+.bnav-btn .bnav-icon {
+  filter: none !important;
+  transition: all 0.25s ease !important;
+}
+.bnav-btn .bnav-label {
+  color: rgba(255,255,255,0.35) !important;
+  transition: all 0.25s ease !important;
+}
+.bnav-btn.active {
+  color: #00BFFF !important;
+}
+.bnav-btn.active .bnav-icon {
+  filter: drop-shadow(0 0 8px #00BFFF) drop-shadow(0 0 16px rgba(0,191,255,0.5)) !important;
+}
+.bnav-btn.active .bnav-label {
+  color: #00BFFF !important;
+  font-weight: 800 !important;
+}
+.bnav-center,
+.bnav-center.active {
+  background: linear-gradient(135deg,#e50914,#8B0000) !important;
+  color: #fff !important;
+  box-shadow: 0 0 18px rgba(229,9,20,0.7), 0 0 40px rgba(229,9,20,0.35), 0 4px 20px rgba(0,0,0,0.6) !important;
+  animation: roxPulse 2s ease-in-out infinite !important;
+}
+.bnav-center .bnav-icon {
+  filter: none !important;
+}
+.bnav-center .bnav-label {
+  color: #fff !important;
+}
+@keyframes roxPulse {
+  0%,100% {
+    box-shadow: 0 0 18px rgba(229,9,20,0.7), 0 0 40px rgba(229,9,20,0.35), 0 4px 20px rgba(0,0,0,0.6);
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(229,9,20,0.9), 0 0 60px rgba(229,9,20,0.5), 0 4px 25px rgba(0,0,0,0.7);
+    transform: translateY(-2px) scale(1.06);
+  }
+}
+/* ===== END BOTTOM NAV UPGRADE ===== */
 /* ===== CINEMA ROX MASTER OVERRIDE ===== */
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
 body, * { font-family:'Cairo','Tajawal',sans-serif !important; }
