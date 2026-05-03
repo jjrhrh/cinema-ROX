@@ -1593,7 +1593,32 @@ async function loadHomePage() {
     `${TMDB_BASE}/movie/top_rated?api_key=${TMDB_KEY}&language=${lang}`, 'movie');
   fillRow('homeSeriesTrending',
     `${TMDB_BASE}/trending/tv/week?api_key=${TMDB_KEY}&language=${lang}`, 'tv');
-
+// المنصات
+  const platformsEl = document.getElementById('homePlatforms');
+  if (platformsEl) {
+    const platforms = [
+      { id: 213,  name: 'Netflix',    logo: 'https://image.tmdb.org/t/p/w92/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg',  color: '#e50914' },
+      { id: 49,   name: 'HBO',        logo: 'https://image.tmdb.org/t/p/w92/tuomPhY2UtuPTqqFnKMVHvSb724.jpg',  color: '#8A2BE2' },
+      { id: 2739, name: 'Disney+',    logo: 'https://image.tmdb.org/t/p/w92/uzKjVDmQ1WRMvGBb7UNRE0wTn1H.jpg', color: '#113CCF' },
+      { id: 1024, name: 'Amazon',     logo: 'https://image.tmdb.org/t/p/w92/ifhbNuuVnlwYy5oXA5VIb2YR8AZ.jpg', color: '#00A8E1' },
+      { id: 2552, name: 'Apple TV+',  logo: 'https://image.tmdb.org/t/p/w92/6mckdnFtOJL1AeRIFITuO2769s4.jpg', color: '#555555' },
+      { id: 4330, name: 'Paramount+', logo: 'https://image.tmdb.org/t/p/w92/fi83B1oztoS47xxcemFdPMhIzK.jpg',  color: '#0064FF' },
+      { id: 453,  name: 'Hulu',       logo: 'https://image.tmdb.org/t/p/w92/zxrVdFjIjLqkfnwyghnfywTn3Lh.jpg', color: '#1CE783' },
+    ];
+    platformsEl.innerHTML = platforms.map(p => `
+      <div onclick="openNetwork(${p.id},'${p.name}','${p.color}')"
+           style="flex:0 0 100px;cursor:pointer;text-align:center;">
+        <div style="width:100px;height:60px;border-radius:12px;
+                    background:${p.color}22;border:1px solid ${p.color}44;
+                    display:flex;align-items:center;justify-content:center;">
+          <img src="${p.logo}" alt="${p.name}"
+               style="width:80px;height:45px;object-fit:contain;"
+               onerror="this.parentElement.innerHTML='<span style=color:#fff;font-size:12px;font-weight:700>${p.name}</span>'">
+        </div>
+        <div style="font-size:11px;color:#ccc;margin-top:6px;">${p.name}</div>
+      </div>
+    `).join('');
+        }
   // الأنمي
   const animeEl = document.getElementById('homeAnime');
   if (animeEl) {
