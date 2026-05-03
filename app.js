@@ -516,7 +516,8 @@ async function openNetwork(networkId, networkName, color) {
 
 // ===== صفحة التفاصيل =====
 async function openDetails(id, type) {
-  pageHistory.push('detailPage');
+  const lastInHistory = pageHistory[pageHistory.length - 1];
+  if (lastInHistory !== 'detailPage') pageHistory.push('detailPage');
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const page = document.getElementById('detailPage');
   page.classList.add('active');
