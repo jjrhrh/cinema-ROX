@@ -1633,7 +1633,12 @@ async function openAIRecommendations() {
       card.className='card';
       card.innerHTML=`<div class="card-img-wrap"><img src="${IMG_BASE}${item.poster_path}" alt="${title}" loading="lazy">${rating?`<span class="card-rating">⭐ ${rating}</span>`:''}<div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div></div><div class="card-info"><h4>${title}</h4></div>`;
       card.onclick=()=>openDetails(item.id,'movie');
-      // ===== صفحة مكتبتي (Trakt Style) =====
+      grid.appendChild(card);
+    });
+  } catch(e) {}
+}
+// ===== صفحة مكتبتي (Trakt Style) =====
+function renderLibraryPage() {
 function renderLibraryPage() {
   const page = document.getElementById('libraryPage');
   if (!page) return;
