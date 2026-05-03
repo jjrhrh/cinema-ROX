@@ -1316,3 +1316,11 @@ min-height: 720px;
   min-height: unset !important;
   background: transparent !important;
 }
+/* نجوم واضحة */
+textarea ~ div button,
+#noteText ~ div button[onclick*="selectStar"],
+[id*="star"] {
+  color: #f5c518 !important;
+  opacity: 1 !important;
+  text-shadow: 0 0 8px rgba(245,197,24,0.6) !important;
+}
