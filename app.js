@@ -314,16 +314,16 @@ function goBack() {
     const btn = document.querySelector(`[data-page="${target}"]`);
     if (btn) btn.classList.add('active');
     const hero = document.getElementById('heroBanner');
-    if (hero) hero.style.display = target === 'moviesPage' ? '' : 'none';
+    if (hero) hero.style.display = target === 'homePage' ? '' : 'none';
   } else if (prev === 'networksListPage') {
     pageHistory.pop();
     openNetworksPage(1);
   } else {
-    const target = lastPage || 'moviesPage';
+    const target = lastPage || 'homePage';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(target).classList.add('active');
     const hero = document.getElementById('heroBanner');
-    if (hero) hero.style.display = target === 'moviesPage' ? '' : 'none';
+    if (hero) hero.style.display = target === 'homePage' ? '' : 'none';
   }
   window.scrollTo(0, 0);
 }
