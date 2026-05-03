@@ -312,7 +312,7 @@ function goBack() {
   pageHistory.pop();
   const prev = pageHistory[pageHistory.length - 1];
 
-  if (!prev || prev === 'homePage' || prev === 'seriesPage' || prev === 'animePage' || prev === 'searchPage' || prev === 'surprisePage') {
+if (!prev || prev === 'homePage' || prev === 'seriesPage' || prev === 'animePage' || prev === 'searchPage' || prev === 'surprisePage') {
     const target = prev || lastPage || 'homePage';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById(target).classList.add('active');
