@@ -6,14 +6,6 @@
   <title>Cinema ROX</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
-      var s = document.getElementById('splash-screen');
-      if (s) s.style.cssText = 'display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;';
-    }, 1500);
-  });
-  </script>
 </head>
 <body>
 <!-- ===== SPLASH SCREEN ===== -->
@@ -212,28 +204,14 @@
 <div class="page" id="networksListPage"></div>
 <!-- HERO BANNER -->
 <!-- HERO BANNER -->
-<!-- HERO BANNER -->
 <div id="heroBanner" class="hero-banner">
-  <!-- خلفية الفيلم الكبيرة -->
-  <div class="hero-bg" id="heroBg"></div>
-  <div class="hero-bg-overlay"></div>
-  <!-- المحتوى يطفو فوق الخلفية -->
-  <div class="hero-content-wrap">
-    <div class="hero-poster-wrap">
-      <img class="hero-poster-img" id="heroPosterImg" src="" alt="">
+  <div class="hero-carousel" id="heroCarousel"></div>
+  <div class="hero-info">
+    <div class="hero-badge">🔥 الأكثر مشاهدة</div>
+    <div class="hero-year-tag" id="heroYearTag"></div>
+    <h1 class="hero-title" id="heroTitle"></h1>
+    <div class="hero-tags" id="heroMeta"></div><!-- الصفحة الرئيسية -->
     </div>
-    <div class="hero-info">
-      <div class="hero-badge">🔥 الأكثر مشاهدة</div>
-      <h1 class="hero-title" id="heroTitle"></h1>
-      <div class="hero-tags" id="heroMeta"></div>
-      <div class="hero-btns">
-        <button class="hero-glow-btn" id="heroWatchBtn">▶ مشاهدة الآن</button>
-        <button class="hero-btn-info" id="heroInfoBtn">ℹ️ التفاصيل</button>
-      </div>
-    </div>
-  </div>
-  <div class="hero-dots" id="heroDots"></div>
-</div>
 </div>
 <div class="page active" id="homePage">
   <div class="home-container">
