@@ -40,8 +40,29 @@
     <span class="bnav-label">حسابي</span>
   </button>
 </nav>
+<!-- ===== FLOATING ROX MENU ===== -->
+<div class="rox-overlay" id="roxOverlay" onclick="toggleRoxMenu()"></div>
+<div class="rox-menu" id="roxMenu">
+  <div class="rox-item" onclick="toggleRoxMenu();openMovieOfDayPage()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#e50914,#8B0000);box-shadow:0 4px 18px rgba(229,9,20,0.55);">🎥</div>
+    <span class="rox-label">فيلم اليوم</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openStatsPage()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);box-shadow:0 4px 18px rgba(26,108,255,0.55);">📊</div>
+    <span class="rox-label">إحصائياتي</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openSurprisePage()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#f5a623,#c47d0e);box-shadow:0 4px 18px rgba(245,166,35,0.55);">🎲</div>
+    <span class="rox-label">فاجئني</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openAiPage()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#1ce783,#0a8f4a);box-shadow:0 4px 18px rgba(28,231,131,0.55);">🤖</div>
+    <span class="rox-label">اختياري</span>
+  </div>
+</div>
+<!-- ===== END FLOATING MENU ===== -->
 <!-- صفحة البحث -->
-<div class="page" id="searchPage" style="display:none;">
+<div class="page" id="searchPage">
   <div class="search-page-wrap">
 
     <!-- شريط البحث الأسطوري -->
@@ -117,7 +138,7 @@
 </div>
 
 <!-- صفحة Browse -->
-<div class="page" id="browsePage" style="display:none;">
+<div class="page" id="browsePage">
   <div class="container" style="padding-top:80px;">
     <h2 class="section-title">🔥 الأفلام الرائجة</h2>
     <div class="grid" id="moviesGrid"></div>
@@ -129,7 +150,7 @@
 </div>
 
 <!-- صفحة الملف الشخصي -->
-<div class="page" id="profilePage" style="display:none;">
+<div class="page" id="profilePage">
   <div class="container" style="padding-top:80px;text-align:center;">
     <img src="logo.png" alt="Cinema ROX" style="width:90px;height:90px;border-radius:50%;border:3px solid var(--primary);margin-bottom:12px;object-fit:cover;">
     <h2 style="font-size:1.5rem;font-weight:900;margin-bottom:4px;">Cinema <span style="color:var(--primary)">ROX</span></h2>
@@ -183,16 +204,15 @@
 <div class="page" id="networksListPage"></div>
 <!-- HERO BANNER -->
 <!-- HERO BANNER -->
-<div id="heroBanner" class="hero-banner" style="display:none;">
+<div id="heroBanner" class="hero-banner">
   <div class="hero-carousel" id="heroCarousel"></div>
   <div class="hero-info">
     <div class="hero-badge">🔥 الأكثر مشاهدة</div>
     <div class="hero-year-tag" id="heroYearTag"></div>
     <h1 class="hero-title" id="heroTitle"></h1>
-<div class="hero-tags" id="heroMeta"></div>
-  </div>
+    <div class="hero-tags" id="heroMeta"></div><!-- الصفحة الرئيسية -->
+    </div>
 </div>
-<!-- الصفحة الرئيسية -->
 <div class="page active" id="homePage">
   <div class="home-container">
 
@@ -254,7 +274,8 @@
 
   </div>
 </div>
-
+  </div>
+</div>
 <!-- END HERO -->
 <!-- صفحة الأفلام -->
 
@@ -271,6 +292,18 @@
   <div class="container">
     <h2 class="section-title">✨ عالم الأنمي</h2>
     <div class="grid" id="animeGrid"></div>
+  </div>
+</div>
+
+<!-- صفحة البحث -->
+<div class="page" id="searchPage">
+  <div class="container">
+    <h2 class="section-title">🔍 ابحث عن فيلم أو مسلسل</h2>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="اكتب اسم الفيلم أو المسلسل...">
+      <button onclick="doSearch()">بحث</button>
+    </div>
+    <div class="grid" id="searchGrid"></div>
   </div>
 </div>
 
