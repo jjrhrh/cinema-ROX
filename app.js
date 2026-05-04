@@ -106,9 +106,7 @@ document.getElementById('bnavHome')?.classList.remove('active');
   document.getElementById('bnavProfile')?.classList.remove('active');
   if (tab === 'home') {
     document.getElementById('bnavHome').classList.add('active');
-document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('homePage')?.classList.add('active');
-    loadHomePage();
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));document.getElementById('homePage')?.classList.add('active');
     const hero = document.getElementById('heroBanner');
     if (hero) hero.style.display = '';
   } else if (tab === 'search') {
@@ -167,15 +165,14 @@ function liveSearch() {
   const q = document.getElementById('searchInput')?.value?.trim();
   const input = document.getElementById('searchInput');
   const sqLinks = document.getElementById('searchQuickLinks');
+  // neon color حسب وجود نص
   if (input) input.classList.toggle('has-value', !!q);
   if (sqLinks) sqLinks.style.display = q ? 'none' : '';
   if (q && q.length > 1) doSearch();
   else if (!q) {
     const grid = document.getElementById('searchGrid');
     if (grid) grid.innerHTML = '';
-    if (sqLinks) sqLinks.style.display = '';
   }
-}
 }
 
 let searchPage = 1;
@@ -193,11 +190,7 @@ async function applyFilters(reset = true) {
   const sqLinks = document.getElementById('searchQuickLinks');
   if (!grid) return;
   if (sqLinks) sqLinks.style.display = 'none';
-document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('pill-active'));
-  ['filterType','filterGenre','filterYear','filterLang','filterSort'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el && el.value) el.classList.add('pill-active');
-  });
+
   if (reset) {
     searchPage = 1;
     searchCurrentParams = {type, genre, year, sort, lang};
@@ -1571,56 +1564,20 @@ function showHero(idx) {
 // ===== END HERO =====
 // ===== تهيئة =====
 // ===== FLOATING ROX MENU =====
-// إنشاء rox-menu ديناميكياً
-function createRoxMenuIfNeeded() {
-  if (document.getElementById('roxMenu')) return;
-  const overlay = document.createElement('div');
-  overlay.className = 'rox-overlay';
-  overlay.id = 'roxOverlay';
-  overlay.onclick = toggleRoxMenu;
-  document.body.appendChild(overlay);
-  const menu = document.createElement('div');
-  menu.id = 'roxMenu';
-  menu.className = 'rox-menu';
-  menu.innerHTML = `
-    <div class="rox-item" onclick="toggleRoxMenu();openMovieOfDayPage()">
-      <div class="rox-circle" style="background:linear-gradient(135deg,#e50914,#8B0000);box-shadow:0 4px 18px rgba(229,9,20,0.55);">🎥</div>
-      <span class="rox-label">فيلم اليوم</span>
-    </div>
-    <div class="rox-item" onclick="toggleRoxMenu();openStatsPage()">
-      <div class="rox-circle" style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);box-shadow:0 4px 18px rgba(26,108,255,0.55);">📊</div>
-      <span class="rox-label">إحصائياتي</span>
-    </div>
-    <div class="rox-item" onclick="toggleRoxMenu();openSurprisePage()">
-      <div class="rox-circle" style="background:linear-gradient(135deg,#f5a623,#c47d0e);box-shadow:0 4px 18px rgba(245,166,35,0.55);">🎲</div>
-      <span class="rox-label">فاجئني</span>
-    </div>
-    <div class="rox-item" onclick="toggleRoxMenu();openAiPage()">
-      <div class="rox-circle" style="background:linear-gradient(135deg,#1ce783,#0a8f4a);box-shadow:0 4px 18px rgba(28,231,131,0.55);">🤖</div>
-      <span class="rox-label">اختياري</span>
-    </div>
-  `;
-  document.body.appendChild(menu);
-}
 let roxMenuOpen = false;
-createRoxMenuIfNeeded();
 function toggleRoxMenu() {
   roxMenuOpen = !roxMenuOpen;
   const menu    = document.getElementById('roxMenu');
   const overlay = document.getElementById('roxOverlay');
   const btn     = document.getElementById('bnavBrowse');
   if (roxMenuOpen) {
-    menu.style.display = 'flex';
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      menu.classList.add('open');
-    }));
+    menu.classList.add('open');
     overlay.classList.add('open');
     if (btn) btn.style.transform = 'rotate(45deg) scale(1.12)';
   } else {
     menu.classList.remove('open');
     overlay.classList.remove('open');
     if (btn) btn.style.transform = '';
-    setTimeout(() => { menu.style.display = 'none'; }, 380);
   }
 }
 // ===== END FLOATING MENU =====
@@ -1641,8 +1598,6 @@ window.onload = () => {
   try { loadSettings(); } catch(e){}
   try { applyLang(); } catch(e){}
   try { initHero(); } catch(e){}
-  const hero = document.getElementById('heroBanner');
-  if (hero) hero.style.display = '';
   try { loadHomePage(); } catch(e){}
   try { initScrollTop(); } catch(e){}
   try { fetchMovies(); } catch(e){}
