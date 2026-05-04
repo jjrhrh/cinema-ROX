@@ -52,3 +52,37 @@
   font-size: 0.78rem; color: var(--gold);
   font-weight: 700;
 }
+/* ===== TRAILER PLAYER NEON ===== */
+.trailer-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.88);
+  backdrop-filter: blur(14px);
+  display: flex; align-items: center; justify-content: center;
+}
+.trailer-box {
+  position: relative;
+  width: 92%; max-width: 860px;
+  border-radius: 20px; overflow: hidden;
+  border: 2px solid var(--primary);
+  box-shadow:
+    0 0 30px rgba(229,9,20,0.5),
+    0 0 80px rgba(229,9,20,0.2);
+}
+.trailer-frame {
+  width: 100%; aspect-ratio: 16/9;
+  border: none; display: block;
+}
+.trailer-close {
+  position: absolute; top: 12px; left: 12px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  border: none; font-size: 1rem; font-weight: 900;
+  cursor: pointer; z-index: 10;
+  box-shadow: 0 0 14px rgba(229,9,20,0.6);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.trailer-close:hover {
+  transform: scale(1.12);
+  box-shadow: 0 0 24px rgba(229,9,20,0.9);
+}
+/* ===== END TRAILER ===== */
