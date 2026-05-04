@@ -1899,24 +1899,3 @@ body, * {
   margin: 0 !important;
   padding: 0 !important;
 }
-/* إخفاء نهائي لجميع النصوص والتقييمات في نتائج البحث فقط */
-div#searchResults .movie-info,
-div#searchResults .movie-card h3,
-div#searchResults span,
-div#searchResults .card-info,
-div#searchResults .rating-tag {
-    display: none !important;
-}
-
-/* ضمان أن البوستر يأخذ كامل المساحة وبدون حواف بيضاء */
-div#searchResults .movie-card {
-    background: transparent !important;
-    border: none !important;
-}
-/* مسح الطبقة الشفافة والنجوم نهائياً من نتائج البحث */
-#searchResults .movie-card::after, 
-#searchResults .movie-info,
-#searchResults .card-rating {
-    display: none !important;
-    opacity: 0 !important;
-}
