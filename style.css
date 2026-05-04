@@ -1,3 +1,5 @@
+.rox-menu { opacity: 0 !important; pointer-events: none !important; }
+.rox-menu.open { opacity: 1 !important; pointer-events: all !important; }
 #splash-screen[style*="display: none"] { display: none !important; }
 #splash-screen[style*="opacity: 0"] { opacity: 0 !important; pointer-events: none !important; }
 /* ===== ULTRA SMOOTH ===== */
