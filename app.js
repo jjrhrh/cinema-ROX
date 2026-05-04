@@ -1,165 +1,137 @@
-// ملف app.js — نسخة منقحة للعمل مع config.js و style.css
+// app.js النهائي للعمل مع config.js وstyle.css
 
-// الاستخدام الأساسي للـ CONFIG
 const TMDB_KEY = CONFIG.KEYS.TMDB;
 const TMDB_BASE = CONFIG.API.TMDB_BASE;
 const IMG_BASE = CONFIG.IMAGES.POSTER_LG;
-const POSTERS_IN_SEARCH = CONFIG.DISPLAY.POSTERS_IN_SEARCH; // 20 (عدد النتائج)
 
 const splashScreen = document.getElementById('splash-screen');
 const searchGrid = document.getElementById('searchGrid');
+const searchInput = document.getElementById('quickSearchInput');
 
-// تشغيل شاشة التحميل
+// إظهار شاشة التحميل
 function showSplash() {
   if (splashScreen) splashScreen.style.display = 'grid';
 }
-
 // إخفاء شاشة التحميل
 function hideSplash() {
   if (splashScreen) splashScreen.style.display = 'none';
 }
 
-// دالة لجلب البيانات من TMDB (بناء على فلتر البحث)
-async function fetchSearchResults(params = {}) {
+// عرض الأفلام ببوسترين في السطر كما هو محدد في style.css
+function renderMovies(movies) {
+  if (!searchGrid) return;
+  searchGrid.innerHTML = '';
+
+  // عرض 20 بوستر كحد أقصى (10 صفوف × 2 عمود)
+  movies.slice(0, 20).forEach(movie => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const title = movie.title || movie.original_title || '';
+    const posterSrc = movie.poster_path ? `${IMG_BASE}${movie.poster_path}` : CONFIG.IMAGES.PLACEHOLDER;
+
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${posterSrc}" alt="${title}" loading="lazy" 
+             onerror="this.src='${CONFIG.IMAGES.PLACEHOLDER}'" />
+        <div class="card-overlay"><span class="play-btn">▶</span></div>
+      </div>
+      <span class="card-title">${title}</span>
+    `;
+
+    card.onclick = () => alert(`تم اختيار الفيلم: ${title}`);
+
+    searchGrid.appendChild(card);
+  });
+}
+
+// جلب الأفلام الرائجة
+async function fetchTrendingMovies() {
   showSplash();
   try {
-    const url = new URL(`${TMDB_BASE}/search/multi`);
+    const url = new URL(`${TMDB_BASE}/movie/popular`);
     url.searchParams.set('api_key', TMDB_KEY);
     url.searchParams.set('language', CONFIG.LOCALE.DEFAULT_LANG);
-    url.searchParams.set('query', params.query || '');
-    url.searchParams.set('page', params.page || '1');
-    url.searchParams.set('include_adult', CONFIG.SEARCH.INCLUDE_ADULT);
+    url.searchParams.set('page', '1');
 
-    if (params.language) {
-      url.searchParams.set('with_original_language', params.language);
-    }
-
-    const response = await fetch(url.toString());
-    if (!response.ok) throw new Error('Failed to fetch');
-    const data = await response.json();
-
-    return (data.results || []).filter(item => item.poster_path || item.profile_path);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('فشل في جلب الأفلام الرائجة');
+    const data = await res.json();
+    const movies = (data.results || []).filter(m => m.poster_path);
+    return movies;
   } catch (error) {
-    console.error('خطأ في جلب نتائج البحث:', error);
+    console.error(error);
     return [];
   } finally {
     hideSplash();
   }
 }
 
-// وظيفة العرض: عرض العناصر في searchGrid ببوسترين في السطر كما في style.css
-function renderSearchResults(items) {
-  if (!searchGrid) return;
-  searchGrid.innerHTML = '';
-
-  // أخذ فقط الـ POSTERS_IN_SEARCH الأوائل
-  const itemsToShow = items.slice(0, POSTERS_IN_SEARCH);
-
-  itemsToShow.forEach(item => {
-    const title = item.title || item.name || '';
-    const imageSrc = item.poster_path ? `${IMG_BASE}${item.poster_path}` : item.profile_path ? `${IMG_BASE}${item.profile_path}` : CONFIG.IMAGES.PLACEHOLDER;
-
-    const card = document.createElement('div');
-    card.classList.add('card');
-
-    card.innerHTML = `
-      <div class="card-img-wrap">
-        <img src="${imageSrc}" alt="${title}" loading="lazy" onerror="this.src='${CONFIG.IMAGES.PLACEHOLDER}'" />
-        <div class="card-overlay"><span class="play-btn">▶</span></div>
-      </div>
-      <span class="card-title">${title}</span>
-    `;
-
-    // يمكن تعديل هنا لاستدعاء تفاصيل العنصر عند الضغط على البطاقة
-    card.onclick = () => alert(`تم الضغط على: ${title}`);
-
-    searchGrid.appendChild(card);
-  });
-}
-
-// تطبيق الفلاتر من الواجهة والأحداث، ثم جلب وعرض البيانات
-async function applyFilters() {
-  const queryInput = document.getElementById('searchInput');
-  const type = document.getElementById('filterType')?.value || '';
-  const genre = document.getElementById('filterGenre')?.value || '';
-  const year = document.getElementById('filterYear')?.value || '';
-  const lang = document.getElementById('filterLang')?.value || '';
-  const sort = document.getElementById('filterSort')?.value || 'popularity.desc';
-
-  let query = queryInput?.value?.trim() || '';
-  if (!query) {
-    searchGrid.innerHTML = '<div class="placeholder-card">يرجى إدخال نص للبحث</div>';
+// البحث وعرض النتائج
+async function applySearch(query) {
+  if (!query || query.trim().length < CONFIG.SEARCH.MIN_CHARS) {
+    if (searchGrid) {
+      searchGrid.innerHTML = `<div class="placeholder-card">يرجى إدخال نص للبحث (على الأقل ${CONFIG.SEARCH.MIN_CHARS} أحرف)</div>`;
+    }
     return;
   }
 
-  // بناء URL حسب نوع البحث (movie, tv, multi)
-  let endpoint = '/search/multi';
-  if (type === 'movie') endpoint = '/search/movie';
-  else if (type === 'tv') endpoint = '/search/tv';
-
   showSplash();
-
   try {
-    let url = new URL(TMDB_BASE + endpoint);
+    const url = new URL(`${TMDB_BASE}/search/movie`);
     url.searchParams.set('api_key', TMDB_KEY);
     url.searchParams.set('language', CONFIG.LOCALE.DEFAULT_LANG);
-    url.searchParams.set('query', query);
-    url.searchParams.set('page', '1');
+    url.searchParams.set('query', query.trim());
     url.searchParams.set('include_adult', CONFIG.SEARCH.INCLUDE_ADULT);
+    url.searchParams.set('page', '1');
 
-    if (lang) url.searchParams.set('with_original_language', lang);
-    if (year) {
-      if (type === 'movie') url.searchParams.set('primary_release_year', year);
-      else if (type === 'tv') url.searchParams.set('first_air_date_year', year);
-    }
-    if (genre) url.searchParams.set('with_genres', genre);
-    url.searchParams.set('sort_by', sort);
-
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error('Failed to load data');
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('خطأ في نتائج البحث');
     const data = await res.json();
 
-    const results = (data.results || []).filter(item => item.poster_path);
-
-    if (results.length === 0) {
-      searchGrid.innerHTML = '<div class="placeholder-card">لا توجد نتائج</div>';
+    const movies = (data.results || []).filter(m => m.poster_path);
+    if (movies.length === 0) {
+      searchGrid.innerHTML = `<div class="placeholder-card">لا توجد نتائج بحث</div>`;
     } else {
-      renderSearchResults(results);
+      renderMovies(movies);
     }
-  } catch (e) {
-    console.error(e);
-    searchGrid.innerHTML = '<div class="placeholder-card">حدث خطأ أثناء التحميل</div>';
+  } catch (error) {
+    console.error(error);
+    searchGrid.innerHTML = `<div class="placeholder-card">حدث خطأ أثناء البحث</div>`;
   } finally {
     hideSplash();
   }
 }
 
-// تنفيذ البحث السريع من زر البحث أعلى الصفحة
-function doQuickSearch() {
-  applyFilters();
-}
+// تهيئة الاستماع لحدث إدخال النص في مربع البحث
+function initSearchListener() {
+  if (!searchInput) return;
 
-// إضافة الاستماع على إدخال النص لبحث مباشر عند الحاجة (اختياري)
-const searchInputElem = document.getElementById('searchInput');
-if (searchInputElem) {
-  searchInputElem.addEventListener('input', () => {
-    if (searchInputElem.value.trim().length >= CONFIG.SEARCH.MIN_CHARS) {
-      applyFilters();
-    } else {
-      if (searchGrid) searchGrid.innerHTML = '';
-    }
+  let debounceTimer;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const query = searchInput.value;
+      if (query.trim().length >= CONFIG.SEARCH.MIN_CHARS) {
+        applySearch(query);
+      } else {
+        if (searchGrid) searchGrid.innerHTML = '';
+      }
+    }, CONFIG.SEARCH.DEBOUNCE_MS);
   });
 }
 
-// تحكم في التنقل بين الصفحات (إذا احتجت لإضافة دعم التنقل)
-function bnavGo(tab) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const targetPage = document.getElementById(tab + 'Page') || document.getElementById(tab);
-  if (targetPage) targetPage.classList.add('active');
-}
+// بدء التطبيق - جلب الأفلام الرائجة وتشغيل البحث تلقائياً
+window.addEventListener('DOMContentLoaded', async () => {
+  showSplash();
+  initSearchListener();
+  const trendingMovies = await fetchTrendingMovies();
 
-// بدء التشغيل: إخفاء شاشة التحميل تلقائياً بعد 3 ثواني لو لم يتم جلب بيانات (تجربة)
-// أو يمكن تركها تظهر وتختفي حسب البيانات
-window.addEventListener('load', () => {
-  setTimeout(hideSplash, 3000);
+  if (trendingMovies.length > 0) {
+    renderMovies(trendingMovies);
+  } else if (searchGrid) {
+    searchGrid.innerHTML = `<div class="placeholder-card">لا توجد أفلام رائجة حاليًا.</div>`;
+  }
+
+  hideSplash();
 });
