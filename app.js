@@ -165,14 +165,15 @@ function liveSearch() {
   const q = document.getElementById('searchInput')?.value?.trim();
   const input = document.getElementById('searchInput');
   const sqLinks = document.getElementById('searchQuickLinks');
-  // neon color حسب وجود نص
   if (input) input.classList.toggle('has-value', !!q);
   if (sqLinks) sqLinks.style.display = q ? 'none' : '';
   if (q && q.length > 1) doSearch();
   else if (!q) {
     const grid = document.getElementById('searchGrid');
     if (grid) grid.innerHTML = '';
+    if (sqLinks) sqLinks.style.display = '';
   }
+}
 }
 
 let searchPage = 1;
