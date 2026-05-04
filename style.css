@@ -1,3 +1,5 @@
+#splash-screen[style*="display: none"] { display: none !important; }
+#splash-screen[style*="opacity: 0"] { opacity: 0 !important; pointer-events: none !important; }
 /* ===== ULTRA SMOOTH ===== */
 html, body { scroll-behavior: smooth !important; overscroll-behavior: none !important; }
 * { -webkit-overflow-scrolling: touch !important; box-sizing: border-box !important; }
