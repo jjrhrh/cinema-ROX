@@ -51,7 +51,10 @@ const CONFIG = Object.freeze({
     MAX_RESULTS       : 10,      // أقصى عدد نتائج في القائمة
     INCLUDE_ADULT     : false,   // إخفاء المحتوى الكبار
   }),
-
+// ===== إعدادات نظام الفيديو =====
+const YOUTUBE_BASE   = 'https://www.youtube.com/embed/';
+const YOUTUBE_SEARCH = 'https://www.googleapis.com/youtube/v3/search';
+const TMDB_VIDEO_EP  = '/videos'; // يُضاف لـ /movie/{id}/videos
   // ─────────────────────────────────────────
   //  🎬  إعدادات عرض المحتوى
   // ─────────────────────────────────────────
