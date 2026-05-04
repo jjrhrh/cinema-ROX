@@ -56,6 +56,8 @@
 body, * { font-family:'Cairo','Tajawal',sans-serif !important; }
 .section-title { font-size:22px !important; font-weight:900 !important; letter-spacing:-0.3px !important; border-right:4px solid var(--primary) !important; }
 .grid { display:flex !important; flex-direction:row !important; overflow-x:auto !important; flex-wrap:nowrap !important; gap:14px !important; padding-bottom:12px !important; scroll-snap-type:x mandatory !important; -webkit-overflow-scrolling:touch !important; scrollbar-width:none !important; }
+.search-big-grid { display:grid !important; flex-direction:unset !important; overflow-x:unset !important; flex-wrap:unset !important; grid-template-columns:repeat(2,1fr) !important; gap:14px !important; padding-bottom:0 !important; scroll-snap-type:unset !important; }
+.search-big-grid .card { flex:unset !important; min-width:unset !important; width:100% !important; }
 .grid::-webkit-scrollbar { display:none !important; }
 .card { flex:0 0 180px !important; min-width:180px !important; border-radius:25px !important; overflow:hidden !important; box-shadow:0 10px 30px rgba(0,0,0,0.8) !important; scroll-snap-align:start !important; position:relative !important; transition:transform 0.18s !important; }
 .card:active { transform:scale(0.95) !important; }
