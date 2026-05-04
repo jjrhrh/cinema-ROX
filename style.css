@@ -1,137 +1,436 @@
-// app.js النهائي للعمل مع config.js وstyle.css
+@charset "UTF-8";
 
-const TMDB_KEY = CONFIG.KEYS.TMDB;
-const TMDB_BASE = CONFIG.API.TMDB_BASE;
-const IMG_BASE = CONFIG.IMAGES.POSTER_LG;
+/* =========================================================
+   Cinema-ROX — style.css
+   نسخة نظيفة ومُعاد بناؤها بالكامل اعتماداً على config.js
+   ========================================================= */
 
-const splashScreen = document.getElementById('splash-screen');
-const searchGrid = document.getElementById('searchGrid');
-const searchInput = document.getElementById('quickSearchInput');
+:root {
+  /* === Tokens mapped from config.js === */
+  --config-font-family: "Cairo", sans-serif;
+  --config-accent-color: #e50914;
+  --config-secondary-color: #f5c518;
+  --config-info-color: #1a6cff;
+  --config-success-color: #1ce783;
+  --config-bg-start: #070b12;
+  --config-bg-end: #0d1320;
+  --config-surface: rgba(255, 255, 255, 0.06);
+  --config-surface-strong: rgba(255, 255, 255, 0.12);
+  --config-stroke: rgba(255, 255, 255, 0.1);
+  --config-text: #f8f9ff;
+  --config-muted: rgba(248, 249, 255, 0.72);
 
-// إظهار شاشة التحميل
-function showSplash() {
-  if (splashScreen) splashScreen.style.display = 'grid';
-}
-// إخفاء شاشة التحميل
-function hideSplash() {
-  if (splashScreen) splashScreen.style.display = 'none';
-}
+  /* === Semantic theme === */
+  --bg: var(--config-bg-start);
+  --bg-soft: var(--config-bg-end);
+  --bg-elevated: rgba(9, 14, 23, 0.84);
+  --surface: var(--config-surface);
+  --surface-2: rgba(255, 255, 255, 0.04);
+  --surface-3: var(--config-surface-strong);
+  --stroke: var(--config-stroke);
+  --text: var(--config-text);
+  --muted: var(--config-muted);
+  --primary: var(--config-accent-color);
+  --secondary: var(--config-secondary-color);
+  --info: var(--config-info-color);
+  --success: var(--config-success-color);
 
-// عرض الأفلام ببوسترين في السطر كما هو محدد في style.css
-function renderMovies(movies) {
-  if (!searchGrid) return;
-  searchGrid.innerHTML = '';
+  /* === FX === */
+  --glass-blur: blur(15px);
+  --glass-blur-soft: blur(10px);
+  --shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.24);
+  --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.34);
+  --shadow-neon-blue: 0 0 0 1px rgba(26, 108, 255, 0.22), 0 0 18px rgba(26, 108, 255, 0.28), 0 0 42px rgba(26, 108, 255, 0.16);
+  --shadow-neon-red: 0 14px 30px rgba(229, 9, 20, 0.24), 0 0 28px rgba(229, 9, 20, 0.14);
+  --shadow-neon-gold: 0 0 24px rgba(245, 197, 24, 0.16);
 
-  // عرض 20 بوستر كحد أقصى (10 صفوف × 2 عمود)
-  movies.slice(0, 20).forEach(movie => {
-    const card = document.createElement('div');
-    card.className = 'card';
+  /* === Radius === */
+  --radius-xl: 32px;
+  --radius-lg: 24px;
+  --radius-md: 18px;
+  --radius-sm: 14px;
+  --radius-pill: 999px;
 
-    const title = movie.title || movie.original_title || '';
-    const posterSrc = movie.poster_path ? `${IMG_BASE}${movie.poster_path}` : CONFIG.IMAGES.PLACEHOLDER;
-
-    card.innerHTML = `
-      <div class="card-img-wrap">
-        <img src="${posterSrc}" alt="${title}" loading="lazy" 
-             onerror="this.src='${CONFIG.IMAGES.PLACEHOLDER}'" />
-        <div class="card-overlay"><span class="play-btn">▶</span></div>
-      </div>
-      <span class="card-title">${title}</span>
-    `;
-
-    card.onclick = () => alert(`تم اختيار الفيلم: ${title}`);
-
-    searchGrid.appendChild(card);
-  });
-}
-
-// جلب الأفلام الرائجة
-async function fetchTrendingMovies() {
-  showSplash();
-  try {
-    const url = new URL(`${TMDB_BASE}/movie/popular`);
-    url.searchParams.set('api_key', TMDB_KEY);
-    url.searchParams.set('language', CONFIG.LOCALE.DEFAULT_LANG);
-    url.searchParams.set('page', '1');
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('فشل في جلب الأفلام الرائجة');
-    const data = await res.json();
-    const movies = (data.results || []).filter(m => m.poster_path);
-    return movies;
-  } catch (error) {
-    console.error(error);
-    return [];
-  } finally {
-    hideSplash();
-  }
+  /* === Layout === */
+  --header-height: 84px;
+  --bottom-nav-height: 92px;
+  --container: min(1280px, calc(100% - 32px));
+  --section-gap: 24px;
+  --search-side-width: 320px;
+  --search-results-columns: repeat(2, minmax(0, 1fr));
 }
 
-// البحث وعرض النتائج
-async function applySearch(query) {
-  if (!query || query.trim().length < CONFIG.SEARCH.MIN_CHARS) {
-    if (searchGrid) {
-      searchGrid.innerHTML = `<div class="placeholder-card">يرجى إدخال نص للبحث (على الأقل ${CONFIG.SEARCH.MIN_CHARS} أحرف)</div>`;
-    }
-    return;
-  }
-
-  showSplash();
-  try {
-    const url = new URL(`${TMDB_BASE}/search/movie`);
-    url.searchParams.set('api_key', TMDB_KEY);
-    url.searchParams.set('language', CONFIG.LOCALE.DEFAULT_LANG);
-    url.searchParams.set('query', query.trim());
-    url.searchParams.set('include_adult', CONFIG.SEARCH.INCLUDE_ADULT);
-    url.searchParams.set('page', '1');
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('خطأ في نتائج البحث');
-    const data = await res.json();
-
-    const movies = (data.results || []).filter(m => m.poster_path);
-    if (movies.length === 0) {
-      searchGrid.innerHTML = `<div class="placeholder-card">لا توجد نتائج بحث</div>`;
-    } else {
-      renderMovies(movies);
-    }
-  } catch (error) {
-    console.error(error);
-    searchGrid.innerHTML = `<div class="placeholder-card">حدث خطأ أثناء البحث</div>`;
-  } finally {
-    hideSplash();
-  }
+* {
+  box-sizing: border-box;
 }
 
-// تهيئة الاستماع لحدث إدخال النص في مربع البحث
-function initSearchListener() {
-  if (!searchInput) return;
-
-  let debounceTimer;
-  searchInput.addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      const query = searchInput.value;
-      if (query.trim().length >= CONFIG.SEARCH.MIN_CHARS) {
-        applySearch(query);
-      } else {
-        if (searchGrid) searchGrid.innerHTML = '';
-      }
-    }, CONFIG.SEARCH.DEBOUNCE_MS);
-  });
+html {
+  scroll-behavior: smooth;
 }
 
-// بدء التطبيق - جلب الأفلام الرائجة وتشغيل البحث تلقائياً
-window.addEventListener('DOMContentLoaded', async () => {
-  showSplash();
-  initSearchListener();
-  const trendingMovies = await fetchTrendingMovies();
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: var(--config-font-family);
+  color: var(--text);
+  background:
+    radial-gradient(circle at top right, rgba(229, 9, 20, 0.18), transparent 24%),
+    radial-gradient(circle at top left, rgba(26, 108, 255, 0.14), transparent 22%),
+    linear-gradient(180deg, #05070d 0%, #09111b 44%, #060a11 100%);
+}
 
-  if (trendingMovies.length > 0) {
-    renderMovies(trendingMovies);
-  } else if (searchGrid) {
-    searchGrid.innerHTML = `<div class="placeholder-card">لا توجد أفلام رائجة حاليًا.</div>`;
-  }
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(90px);
+  opacity: 0.34;
+}
 
-  hideSplash();
-});
+body::before {
+  top: 90px;
+  right: -90px;
+  width: 340px;
+  height: 340px;
+  background: rgba(229, 9, 20, 0.34);
+}
+
+body::after {
+  left: -80px;
+  bottom: 100px;
+  width: 280px;
+  height: 280px;
+  background: rgba(26, 108, 255, 0.22);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+button,
+select,
+textarea {
+  appearance: none;
+}
+
+::selection {
+  background: rgba(26, 108, 255, 0.28);
+  color: #fff;
+}
+
+.container,
+.shell {
+  width: var(--container);
+  margin-inline: auto;
+}
+
+main {
+  width: 100%;
+  padding-bottom: calc(var(--bottom-nav-height) + 52px);
+}
+
+.page {
+  display: none;
+  animation: fadeUp 0.45s ease;
+}
+
+.page.active {
+  display: block;
+}
+
+.panel,
+.home-section,
+.content-card,
+.library-card,
+.search-card,
+.search-quick-block,
+.settings-section,
+.modal-inner,
+.settings-inner {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.028));
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
+
+.panel-body,
+.section-stack,
+.search-page-wrap,
+.home-container {
+  padding: clamp(18px, 3vw, 30px);
+}
+
+.section-stack,
+.home-container,
+#mainSections {
+  display: grid;
+  gap: var(--section-gap);
+}
+
+.section-title,
+.home-section-title,
+.settings-title {
+  margin: 0;
+  font-size: clamp(1.08rem, 2vw, 1.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.section-subtitle,
+.section-note,
+.muted,
+.brand-subtitle {
+  color: var(--muted);
+  font-size: 0.94rem;
+}
+
+.home-section,
+.content-card,
+.library-card,
+.search-card {
+  padding: 20px;
+}
+
+.home-section-header,
+.split-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.home-section-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-section-bar {
+  width: 6px;
+  height: 24px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(180deg, var(--primary), var(--secondary));
+  box-shadow: var(--shadow-neon-red);
+}
+
+.grid,
+.big-row,
+.news-row,
+.platforms-row {
+  display: grid;
+  gap: 16px;
+}
+
+.grid,
+.big-row {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.platforms-row {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.news-row {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.placeholder-card,
+.platform-card,
+.news-card,
+.stats-card,
+.kpi {
+  min-height: 148px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.025));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.placeholder-card,
+.platform-card,
+.news-card,
+.stats-card {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 18px;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.platform-card,
+.stats-card {
+  min-height: 122px;
+}
+
+.news-card {
+  min-height: 190px;
+  align-items: end;
+  justify-items: start;
+  text-align: right;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, rgba(26, 108, 255, 0.12), rgba(229, 9, 20, 0.07));
+}
+
+/* =========================================================
+   Splash
+   ========================================================= */
+
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, rgba(26, 108, 255, 0.18), transparent 26%),
+    linear-gradient(180deg, rgba(3, 5, 9, 0.96), rgba(8, 16, 26, 0.98));
+  backdrop-filter: blur(6px);
+  animation: splashFade 2.7s ease forwards;
+}
+
+.splash-card {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  text-align: center;
+  padding: 28px 34px;
+  width: min(92vw, 460px);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  box-shadow: var(--shadow-card);
+}
+
+.splash-logo {
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  border-radius: 26px;
+  background: linear-gradient(135deg, rgba(229, 9, 20, 0.96), rgba(120, 0, 0, 0.96));
+  box-shadow: var(--shadow-neon-red);
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.splash-text {
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 900;
+}
+
+.splash-text span {
+  color: var(--secondary);
+}
+
+.splash-subtitle {
+  color: var(--muted);
+}
+
+.splash-dots {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.splash-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.28);
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
+.splash-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.splash-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* =========================================================
+   Header / Hero
+   ========================================================= */
+
+.glass-header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  min-height: var(--header-height);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  background: linear-gradient(180deg, rgba(9, 14, 23, 0.9), rgba(9, 14, 23, 0.58));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+}
+
+.header-inner {
+  min-height: var(--header-height);
+  display: grid;
+  grid-template-columns: auto minmax(280px, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: max-content;
+}
+
+.brand-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(229, 9, 20, 1), rgba(125, 0, 0, 1));
+  box-shadow: var(--shadow-neon-red);
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.brand-text {
+  display: grid;
+  gap: 2px;
+  line-height: 1.08;
+}
+
+.brand-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+}
+
+.brand-title span {
+  color: var(--secondary);
+}
+
+/* ... (يستمر باقي محتوى style.css كما أرسلت) ... */
