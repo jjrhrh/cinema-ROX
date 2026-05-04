@@ -1899,3 +1899,37 @@ body, * {
   margin: 0 !important;
   padding: 0 !important;
 }
+/* ===== SEARCH PAGE FINAL ===== */
+#searchGrid .card-title,
+#searchGrid .card-info,
+#searchGrid .card-info *,
+#searchGrid .card-overlay { display:none !important; }
+
+#searchInput {
+  border:2px solid #1a6cff !important;
+  box-shadow:0 0 12px #1a6cff88, 0 0 24px #1a6cff44 !important;
+  background:rgba(0,0,0,0.6) !important;
+  backdrop-filter:blur(12px) !important;
+  color:#fff !important;
+  border-radius:16px !important;
+}
+
+.section-title, h1, h2, h3 {
+  font-family:'Cairo','Tajawal',sans-serif !important;
+  font-weight:900 !important;
+}
+
+#searchGrid {
+  display:grid !important;
+  grid-template-columns:repeat(2,1fr) !important;
+  flex-direction:unset !important;
+  overflow-x:unset !important;
+  flex-wrap:unset !important;
+  gap:12px !important;
+}
+#searchGrid .card {
+  flex:unset !important;
+  min-width:unset !important;
+  width:100% !important;
+}
+/* ===== END SEARCH FINAL ===== */
