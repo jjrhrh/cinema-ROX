@@ -451,7 +451,7 @@ function renderGrid(items, gridId, type) {
         ${rating ? `<span class="card-rating">⭐ ${rating}</span>` : ''}
         <div class="card-overlay"><span class="play-btn">▶ تفاصيل</span></div>
       </div>
-      <div class="card-info"><h4>${title}</h4></div>
+
     `;
     card.onclick = () => openDetails(item.id, type);
     grid.appendChild(card);
