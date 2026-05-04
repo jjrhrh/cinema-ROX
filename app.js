@@ -1548,6 +1548,14 @@ function showHero(idx) {
     if (positions[pi] !== 'center') {
       slide.onclick = () => {
         clearInterval(heroTimer);
+        // Backdrop Canvas
+  const backdrop = document.getElementById('heroBackdrop');
+  const m0 = heroMovies[idx];
+  if (backdrop && m0?.backdrop_path) {
+    backdrop.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${m0.backdrop_path})`;
+  } else if (backdrop && m0?.poster_path) {
+    backdrop.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${m0.poster_path})`;
+  }
         const newIdx = ((idx + offset) % total + total) % total;
         showHero(newIdx); heroIndex = newIdx;
         heroTimer = setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); },5000);
