@@ -6,6 +6,14 @@
   <title>Cinema ROX</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+      var s = document.getElementById('splash-screen');
+      if (s) s.style.cssText = 'display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;';
+    }, 1500);
+  });
+  </script>
 </head>
 <body>
 <!-- ===== SPLASH SCREEN ===== -->
