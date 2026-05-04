@@ -3,36 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cinema-ROX</title>
-  
-  <!-- Google Fonts - Cairo (400, 700, 900) -->
+  <title>Cinema ROX</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- شاشة التحميل -->
-  <div class="splash-screen">
-    <!-- محتوى شاشة التحميل هنا -->
+
+  <!-- 1️⃣ الهيدر -->
+  <header id="siteHeader"></header>
+
+  <!-- 2️⃣ الصفحة الرئيسية -->
+  <main id="mainContent"></main>
+
+  <!-- 3️⃣ مشغل الفيديو (مخفي افتراضياً) -->
+  <div id="trailerOverlay" class="trailer-overlay hidden">
+    <div class="trailer-box">
+      <button id="closeTrailer" class="trailer-close">✕</button>
+      <iframe id="trailerFrame" class="trailer-frame"
+        src="" allowfullscreen
+        allow="autoplay; fullscreen">
+      </iframe>
+    </div>
   </div>
 
-  <!-- الهيدر (القوائم والبحث) -->
-  <header class="header">
-    <!-- محتوى الهيدر هنا -->
-  </header>
-
-  <!-- البانر الضخم (Hero) -->
-  <section class="hero-banner">
-    <!-- محتوى البانر هنا -->
-  </section>
-
-  <!-- نتائج البحث (البوسترات) -->
-  <main class="search-results">
-    <!-- محتوى نتائج البحث هنا -->
-  </main>
-
-  <!-- ملفات JS في النهاية بالترتيب -->
+  <!-- 4️⃣ السكريبتات (الترتيب مهم) -->
   <script src="config.js"></script>
   <script src="app.js"></script>
+
 </body>
 </html>
