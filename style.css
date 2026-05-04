@@ -1,8 +1,10 @@
-/* ===== SMOOTH SCROLL ===== */
-html { scroll-behavior: smooth !important; }
-* { -webkit-overflow-scrolling: touch !important; }
-.grid, .cast-row, .plt-outer { scroll-snap-type: none !important; }
-/* ===== END SMOOTH ===== */
+/* ===== ULTRA SMOOTH ===== */
+html, body { scroll-behavior: smooth !important; overscroll-behavior: none !important; }
+* { -webkit-overflow-scrolling: touch !important; box-sizing: border-box !important; }
+img { will-change: auto !important; content-visibility: auto !important; }
+.grid, .cast-row, .plt-outer, .search-big-grid { scroll-snap-type: none !important; will-change: scroll-position !important; transform: translateZ(0) !important; }
+.card, .cast-card, .card-img-wrap { will-change: transform !important; transform: translateZ(0) !important; backface-visibility: hidden !important; }
+/* ===== END ULTRA SMOOTH ===== */
 /* ===== BOTTOM NAV UPGRADE - MASTER OVERRIDE ===== */
 .bottom-nav {
   background: rgba(0,0,0,0.55) !important;
