@@ -1535,7 +1535,16 @@ function showHero(idx) {
     if (!m || !m.poster_path) return;
     const slide = document.createElement('div');
     slide.className = `hero-slide ${positions[pi]}`;
-    slide.innerHTML = `<img src="${IMG_BASE}${m.poster_path}" alt="${m.title||''}" loading="lazy">`;
+    slide.innerHTML = `<img src="${IMG_BASE}${m.poster_path}" alt="${m.title||''}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+    if (positions[pi] === 'center') {
+      slide.addEventListener('mousemove', e => {
+        const r = slide.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        slide.style.transform = `perspective(600px) rotateY(${x*8}deg) rotateX(${-y*8}deg) scale(1.02)`;
+      });
+      slide.addEventListener('mouseleave', () => { slide.style.transform = ''; });
+    }
     if (positions[pi] !== 'center') {
       slide.onclick = () => {
         clearInterval(heroTimer);
