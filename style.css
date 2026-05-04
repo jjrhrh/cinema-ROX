@@ -1,1151 +1,137 @@
-@charset "UTF-8";
-
-/* =========================================================
-   Cinema-ROX — style.css
-   نسخة نظيفة ومُعاد بناؤها بالكامل اعتماداً على config.js
-   ========================================================= */
-
-:root {
-  /* === Tokens mapped from config.js === */
-  --config-font-family: "Cairo", sans-serif;
-  --config-accent-color: #e50914;
-  --config-secondary-color: #f5c518;
-  --config-info-color: #1a6cff;
-  --config-success-color: #1ce783;
-  --config-bg-start: #070b12;
-  --config-bg-end: #0d1320;
-  --config-surface: rgba(255, 255, 255, 0.06);
-  --config-surface-strong: rgba(255, 255, 255, 0.12);
-  --config-stroke: rgba(255, 255, 255, 0.1);
-  --config-text: #f8f9ff;
-  --config-muted: rgba(248, 249, 255, 0.72);
-
-  /* === Semantic theme === */
-  --bg: var(--config-bg-start);
-  --bg-soft: var(--config-bg-end);
-  --bg-elevated: rgba(9, 14, 23, 0.84);
-  --surface: var(--config-surface);
-  --surface-2: rgba(255, 255, 255, 0.04);
-  --surface-3: var(--config-surface-strong);
-  --stroke: var(--config-stroke);
-  --text: var(--config-text);
-  --muted: var(--config-muted);
-  --primary: var(--config-accent-color);
-  --secondary: var(--config-secondary-color);
-  --info: var(--config-info-color);
-  --success: var(--config-success-color);
-
-  /* === FX === */
-  --glass-blur: blur(15px);
-  --glass-blur-soft: blur(10px);
-  --shadow-soft: 0 14px 34px rgba(0, 0, 0, 0.24);
-  --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.34);
-  --shadow-neon-blue: 0 0 0 1px rgba(26, 108, 255, 0.22), 0 0 18px rgba(26, 108, 255, 0.28), 0 0 42px rgba(26, 108, 255, 0.16);
-  --shadow-neon-red: 0 14px 30px rgba(229, 9, 20, 0.24), 0 0 28px rgba(229, 9, 20, 0.14);
-  --shadow-neon-gold: 0 0 24px rgba(245, 197, 24, 0.16);
-
-  /* === Radius === */
-  --radius-xl: 32px;
-  --radius-lg: 24px;
-  --radius-md: 18px;
-  --radius-sm: 14px;
-  --radius-pill: 999px;
-
-  /* === Layout === */
-  --header-height: 84px;
-  --bottom-nav-height: 92px;
-  --container: min(1280px, calc(100% - 32px));
-  --section-gap: 24px;
-  --search-side-width: 320px;
-  --search-results-columns: repeat(2, minmax(0, 1fr));
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  overflow-x: hidden;
-  font-family: var(--config-font-family);
-  color: var(--text);
-  background:
-    radial-gradient(circle at top right, rgba(229, 9, 20, 0.18), transparent 24%),
-    radial-gradient(circle at top left, rgba(26, 108, 255, 0.14), transparent 22%),
-    linear-gradient(180deg, #05070d 0%, #09111b 44%, #060a11 100%);
-}
-
-body::before,
-body::after {
-  content: "";
-  position: fixed;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: -1;
-  filter: blur(90px);
-  opacity: 0.34;
-}
-
-body::before {
-  top: 90px;
-  right: -90px;
-  width: 340px;
-  height: 340px;
-  background: rgba(229, 9, 20, 0.34);
-}
-
-body::after {
-  left: -80px;
-  bottom: 100px;
-  width: 280px;
-  height: 280px;
-  background: rgba(26, 108, 255, 0.22);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-button,
-select {
-  -webkit-tap-highlight-color: transparent;
-}
-
-input,
-button,
-select,
-textarea {
-  appearance: none;
-}
-
-::selection {
-  background: rgba(26, 108, 255, 0.28);
-  color: #fff;
-}
-
-.container,
-.shell {
-  width: var(--container);
-  margin-inline: auto;
-}
-
-main {
-  width: 100%;
-  padding-bottom: calc(var(--bottom-nav-height) + 52px);
-}
-
-.page {
-  display: none;
-  animation: fadeUp 0.45s ease;
-}
-
-.page.active {
-  display: block;
-}
-
-.panel,
-.home-section,
-.content-card,
-.library-card,
-.search-card,
-.search-quick-block,
-.settings-section,
-.modal-inner,
-.settings-inner {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.028));
-  border: 1px solid var(--stroke);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-card);
-}
-
-.panel-body,
-.section-stack,
-.search-page-wrap,
-.home-container {
-  padding: clamp(18px, 3vw, 30px);
-}
-
-.section-stack,
-.home-container,
-#mainSections {
-  display: grid;
-  gap: var(--section-gap);
-}
-
-.section-title,
-.home-section-title,
-.settings-title {
-  margin: 0;
-  font-size: clamp(1.08rem, 2vw, 1.5rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.section-subtitle,
-.section-note,
-.muted,
-.brand-subtitle {
-  color: var(--muted);
-  font-size: 0.94rem;
-}
-
-.home-section,
-.content-card,
-.library-card,
-.search-card {
-  padding: 20px;
-}
-
-.home-section-header,
-.split-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.home-section-heading {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.home-section-bar {
-  width: 6px;
-  height: 24px;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(180deg, var(--primary), var(--secondary));
-  box-shadow: var(--shadow-neon-red);
-}
-
-.grid,
-.big-row,
-.news-row,
-.platforms-row {
-  display: grid;
-  gap: 16px;
-}
-
-.grid,
-.big-row {
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-}
-
-.platforms-row {
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-}
-
-.news-row {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
-.placeholder-card,
-.platform-card,
-.news-card,
-.stats-card,
-.kpi {
-  min-height: 148px;
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.025));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.placeholder-card,
-.platform-card,
-.news-card,
-.stats-card {
-  display: grid;
-  place-items: center;
-  text-align: center;
-  padding: 18px;
-  color: rgba(255, 255, 255, 0.68);
-}
-
-.platform-card,
-.stats-card {
-  min-height: 122px;
-}
-
-.news-card {
-  min-height: 190px;
-  align-items: end;
-  justify-items: start;
-  text-align: right;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-    linear-gradient(135deg, rgba(26, 108, 255, 0.12), rgba(229, 9, 20, 0.07));
-}
-
-/* =========================================================
-   Splash
-   ========================================================= */
-
-#splash-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: grid;
-  place-items: center;
-  background:
-    radial-gradient(circle at center, rgba(26, 108, 255, 0.18), transparent 26%),
-    linear-gradient(180deg, rgba(3, 5, 9, 0.96), rgba(8, 16, 26, 0.98));
-  backdrop-filter: blur(6px);
-  animation: splashFade 2.7s ease forwards;
-}
-
-.splash-card {
-  display: grid;
-  gap: 14px;
-  justify-items: center;
-  text-align: center;
-  padding: 28px 34px;
-  width: min(92vw, 460px);
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 28px;
-  box-shadow: var(--shadow-card);
-}
-
-.splash-logo {
-  width: 88px;
-  height: 88px;
-  display: grid;
-  place-items: center;
-  border-radius: 26px;
-  background: linear-gradient(135deg, rgba(229, 9, 20, 0.96), rgba(120, 0, 0, 0.96));
-  box-shadow: var(--shadow-neon-red);
-  font-size: 2rem;
-  font-weight: 900;
-}
-
-.splash-text {
-  font-size: clamp(1.45rem, 3vw, 2rem);
-  font-weight: 900;
-}
-
-.splash-text span {
-  color: var(--secondary);
-}
-
-.splash-subtitle {
-  color: var(--muted);
-}
-
-.splash-dots {
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.splash-dots span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.28);
-  animation: pulse 1.2s infinite ease-in-out;
-}
-
-.splash-dots span:nth-child(2) {
-  animation-delay: 0.15s;
-}
-
-.splash-dots span:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-/* =========================================================
-   Header / Hero
-   ========================================================= */
-
-.glass-header {
-  position: sticky;
-  top: 0;
-  z-index: 500;
-  min-height: var(--header-height);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  background: linear-gradient(180deg, rgba(9, 14, 23, 0.9), rgba(9, 14, 23, 0.58));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
-}
-
-.header-inner {
-  min-height: var(--header-height);
-  display: grid;
-  grid-template-columns: auto minmax(280px, 1fr) auto;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 0;
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  min-width: max-content;
-}
-
-.brand-mark {
-  width: 52px;
-  height: 52px;
-  border-radius: 18px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, rgba(229, 9, 20, 1), rgba(125, 0, 0, 1));
-  box-shadow: var(--shadow-neon-red);
-  font-weight: 900;
-  font-size: 1.1rem;
-}
-
-.brand-text {
-  display: grid;
-  gap: 2px;
-  line-height: 1.08;
-}
-
-.brand-title {
-  font-size: 1.2rem;
-  font-weight: 900;
-  letter-spacing: 0.01em;
-}
-
-.brand-title span {
-  color: var(--secondary);
-}
-
-.header-search,
-.search-input-wrap,
-.search-box,
-.quick-search-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 58px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.055);
-  border: 1px solid rgba(26, 108, 255, 0.24);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), var(--shadow-neon-blue);
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.header-search {
-  border-radius: var(--radius-pill);
-  padding: 10px 14px;
-}
-
-.search-input-wrap,
-.search-box {
-  padding: 12px 14px;
-}
-
-.quick-search-group {
-  padding: 8px 10px;
-  min-height: 56px;
-}
-
-.header-search:focus-within,
-.search-input-wrap:focus-within,
-.search-box:focus-within,
-.quick-search-group:focus-within {
-  border-color: rgba(26, 108, 255, 0.76);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 0 0 1px rgba(26, 108, 255, 0.3), 0 0 24px rgba(26, 108, 255, 0.4), 0 0 70px rgba(26, 108, 255, 0.18);
-}
-
-.header-search .icon,
-.icon-btn .icon,
-.filter-chip .icon,
-.search-icon-inner {
-  opacity: 0.88;
-  font-size: 1rem;
-}
-
-.header-search input,
-.search-neo-input,
-.search-box input,
-#quickSearchInput {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--text);
-  font-size: 1rem;
-}
-
-.header-search input::placeholder,
-.search-neo-input::placeholder,
-.search-box input::placeholder,
-#quickSearchInput::placeholder {
-  color: rgba(255, 255, 255, 0.56);
-}
-
-.header-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.hero-shell {
-  width: var(--container);
-  margin: 22px auto 0;
-}
-
-.hero-banner {
-  position: relative;
-  min-height: clamp(470px, 72vh, 760px);
-  overflow: hidden;
-  isolation: isolate;
-  border-radius: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: var(--shadow-card);
-  background:
-    linear-gradient(90deg, rgba(5, 7, 12, 0.96) 0%, rgba(5, 7, 12, 0.72) 34%, rgba(5, 7, 12, 0.34) 72%, rgba(5, 7, 12, 0.72) 100%),
-    url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80") center/cover;
-}
-
-.hero-carousel {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(circle at 78% 28%, rgba(245, 197, 24, 0.18), transparent 18%),
-    radial-gradient(circle at 18% 20%, rgba(26, 108, 255, 0.14), transparent 14%),
-    linear-gradient(0deg, rgba(0, 0, 0, 0.36), rgba(0, 0, 0, 0.08));
-}
-
-.hero-info {
-  display: flex;
-  align-items: flex-end;
-  min-height: inherit;
-  padding: clamp(28px, 5vw, 54px);
-}
-
-.hero-content {
-  max-width: 720px;
-  display: grid;
-  gap: 14px;
-}
-
-.hero-badge,
-.hero-year-tag,
-.meta-chip,
-.filter-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  padding: 8px 14px;
-  border-radius: var(--radius-pill);
-  font-size: 0.9rem;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: var(--glass-blur-soft);
-  -webkit-backdrop-filter: var(--glass-blur-soft);
-}
-
-.hero-badge {
-  background: linear-gradient(135deg, rgba(229, 9, 20, 0.92), rgba(229, 9, 20, 0.68));
-}
-
-.hero-title {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 4.4rem);
-  line-height: 1.05;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-}
-
-.hero-lead {
-  margin: 0;
-  max-width: 60ch;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: clamp(1rem, 1.8vw, 1.08rem);
-}
-
-.hero-tags,
-.hero-meta,
-.library-tabs,
-.header-pills,
-.stats-grid,
-.action-cards,
-.search-quick-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 6px;
-}
-
-/* =========================================================
-   Interactive controls / Neon buttons
-   ========================================================= */
-
-.btn,
-.icon-btn,
-.quick-search-btn,
-.hero-actions button,
-.lib-tab,
-.filter-pill,
-.filter-chip,
-.bnav-btn,
-.action-card,
-.close-btn,
-#nextServerBtn,
-.rox-item {
-  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease, opacity 0.22s ease;
-}
-
-.icon-btn,
-.quick-search-btn,
-.lib-tab,
-.filter-chip,
-.action-card,
-.close-btn {
-  border: 1px solid rgba(26, 108, 255, 0.24);
-  background: rgba(255, 255, 255, 0.055);
-  color: #fff;
-  box-shadow: var(--shadow-neon-blue);
-}
-
-.icon-btn,
-.close-btn {
-  width: 48px;
-  height: 48px;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 16px;
-  cursor: pointer;
-}
-
-.btn-primary,
-.hero-actions .primary,
-.quick-search-btn,
-.bnav-center {
-  background: linear-gradient(135deg, var(--primary), #9c0910);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: var(--shadow-neon-red);
-}
-
-.btn-primary,
-.hero-actions .primary {
-  padding: 13px 22px;
-  border-radius: 16px;
-  font-weight: 800;
-}
-
-.btn-secondary,
-.hero-actions .secondary,
-.lib-tab,
-.filter-chip,
-.action-card {
-  padding: 12px 16px;
-  border-radius: 16px;
-  font-weight: 700;
-}
-
-.btn-secondary,
-.hero-actions .secondary {
-  background: rgba(255, 255, 255, 0.065);
-  color: #fff;
-  border: 1px solid rgba(26, 108, 255, 0.22);
-  box-shadow: var(--shadow-neon-blue);
-}
-
-.quick-search-btn {
-  min-width: 52px;
-  padding-inline: 14px;
-  cursor: pointer;
-}
-
-.filter-chip.active,
-.lib-tab.active,
-.bnav-btn.active {
-  background: linear-gradient(135deg, rgba(229, 9, 20, 0.94), rgba(120, 0, 0, 0.94));
-  border-color: transparent;
-  box-shadow: var(--shadow-neon-red);
-}
-
-.icon-btn:hover,
-.quick-search-btn:hover,
-.hero-actions button:hover,
-.lib-tab:hover,
-.filter-pill:hover,
-.filter-chip:hover,
-.bnav-btn:hover,
-.action-card:hover,
-.rox-item:hover,
-.close-btn:hover,
-#nextServerBtn:hover,
-select:hover {
-  transform: translateY(-2px);
-}
-
-.icon-btn:hover,
-.quick-search-btn:hover,
-.btn-secondary:hover,
-.hero-actions .secondary:hover,
-.lib-tab:hover,
-.filter-chip:hover,
-.action-card:hover,
-.rox-item:hover,
-.close-btn:hover {
-  border-color: rgba(26, 108, 255, 0.68);
-  box-shadow: 0 0 0 1px rgba(26, 108, 255, 0.28), 0 0 24px rgba(26, 108, 255, 0.4), 0 0 56px rgba(26, 108, 255, 0.14);
-}
-
-.btn-primary:hover,
-.hero-actions .primary:hover,
-.bnav-center:hover {
-  box-shadow: 0 18px 36px rgba(229, 9, 20, 0.3), 0 0 36px rgba(229, 9, 20, 0.18);
-}
-
-/* =========================================================
-   Search page — isolated layout / no overlap
-   ========================================================= */
-
-.search-page-wrap {
-  position: relative;
-}
-
-.search-hero {
-  display: grid;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.filter-pills-row,
-.settings-inline-grid {
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-}
-
-.filter-pill,
-select {
-  min-height: 48px;
-  padding: 0 14px;
-  color: #fff;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.filter-pill,
-select,
-.search-quick-block,
-.search-card,
-.rox-menu,
-.modal-inner,
-.settings-inner {
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-}
-
-select:focus,
-.filter-pill:focus,
-.search-neo-input:focus {
-  outline: none;
-  border-color: rgba(26, 108, 255, 0.7);
-  box-shadow: 0 0 0 1px rgba(26, 108, 255, 0.28), 0 0 22px rgba(26, 108, 255, 0.3);
-}
-
-select option {
-  color: #000;
-}
-
-#searchResults {
-  display: block;
-  width: 100%;
-}
-
-.search-results-area,
-.search-results-split {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: minmax(260px, var(--search-side-width)) minmax(0, 1fr);
-  align-items: start;
-}
-
-.search-quick {
-  display: grid;
-  gap: 18px;
-  position: sticky;
-  top: calc(var(--header-height) + 18px);
-  align-self: start;
-}
-
-.search-quick-block {
-  padding: 16px;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.045);
-}
-
-.search-card {
-  min-width: 0;
-}
-
-.search-big-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: var(--search-results-columns);
-}
-
-/* مهم: عمودان فقط لنتائج البحث حصراً */
-#searchGrid {
-  grid-template-columns: var(--search-results-columns);
-}
-
-/* =========================================================
-   Profile / library / modal / menu
-   ========================================================= */
-
-.library-tabs {
-  margin-bottom: 18px;
-}
-
-.lib-panel {
-  display: block;
-}
-
-.profile-layout,
-.two-col,
-.modal-grid {
-  display: grid;
-  gap: 18px;
-  grid-template-columns: 1.1fr 0.9fr;
-}
-
-.profile-hero {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.profile-avatar {
-  width: 88px;
-  height: 88px;
-  border-radius: 28px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, rgba(229, 9, 20, 0.95), rgba(26, 108, 255, 0.82));
-  box-shadow: var(--shadow-card);
-  font-size: 1.8rem;
-  font-weight: 900;
-}
-
-.meta-kpis {
-  display: grid;
-  gap: 14px;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-}
-
-.kpi {
-  padding: 18px;
-}
-
-.kpi strong {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 1.45rem;
-}
-
-.settings-section {
-  padding: 16px;
-}
-
-.modal,
-.rox-overlay {
-  position: fixed;
-  inset: 0;
-  display: none;
-}
-
-.modal {
-  z-index: 800;
-  place-items: center;
-  padding: 18px;
-  background: rgba(2, 5, 10, 0.72);
-  backdrop-filter: blur(8px);
-}
-
-.rox-overlay {
-  z-index: 780;
-  background: rgba(2, 5, 10, 0.64);
-  backdrop-filter: blur(6px);
-}
-
-.modal-inner,
-.settings-inner {
-  position: relative;
-  width: min(980px, 100%);
-  padding: 24px;
-  background: rgba(9, 14, 23, 0.9);
-}
-
-.rox-menu {
-  position: fixed;
-  left: 50%;
-  bottom: calc(var(--bottom-nav-height) + 14px);
-  z-index: 900;
-  display: none;
-  gap: 12px;
-  width: min(460px, calc(100% - 28px));
-  padding: 14px;
-  transform: translateX(-50%) scale(0.94);
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(9, 14, 23, 0.88);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  box-shadow: var(--shadow-card);
-}
-
-.rox-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px;
-  cursor: pointer;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.045);
-}
-
-.rox-circle {
-  width: 52px;
-  height: 52px;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
-  color: #fff;
-  font-size: 1.3rem;
-  background: linear-gradient(135deg, rgba(26, 108, 255, 0.7), rgba(229, 9, 20, 0.68));
-  box-shadow: var(--shadow-neon-blue);
-}
-
-.rox-label {
-  font-weight: 800;
-}
-
-.close-btn {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  cursor: pointer;
-}
-
-#nextServerBtn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  padding: 10px 14px;
-  border: 0;
-  border-radius: 14px;
-  cursor: pointer;
-  font-weight: 800;
-  color: #fff;
-  background: linear-gradient(135deg, var(--info), #0a3d8f);
-  box-shadow: var(--shadow-neon-blue);
-}
-
-#playerFrame {
-  width: 100%;
-  min-height: min(70vh, 680px);
-  margin-top: 34px;
-  border: 0;
-  border-radius: 18px;
-  background: #000;
-}
-
-/* =========================================================
-   Bottom nav
-   ========================================================= */
-
-.bottom-nav {
-  position: fixed;
-  right: 50%;
-  bottom: 18px;
-  z-index: 700;
-  display: grid;
-  gap: 10px;
-  width: min(760px, calc(100% - 28px));
-  padding: 10px;
-  transform: translateX(50%);
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  border-radius: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(9, 14, 23, 0.84);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  box-shadow: var(--shadow-card);
-}
-
-.bnav-btn {
-  display: grid;
-  gap: 4px;
-  place-items: center;
-  min-height: 68px;
-  padding: 12px 8px;
-  background: transparent;
-  border-color: transparent;
-  border-radius: 18px;
-  color: #fff;
-  cursor: pointer;
-}
-
-.bnav-center {
-  box-shadow: var(--shadow-neon-red);
-}
-
-.bnav-icon {
-  font-size: 1.2rem;
-}
-
-.bnav-label {
-  font-size: 0.83rem;
-  font-weight: 700;
-}
-
-/* =========================================================
-   Misc
-   ========================================================= */
-
-.empty-page {
-  display: grid;
-  place-items: center;
-  min-height: 320px;
-  padding: 32px;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.64);
-}
-
-/* =========================================================
-   Responsive
-   ========================================================= */
-
-@media (max-width: 1080px) {
-  .header-inner,
-  .profile-layout,
-  .two-col,
-  .modal-grid,
-  .search-results-area,
-  .search-results-split {
-    grid-template-columns: 1fr;
-  }
-
-  .search-quick {
-    position: static;
+// app.js النهائي للعمل مع config.js وstyle.css
+
+const TMDB_KEY = CONFIG.KEYS.TMDB;
+const TMDB_BASE = CONFIG.API.TMDB_BASE;
+const IMG_BASE = CONFIG.IMAGES.POSTER_LG;
+
+const splashScreen = document.getElementById('splash-screen');
+const searchGrid = document.getElementById('searchGrid');
+const searchInput = document.getElementById('quickSearchInput');
+
+// إظهار شاشة التحميل
+function showSplash() {
+  if (splashScreen) splashScreen.style.display = 'grid';
+}
+// إخفاء شاشة التحميل
+function hideSplash() {
+  if (splashScreen) splashScreen.style.display = 'none';
+}
+
+// عرض الأفلام ببوسترين في السطر كما هو محدد في style.css
+function renderMovies(movies) {
+  if (!searchGrid) return;
+  searchGrid.innerHTML = '';
+
+  // عرض 20 بوستر كحد أقصى (10 صفوف × 2 عمود)
+  movies.slice(0, 20).forEach(movie => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const title = movie.title || movie.original_title || '';
+    const posterSrc = movie.poster_path ? `${IMG_BASE}${movie.poster_path}` : CONFIG.IMAGES.PLACEHOLDER;
+
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${posterSrc}" alt="${title}" loading="lazy" 
+             onerror="this.src='${CONFIG.IMAGES.PLACEHOLDER}'" />
+        <div class="card-overlay"><span class="play-btn">▶</span></div>
+      </div>
+      <span class="card-title">${title}</span>
+    `;
+
+    card.onclick = () => alert(`تم اختيار الفيلم: ${title}`);
+
+    searchGrid.appendChild(card);
+  });
+}
+
+// جلب الأفلام الرائجة
+async function fetchTrendingMovies() {
+  showSplash();
+  try {
+    const url = new URL(`${TMDB_BASE}/movie/popular`);
+    url.searchParams.set('api_key', TMDB_KEY);
+    url.searchParams.set('language', CONFIG.LOCALE.DEFAULT_LANG);
+    url.searchParams.set('page', '1');
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('فشل في جلب الأفلام الرائجة');
+    const data = await res.json();
+    const movies = (data.results || []).filter(m => m.poster_path);
+    return movies;
+  } catch (error) {
+    console.error(error);
+    return [];
+  } finally {
+    hideSplash();
   }
 }
 
-@media (max-width: 760px) {
-  :root {
-    --header-height: 76px;
+// البحث وعرض النتائج
+async function applySearch(query) {
+  if (!query || query.trim().length < CONFIG.SEARCH.MIN_CHARS) {
+    if (searchGrid) {
+      searchGrid.innerHTML = `<div class="placeholder-card">يرجى إدخال نص للبحث (على الأقل ${CONFIG.SEARCH.MIN_CHARS} أحرف)</div>`;
+    }
+    return;
   }
 
-  .header-inner {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+  showSplash();
+  try {
+    const url = new URL(`${TMDB_BASE}/search/movie`);
+    url.searchParams.set('api_key', TMDB_KEY);
+    url.searchParams.set('language', CONFIG.LOCALE.DEFAULT_LANG);
+    url.searchParams.set('query', query.trim());
+    url.searchParams.set('include_adult', CONFIG.SEARCH.INCLUDE_ADULT);
+    url.searchParams.set('page', '1');
 
-  .header-actions {
-    justify-content: space-between;
-  }
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('خطأ في نتائج البحث');
+    const data = await res.json();
 
-  .hero-banner {
-    min-height: 540px;
-  }
-
-  .hero-info {
-    align-items: end;
-  }
-
-  .grid,
-  .big-row {
-    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
-  }
-
-  .search-big-grid,
-  #searchGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .bottom-nav {
-    gap: 6px;
-    padding: 8px;
-  }
-
-  .bnav-label {
-    font-size: 0.72rem;
-  }
-
-  .rox-menu {
-    grid-template-columns: 1fr;
+    const movies = (data.results || []).filter(m => m.poster_path);
+    if (movies.length === 0) {
+      searchGrid.innerHTML = `<div class="placeholder-card">لا توجد نتائج بحث</div>`;
+    } else {
+      renderMovies(movies);
+    }
+  } catch (error) {
+    console.error(error);
+    searchGrid.innerHTML = `<div class="placeholder-card">حدث خطأ أثناء البحث</div>`;
+  } finally {
+    hideSplash();
   }
 }
 
-/* =========================================================
-   Animations
-   ========================================================= */
+// تهيئة الاستماع لحدث إدخال النص في مربع البحث
+function initSearchListener() {
+  if (!searchInput) return;
 
-@keyframes pulse {
-  0%,
-  80%,
-  100% {
-    transform: scale(0.7);
-    opacity: 0.45;
-  }
-  40% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  let debounceTimer;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const query = searchInput.value;
+      if (query.trim().length >= CONFIG.SEARCH.MIN_CHARS) {
+        applySearch(query);
+      } else {
+        if (searchGrid) searchGrid.innerHTML = '';
+      }
+    }, CONFIG.SEARCH.DEBOUNCE_MS);
+  });
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+// بدء التطبيق - جلب الأفلام الرائجة وتشغيل البحث تلقائياً
+window.addEventListener('DOMContentLoaded', async () => {
+  showSplash();
+  initSearchListener();
+  const trendingMovies = await fetchTrendingMovies();
 
-@keyframes splashFade {
-  0%,
-  72% {
-    opacity: 1;
-    visibility: visible;
+  if (trendingMovies.length > 0) {
+    renderMovies(trendingMovies);
+  } else if (searchGrid) {
+    searchGrid.innerHTML = `<div class="placeholder-card">لا توجد أفلام رائجة حاليًا.</div>`;
   }
-  100% {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-}
+
+  hideSplash();
+});
