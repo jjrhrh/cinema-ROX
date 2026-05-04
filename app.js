@@ -186,7 +186,8 @@ async function applyFilters(reset = true) {
   const year  = document.getElementById('filterYear')?.value  || '';
   const sort  = document.getElementById('filterSort')?.value  || 'popularity.desc';
   const lang  = document.getElementById('filterLang')?.value  || '';
-  const grid  = document.getElementById('searchGrid');
+const grid  = document.getElementById('searchGrid');
+  if (grid) grid.className = 'grid search-big-grid';
   const sqLinks = document.getElementById('searchQuickLinks');
   if (!grid) return;
   if (sqLinks) sqLinks.style.display = 'none';
