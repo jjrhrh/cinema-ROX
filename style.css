@@ -1,8 +1,7 @@
 /* ===== SMOOTH SCROLL ===== */
 html { scroll-behavior: smooth !important; }
 * { -webkit-overflow-scrolling: touch !important; }
-.grid, .cast-row, .plt-outer, .search-big-grid { scroll-behavior: smooth !important; scroll-snap-type: x mandatory !important; }
-.card, .cast-card { scroll-snap-align: start !important; }
+.grid, .cast-row, .plt-outer { scroll-snap-type: none !important; }
 /* ===== END SMOOTH ===== */
 /* ===== BOTTOM NAV UPGRADE - MASTER OVERRIDE ===== */
 .bottom-nav {
