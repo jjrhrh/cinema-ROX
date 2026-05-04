@@ -1569,8 +1569,39 @@ function showHero(idx) {
 // ===== END HERO =====
 // ===== تهيئة =====
 // ===== FLOATING ROX MENU =====
+// إنشاء rox-menu ديناميكياً
+function createRoxMenuIfNeeded() {
+  if (document.getElementById('roxMenu')) return;
+  const overlay = document.createElement('div');
+  overlay.className = 'rox-overlay';
+  overlay.id = 'roxOverlay';
+  overlay.onclick = toggleRoxMenu;
+  document.body.appendChild(overlay);
+  const menu = document.createElement('div');
+  menu.id = 'roxMenu';
+  menu.className = 'rox-menu';
+  menu.innerHTML = `
+    <div class="rox-item" onclick="toggleRoxMenu();openMovieOfDayPage()">
+      <div class="rox-circle" style="background:linear-gradient(135deg,#e50914,#8B0000);box-shadow:0 4px 18px rgba(229,9,20,0.55);">🎥</div>
+      <span class="rox-label">فيلم اليوم</span>
+    </div>
+    <div class="rox-item" onclick="toggleRoxMenu();openStatsPage()">
+      <div class="rox-circle" style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);box-shadow:0 4px 18px rgba(26,108,255,0.55);">📊</div>
+      <span class="rox-label">إحصائياتي</span>
+    </div>
+    <div class="rox-item" onclick="toggleRoxMenu();openSurprisePage()">
+      <div class="rox-circle" style="background:linear-gradient(135deg,#f5a623,#c47d0e);box-shadow:0 4px 18px rgba(245,166,35,0.55);">🎲</div>
+      <span class="rox-label">فاجئني</span>
+    </div>
+    <div class="rox-item" onclick="toggleRoxMenu();openAiPage()">
+      <div class="rox-circle" style="background:linear-gradient(135deg,#1ce783,#0a8f4a);box-shadow:0 4px 18px rgba(28,231,131,0.55);">🤖</div>
+      <span class="rox-label">اختياري</span>
+    </div>
+  `;
+  document.body.appendChild(menu);
+}
 let roxMenuOpen = false;
-function toggleRoxMenu() {
+createRoxMenuIfNeeded();function toggleRoxMenu() {
   roxMenuOpen = !roxMenuOpen;
   const menu    = document.getElementById('roxMenu');
   const overlay = document.getElementById('roxOverlay');
