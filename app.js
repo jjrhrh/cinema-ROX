@@ -2379,3 +2379,5 @@ function openWatchLaterPage() {
       : '<div style="text-align:center;opacity:.4;padding:40px;">لا توجد أفلام بعد</div>'}
     </div>`;
 }
+function getWatchlist()  { return JSON.parse(localStorage.getItem('cinemaRoxWatchlist')  || '[]'); }
+function getWatchLater() { return JSON.parse(localStorage.getItem('cinemaRoxWatchLater') || '[]'); }
