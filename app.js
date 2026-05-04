@@ -1589,9 +1589,9 @@ window.onload = () => {
     setTimeout(function() {
       splashEl.style.opacity = '0';
       splashEl.style.pointerEvents = 'none';
-      setTimeout(function() {
-        splashEl.style.display = 'none';
-      }, 650);
+      splashEl.style.zIndex = '-1';
+      splashEl.style.visibility = 'hidden';
+      splashEl.style.display = 'none';
     }, 100);
   }
 
