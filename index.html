@@ -1,63 +1,37 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="htmlRoot">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b0f19" />
-  <meta name="description" content="Cinema-ROX — تجربة سينمائية فخمة لاكتشاف الأفلام والمسلسلات والأنمي." />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cinema-ROX</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Google Fonts - Cairo (400, 700, 900) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-
   <!-- شاشة التحميل -->
-  <div id="splash-screen" aria-hidden="true">
-    <div class="splash-card">
-      <div class="splash-logo">CR</div>
-      <div class="splash-text">Cinema <span>ROX</span></div>
-      <div class="splash-subtitle">بوابتك الذكية لعالم الأفلام والمسلسلات والأنمي</div>
-      <div class="splash-dots"><span></span><span></span><span></span></div>
-    </div>
+  <div class="splash-screen">
+    <!-- محتوى شاشة التحميل هنا -->
   </div>
 
-  <!-- الرأس -->
-  <header class="glass-header">
-    <div class="header-inner shell">
-      <a href="#" class="brand" aria-label="Cinema ROX">
-        <div class="brand-mark">CR</div>
-        <div class="brand-text">
-          <div class="brand-title">Cinema <span>ROX</span></div>
-          <div class="brand-subtitle">واجهة سينمائية فخمة ومنظمة</div>
-        </div>
-      </a>
-      <div class="header-search" role="search">
-        <span class="icon">🔍</span>
-        <input id="quickSearchInput" type="search" placeholder="ابحث بسرعة عن فيلم أو مسلسل أو أنمي..." />
-      </div>
-    </div>
+  <!-- الهيدر (القوائم والبحث) -->
+  <header class="header">
+    <!-- محتوى الهيدر هنا -->
   </header>
 
-  <!-- المحتوى الرئيسي -->
-  <main>
-    <div class="main-shell">
-      <section class="page active" id="searchPage">
-        <div class="search-page-wrap panel">
-          <div class="search-hero">
-            <h2 class="section-title">البحث الذكي</h2>
-          </div>
-          <div id="searchResults" class="search-results-area">
-            <section class="search-card">
-              <h3 class="section-title">نتائج البحث</h3>
-              <div class="search-big-grid" id="searchGrid"></div>
-            </section>
-          </div>
-        </div>
-      </section>
-    </div>
+  <!-- البانر الضخم (Hero) -->
+  <section class="hero-banner">
+    <!-- محتوى البانر هنا -->
+  </section>
+
+  <!-- نتائج البحث (البوسترات) -->
+  <main class="search-results">
+    <!-- محتوى نتائج البحث هنا -->
   </main>
 
+  <!-- ملفات JS في النهاية بالترتيب -->
   <script src="config.js"></script>
   <script src="app.js"></script>
 </body>
