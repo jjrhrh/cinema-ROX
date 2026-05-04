@@ -191,7 +191,11 @@ async function applyFilters(reset = true) {
   const sqLinks = document.getElementById('searchQuickLinks');
   if (!grid) return;
   if (sqLinks) sqLinks.style.display = 'none';
-
+document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('pill-active'));
+  ['filterType','filterGenre','filterYear','filterLang','filterSort'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.value) el.classList.add('pill-active');
+  });
   if (reset) {
     searchPage = 1;
     searchCurrentParams = {type, genre, year, sort, lang};
