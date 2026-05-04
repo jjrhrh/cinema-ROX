@@ -1601,7 +1601,8 @@ function createRoxMenuIfNeeded() {
   document.body.appendChild(menu);
 }
 let roxMenuOpen = false;
-createRoxMenuIfNeeded();function toggleRoxMenu() {
+createRoxMenuIfNeeded();
+function toggleRoxMenu() {
   roxMenuOpen = !roxMenuOpen;
   const menu    = document.getElementById('roxMenu');
   const overlay = document.getElementById('roxOverlay');
