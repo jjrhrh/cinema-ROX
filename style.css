@@ -274,8 +274,9 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
   animation: slideUp 0.4s ease both;
 }
 .search-big-grid .card-img-wrap img {
-  width: 100%; height: 240px;
+  width: 100%; height: 260px;
   object-fit: cover; display: block;
+  border-radius: 18px;
 }
 .search-big-grid .card-title,
 .search-big-grid .card-info,
