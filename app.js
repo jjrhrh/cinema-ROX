@@ -1639,6 +1639,9 @@ window.onload = () => {
   try { loadSettings(); } catch(e){}
   try { applyLang(); } catch(e){}
   try { initHero(); } catch(e){}
+  const hero = document.getElementById('heroBanner');
+  if (hero) hero.style.display = '';
+  loadHomePage();
   try { loadHomePage(); } catch(e){}
   try { initScrollTop(); } catch(e){}
   try { fetchMovies(); } catch(e){}
