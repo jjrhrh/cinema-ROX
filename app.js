@@ -1516,69 +1516,51 @@ function initHeroSwipe() {
 }
 
 function showHero(idx) {
-  const carousel = document.getElementById('heroCarousel');
-  const title    = document.getElementById('heroTitle');
-  const yearTag  = document.getElementById('heroYearTag');
-  const meta     = document.getElementById('heroMeta');
-  const watchBtn = document.getElementById('heroWatchBtn');
-  const infoBtn  = document.getElementById('heroInfoBtn');
-  if (!carousel || !heroMovies.length) return;
-
-  const total     = heroMovies.length;
-  const positions = ['left2','left1','center','right1','right2'];
-  const offsets   = [-2,-1,0,1,2];
-
-  carousel.innerHTML = '';
-  offsets.forEach((offset, pi) => {
-    const mi    = ((idx + offset) % total + total) % total;
-    const m     = heroMovies[mi];
-    if (!m || !m.poster_path) return;
-    const slide = document.createElement('div');
-    slide.className = `hero-slide ${positions[pi]}`;
-    slide.innerHTML = `<img src="${IMG_BASE}${m.poster_path}" alt="${m.title||''}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`;
-    if (positions[pi] === 'center') {
-      slide.addEventListener('mousemove', e => {
-        const r = slide.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - 0.5;
-        const y = (e.clientY - r.top) / r.height - 0.5;
-        slide.style.transform = `perspective(600px) rotateY(${x*8}deg) rotateX(${-y*8}deg) scale(1.02)`;
-      });
-      slide.addEventListener('mouseleave', () => { slide.style.transform = ''; });
-    }
-    if (positions[pi] !== 'center') {
-      slide.onclick = () => {
-        clearInterval(heroTimer);
-        // Backdrop Canvas
-  const backdrop = document.getElementById('heroBackdrop');
-  const m0 = heroMovies[idx];
-  if (backdrop && m0?.backdrop_path) {
-    backdrop.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${m0.backdrop_path})`;
-  } else if (backdrop && m0?.poster_path) {
-    backdrop.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${m0.poster_path})`;
-  }
-        const newIdx = ((idx + offset) % total + total) % total;
-        showHero(newIdx); heroIndex = newIdx;
-        heroTimer = setInterval(()=>{ heroIndex=(heroIndex+1)%heroMovies.length; showHero(heroIndex); },5000);
-      };
-    }
-    carousel.appendChild(slide);
-  });
+function showHero(idx) {
+  const heroBg     = document.getElementById('heroBg');
+  const posterImg  = document.getElementById('heroPosterImg');
+  const title      = document.getElementById('heroTitle');
+  const meta       = document.getElementById('heroMeta');
+  const watchBtn   = document.getElementById('heroWatchBtn');
+  const infoBtn    = document.getElementById('heroInfoBtn');
+  if (!heroMovies.length) return;
 
   const m = heroMovies[idx];
-  if (title)   title.textContent  = m.title || m.original_title || '';
+  if (!m) return;
+
+  // 1. خلفية الفيلم الكبيرة
+  if (heroBg) {
+    const bgImg = m.backdrop_path
+      ? `https://image.tmdb.org/t/p/original${m.backdrop_path}`
+      : `https://image.tmdb.org/t/p/original${m.poster_path}`;
+    heroBg.style.backgroundImage = `url(${bgImg})`;
+  }
+
+  // 2. البوستر الصغير
+  if (posterImg) {
+    posterImg.src = `https://image.tmdb.org/t/p/w500${m.poster_path}`;
+    posterImg.alt = m.title || '';
+  }
+
+  // 3. العنوان
+  if (title) title.textContent = m.title || m.original_title || '';
+
+  // 4. الكبسولات
   const year   = (m.release_date||'').slice(0,4);
-  if (yearTag) yearTag.textContent = year;
   const rating = m.vote_average ? m.vote_average.toFixed(1) : '';
   if (meta) meta.innerHTML = `
     ${rating?`<span class="hero-tag rating-tag">⭐ ${rating}</span>`:''}
     ${year?`<span class="hero-tag">📅 ${year}</span>`:''}
     <span class="hero-tag">🎬 فيلم</span>
   `;
-  if (watchBtn) watchBtn.onclick = ()=>openPlayerFromDetail(m.id,'movie');
-  if (infoBtn)  infoBtn.onclick  = ()=>openDetails(m.id,'movie');
-  document.querySelectorAll('.hero-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+
+  // 5. الأزرار
+  if (watchBtn) watchBtn.onclick = () => openPlayerFromDetail(m.id,'movie');
+  if (infoBtn)  infoBtn.onclick  = () => openDetails(m.id,'movie');
+
+  // Dots
+  document.querySelectorAll('.hero-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
 }
-// ===== END HERO =====
 // ===== END HERO =====
 // ===== تهيئة =====
 // ===== FLOATING ROX MENU =====
