@@ -171,7 +171,7 @@ function liveSearch() {
   if (q && q.length > 1) doSearch();
   else if (!q) {
     const grid = document.getElementById('searchGrid');
-    if (grid) grid.innerHTML = '';
+if (grid) { grid.innerHTML = ''; grid.className = 'grid search-big-grid'; }
   }
 }
 
