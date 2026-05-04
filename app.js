@@ -1592,7 +1592,7 @@ window.onload = () => {
       splashEl.style.zIndex = '-1';
       splashEl.style.visibility = 'hidden';
       splashEl.style.display = 'none';
-    }, 100);
+    }, 1500);
   }
 
   try { loadSettings(); } catch(e){}
