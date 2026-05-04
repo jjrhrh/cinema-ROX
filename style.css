@@ -1,3 +1,5 @@
+.page { display: none !important; }
+.page.active { display: block !important; }
 /* ===== BOTTOM NAV UPGRADE - MASTER OVERRIDE ===== */
 .bottom-nav {
   background: rgba(0,0,0,0.55) !important;
