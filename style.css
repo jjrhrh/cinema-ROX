@@ -1832,3 +1832,56 @@ textarea ~ div button,
   50%      { opacity:0.4; transform:scale(0.75); }
 }
 /* ===== END WATCH PAGE ===== */
+/* ===== SEARCH PREMIUM UPGRADE ===== */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+
+body, * {
+  font-family: 'Cairo', 'Tajawal', sans-serif !important;
+}
+
+/* شريط البحث Neon Blue */
+.search-neo-input,
+#searchInput {
+  background: rgba(10,15,40,0.7) !important;
+  backdrop-filter: blur(24px) !important;
+  border: 1.5px solid rgba(26,108,255,0.3) !important;
+  box-shadow: 0 0 20px rgba(26,108,255,0.1) !important;
+  font-family: 'Cairo', sans-serif !important;
+  font-weight: 700 !important;
+}
+.search-neo-input:focus,
+#searchInput:focus {
+  border-color: rgba(26,108,255,0.9) !important;
+  box-shadow: 0 0 0 3px rgba(26,108,255,0.2),
+              0 0 40px rgba(26,108,255,0.5),
+              0 0 80px rgba(26,108,255,0.2) !important;
+}
+
+/* حواف دائرية 20px للبوسترات */
+.search-big-grid .card,
+.search-big-grid .card-img-wrap,
+.search-big-grid .card-img-wrap img {
+  border-radius: 20px !important;
+}
+
+/* إخفاء العناوين في البحث فقط */
+.search-big-grid .card-info,
+.search-big-grid .card-info *,
+.search-big-grid .card-title,
+.search-big-grid h4 {
+  display: none !important;
+}
+
+/* Fade-in ناعم */
+.search-big-grid .card {
+  animation: searchFadeIn 0.4s ease both !important;
+}
+@keyframes searchFadeIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* حماية المكتبة */
+.r-card, .lib-section, #libraryPage * {
+  font-family: 'Cairo', sans-serif !important;
+}
