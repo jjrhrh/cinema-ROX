@@ -94,6 +94,10 @@ function closeTrailerPlayer() {
 }
 }
 // ===== تشغيل عند تحميل الصفحة =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   buildHeader();
+  const movies = await fetchMovies();
+  buildMoviesGrid(movies);
+  document.getElementById('closeTrailer')
+    .addEventListener('click', closeTrailerPlayer);
 });
