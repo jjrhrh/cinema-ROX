@@ -7,12 +7,8 @@
   <meta name="description" content="Cinema-ROX — تجربة سينمائية فخمة لاكتشاف الأفلام والمسلسلات والأنمي." />
   <title>Cinema-ROX</title>
 
-  <!-- خط قاعدي Cairo -->
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
-  <!-- ملف التنسيقات الجديد -->
   <link rel="stylesheet" href="style.css" />
-
 </head>
 <body>
 
@@ -39,83 +35,30 @@
       <div class="header-search" role="search">
         <span class="icon">🔍</span>
         <input id="quickSearchInput" type="search" placeholder="ابحث بسرعة عن فيلم أو مسلسل أو أنمي..." />
-        <button class="quick-search-btn" type="button" onclick="doQuickSearch()">بحث</button>
-      </div>
-      <div class="header-actions">
-        <button class="icon-btn" type="button" id="bnavSearch" onclick="bnavGo('search')" aria-label="البحث">🔎</button>
-        <button class="icon-btn" type="button" id="bnavLibrary" onclick="bnavGo('library')" aria-label="المكتبة">📚</button>
       </div>
     </div>
   </header>
 
-  <!-- قسم المحتوى الرئيسي -->
+  <!-- المحتوى الرئيسي -->
   <main>
     <div class="main-shell">
-
-      <!-- صفحة البحث -->
-      <section class="page" id="searchPage">
+      <section class="page active" id="searchPage">
         <div class="search-page-wrap panel">
           <div class="search-hero">
             <h2 class="section-title">البحث الذكي</h2>
-            <div class="filter-pills-row">
-              <select id="filterType" class="filter-pill" onchange="applyFilters()">
-                <option value="">🎬 الكل</option>
-                <option value="movie">🎥 أفلام</option>
-                <option value="tv">📺 مسلسلات</option>
-              </select>
-              <select id="filterGenre" class="filter-pill" onchange="applyFilters()">
-                <option value="">🎭 التصنيف</option>
-                <option value="28">أكشن</option>
-                <option value="35">كوميديا</option>
-                <option value="18">دراما</option>
-                <option value="27">رعب</option>
-                <option value="10749">رومانسي</option>
-                <option value="878">خيال علمي</option>
-                <option value="16">أنمي</option>
-                <option value="80">جريمة</option>
-                <option value="99">وثائقي</option>
-              </select>
-              <select id="filterYear" class="filter-pill" onchange="applyFilters()">
-                <option value="">📅 السنة</option>
-                <option value="2026">2026</option>
-                <option value="2025">2025</option>
-                <option value="2024">2024</option>
-                <option value="2023">2023</option>
-              </select>
-              <select id="filterLang" class="filter-pill" onchange="applyFilters()">
-                <option value="">🌐 اللغة</option>
-                <option value="ar">🇸🇦 عربي</option>
-                <option value="en">🇺🇸 إنجليزي</option>
-                <option value="ja">🇯🇵 ياباني</option>
-                <option value="ko">🇰🇷 كوري</option>
-                <option value="fr">🇫🇷 فرنسي</option>
-                <option value="es">🇪🇸 إسباني</option>
-                <option value="tr">🇹🇷 تركي</option>
-              </select>
-              <select id="filterSort" class="filter-pill" onchange="applyFilters()">
-                <option value="popularity.desc">🔥 الأكثر شيوعاً</option>
-                <option value="vote_average.desc">⭐ الأعلى تقييماً</option>
-                <option value="release_date.desc">🆕 الأحدث</option>
-              </select>
-            </div>
           </div>
-
           <div id="searchResults" class="search-results-area">
             <section class="search-card">
               <h3 class="section-title">نتائج البحث</h3>
-              <div class="search-big-grid" id="searchGrid">
-                <!-- نتائج البحث ستُحقن هنا -->
-              </div>
+              <div class="search-big-grid" id="searchGrid"></div>
             </section>
           </div>
         </div>
       </section>
-
     </div>
   </main>
 
   <script src="config.js"></script>
   <script src="app.js"></script>
-
 </body>
 </html>
