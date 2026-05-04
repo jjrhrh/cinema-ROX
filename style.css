@@ -762,77 +762,159 @@ min-height: 720px;
   text-align: center;
   z-index: 5;
   padding: 0 20px;
-  animation: heroFadeIn 0.5s ease;
+/* ===== HERO BANNER - IMMERSIVE REBUILD ===== */
+.hero-banner {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  max-height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 32px;
 }
-.hero-year-tag {
-  font-size: 13px; color: var(--text2);
-  margin-bottom: 6px; letter-spacing: 1px;
+
+/* 1. خلفية الفيلم الكبيرة */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  transition: background-image 1.2s ease;
+  animation: heroBgZoom 14s ease-in-out infinite alternate;
+  z-index: 0;
+}
+@keyframes heroBgZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.07); }
+}
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 20%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 60%),
+    linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.85) 70%, #0b0c10 100%);
+  z-index: 1;
+}
+
+/* 2. المحتوى يطفو */
+.hero-content-wrap {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 0 20px;
+  width: 100%;
+}
+
+/* البوستر الصغير يطفو */
+.hero-poster-wrap {
+  animation: heroPosterFloat 4s ease-in-out infinite;
+}
+@keyframes heroPosterFloat {
+  0%,100% { transform: translateY(0) perspective(600px) rotateY(-4deg); }
+  50%      { transform: translateY(-12px) perspective(600px) rotateY(4deg); }
+}
+.hero-poster-img {
+  width: 160px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 24px;
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.12),
+    0 0 40px rgba(229,9,20,0.4),
+    0 24px 60px rgba(0,0,0,0.9);
+}
+
+/* 3. المعلومات تنصهر في الأسفل */
+.hero-info {
+  text-align: center;
+  z-index: 3;
+  animation: heroFadeUp 0.7s ease both;
+}
+@keyframes heroFadeUp {
+  from { opacity:0; transform: translateY(24px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.hero-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 14px; border-radius: 20px;
+  margin-bottom: 10px;
 }
 .hero-title {
-  font-size: clamp(20px, 5vw, 32px);
-  font-weight: 900; line-height: 1.2;
-  margin-bottom: 12px;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+  font-family: 'Cairo', sans-serif;
+  font-size: clamp(22px, 6vw, 40px);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 14px;
+  text-shadow: 0 2px 30px rgba(0,0,0,1), 0 0 60px rgba(229,9,20,0.25);
+  letter-spacing: -0.5px;
 }
 .hero-tags {
   display: flex; justify-content: center;
   gap: 10px; flex-wrap: wrap; margin-bottom: 18px;
 }
+
+/* 4. كبسولات زجاجية */
 .hero-tag {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #ccc; font-size: 12px; font-weight: 700;
-  padding: 4px 14px; border-radius: 30px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #eee; font-size: 12px; font-weight: 700;
+  padding: 6px 16px; border-radius: 30px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 .hero-tag.rating-tag {
-  background: rgba(245,166,35,0.18);
-  border-color: var(--gold); color: var(--gold);
+  background: rgba(245,166,35,0.15);
+  border-color: rgba(245,166,35,0.5);
+  color: #f5a623;
+  box-shadow: 0 0 14px rgba(245,166,35,0.25);
 }
+
+/* 5. زر Glow */
 .hero-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
-.hero-btn-watch {
+.hero-glow-btn {
   background: var(--primary); color: #fff; border: none;
-  font-family: 'Tajawal', sans-serif; font-size: 15px; font-weight: 700;
-  padding: 12px 30px; border-radius: 30px; cursor: pointer;
-  transition: transform 0.2s, background 0.2s;
-  box-shadow: 0 4px 20px rgba(229,9,20,0.4);
+  font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 900;
+  padding: 14px 34px; border-radius: 50px; cursor: pointer;
+  box-shadow: 0 0 20px rgba(229,9,20,0.6), 0 0 40px rgba(229,9,20,0.3);
+  animation: glowPulse 2.5s ease-in-out infinite;
+  transition: transform 0.2s;
 }
-.hero-btn-watch:hover { transform: scale(1.06); background: #ff2020; }
+.hero-glow-btn:active { transform: scale(0.96); }
+@keyframes glowPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(229,9,20,0.6), 0 0 40px rgba(229,9,20,0.3); }
+  50%      { box-shadow: 0 0 35px rgba(229,9,20,0.9), 0 0 70px rgba(229,9,20,0.5); }
+}
 .hero-btn-info {
-  background: rgba(255,255,255,0.1); color: #fff;
+  background: rgba(255,255,255,0.08); color: #fff;
   border: 1px solid rgba(255,255,255,0.25);
-  font-family: 'Tajawal', sans-serif; font-size: 15px; font-weight: 700;
-  padding: 12px 24px; border-radius: 30px; cursor: pointer;
-  transition: background 0.2s; backdrop-filter: blur(8px);
+  font-family: 'Cairo', sans-serif; font-size: 15px; font-weight: 700;
+  padding: 14px 26px; border-radius: 50px; cursor: pointer;
+  backdrop-filter: blur(12px); transition: background 0.2s;
 }
-.hero-btn-info:hover { background: rgba(255,255,255,0.2); }
-.hero-badge {
-  display: inline-block; background: var(--primary); color: #fff;
-  font-size: 11px; font-weight: 700;
-  padding: 4px 14px; border-radius: 20px; margin-bottom: 10px;
-}
+.hero-btn-info:active { background: rgba(255,255,255,0.18); }
+
+/* Dots */
 .hero-dots {
+  position: relative; z-index: 3;
   display: flex; justify-content: center;
-  gap: 8px; margin-top: 18px; z-index: 5;
+  gap: 8px; margin-top: 16px;
 }
 .hero-dot {
   width: 8px; height: 8px; border-radius: 50%;
   background: rgba(255,255,255,0.3); cursor: pointer; transition: all 0.3s;
 }
 .hero-dot.active { width: 24px; border-radius: 4px; background: var(--primary); }
-@keyframes heroFadeIn {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@media (max-width: 600px) {
-  .hero-carousel { height: 230px; }
-  .hero-slide { width: 130px; height: 195px; }
-  .hero-slide.center { width: 155px; height: 225px; }
-  .hero-slide.left1  { transform: translateX(-160px) scale(0.8) rotateY(14deg); }
-  .hero-slide.right1 { transform: translateX(160px) scale(0.8) rotateY(-14deg); }
-  .hero-slide.left2  { transform: translateX(-275px) scale(0.62) rotateY(24deg); opacity: 0.28; }
-  .hero-slide.right2 { transform: translateX(275px) scale(0.62) rotateY(-24deg); opacity: 0.28; }
-}
-/* ===== END HERO ===== */
+/* ===== END HERO IMMERSIVE ===== */
 .pag-btn {
   background: var(--primary);
   color: #fff;
