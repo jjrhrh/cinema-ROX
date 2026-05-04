@@ -45,8 +45,9 @@ async function fetchTrailer(movieId) {
   } catch (e) {
     console.error('خطأ في جلب التريلر:', e);
     return null;
-  }
-  // ===== بناء شبكة الأفلام =====
+}
+}
+// ===== بناء شبكة الأفلام =====
 function buildMoviesGrid(movies) {
   const main = document.getElementById('mainContent');
   if (!main) return;
