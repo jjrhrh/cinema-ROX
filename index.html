@@ -273,29 +273,6 @@
   </div>
 </div>
 
-<!-- صفحة البحث -->
-<div class="page" id="searchPage">
-  <div class="search-page-wrap">
-    <div class="search-hero">
-      <div class="search-input-wrap" id="searchInputWrap">
-        <span class="search-icon-inner">🔍</span>
-        <input type="text" id="searchInput"
-          placeholder="ابحث عن فيلم أو مسلسل..."
-          oninput="liveSearch()"
-          autocomplete="off"
-          class="search-neo-input">
-      </div>
-      <div class="filter-pills-row">
-        <button class="filter-pill active" onclick="setQuickFilter('trending',this)">🔥 الأكثر شيوعاً</button>
-        <button class="filter-pill" onclick="setQuickFilter('lang',this)">🌐 اللغة</button>
-        <button class="filter-pill" onclick="setQuickFilter('year',this)">📅 السنة</button>
-        <button class="filter-pill" onclick="setQuickFilter('genre',this)">🎭 التصنيف</button>
-        <button class="filter-pill" onclick="setQuickFilter('all',this)">🎬 الكل</button>
-      </div>
-    </div>
-    <div class="grid" id="searchResults"></div>
-  </div>
-</div>
  <div class="page" id="watchlistPage"><div class="container"><h2 class="section-title">❤️ قائمتي</h2><div class="grid" id="watchlistGrid"></div></div></div>
   <div class="page" id="surprisePage"></div>
 <div class="page" id="statsPage"></div>
