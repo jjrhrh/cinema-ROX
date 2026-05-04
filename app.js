@@ -1576,13 +1576,17 @@ function toggleRoxMenu() {
   const overlay = document.getElementById('roxOverlay');
   const btn     = document.getElementById('bnavBrowse');
   if (roxMenuOpen) {
-    menu.classList.add('open');
+    menu.style.display = 'flex';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      menu.classList.add('open');
+    }));
     overlay.classList.add('open');
     if (btn) btn.style.transform = 'rotate(45deg) scale(1.12)';
   } else {
     menu.classList.remove('open');
     overlay.classList.remove('open');
     if (btn) btn.style.transform = '';
+    setTimeout(() => { menu.style.display = 'none'; }, 380);
   }
 }
 // ===== END FLOATING MENU =====
