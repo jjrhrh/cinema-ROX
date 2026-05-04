@@ -1642,7 +1642,6 @@ window.onload = () => {
   try { applyLang(); } catch(e){}
   try { initHero(); } catch(e){}
   try { loadHomePage(); } catch(e){}
-  try { loadHomePage(); } catch(e){}
   try { initScrollTop(); } catch(e){}
   try { fetchMovies(); } catch(e){}
   try { fetchSeries(); } catch(e){}
