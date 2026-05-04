@@ -1147,14 +1147,26 @@ min-height: 720px;
   transform: translateX(-50%) scale(1) translateY(0);
 }
 .rox-item {
-  display: flex; flex-direction: column;
-  align-items: center; gap: 7px; cursor: pointer;
+  display: flex !important; 
+  flex-direction: column !important;
+  align-items: center !important; 
+  gap: 7px !important; 
+  cursor: pointer !important;
+  flex: none !important;
 }
 .rox-circle {
-  width: 60px; height: 60px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.65rem;
-  transition: transform 0.18s ease;
+  width: 60px !important; 
+  height: 60px !important; 
+  min-width: 60px !important;
+  max-width: 60px !important;
+  border-radius: 50% !important;
+  display: flex !important; 
+  align-items: center !important; 
+  justify-content: center !important;
+  font-size: 1.65rem !important;
+  transition: transform 0.18s ease !important;
+  flex: none !important;
+  box-sizing: border-box !important;
 }
 .rox-item:active .rox-circle { transform: scale(0.88); }
 .rox-label {
