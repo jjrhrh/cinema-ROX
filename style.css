@@ -263,7 +263,8 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
 .search-big-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+  gap: 16px;
+  padding: 16px;
 }
 .search-big-grid .card {
   border-radius: 18px; overflow: hidden;
