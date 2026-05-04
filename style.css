@@ -1885,3 +1885,17 @@ body, * {
 .r-card, .lib-section, #libraryPage * {
   font-family: 'Cairo', sans-serif !important;
 }
+/* إخفاء النصوص في نتائج البحث */
+.search-big-grid .card-info,
+.search-big-grid .card-info *,
+.search-big-grid h4,
+.search-big-grid p,
+.search-big-grid span:not(.card-rating),
+.search-big-grid .card-title,
+.search-big-grid .type-badge {
+  display: none !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
