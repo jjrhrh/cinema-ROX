@@ -1516,7 +1516,6 @@ function initHeroSwipe() {
 }
 
 function showHero(idx) {
-function showHero(idx) {
   const heroBg     = document.getElementById('heroBg');
   const posterImg  = document.getElementById('heroPosterImg');
   const title      = document.getElementById('heroTitle');
