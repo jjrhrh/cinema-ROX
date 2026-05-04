@@ -1592,7 +1592,7 @@ window.onload = () => {
       setTimeout(function() {
         splashEl.style.display = 'none';
       }, 650);
-    }, 1500);
+    }, 100);
   }
 
   try { loadSettings(); } catch(e){}
