@@ -498,7 +498,7 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
    PAGES
    ============================ */
 .page { display:none; min-height:60vh; }
-.page.active { display:block; }
+.page.active { display:block !important; }
 .container { padding:16px 4% 60px; }
 .section-title {
   font-size:20px; font-weight:800;
