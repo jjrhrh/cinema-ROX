@@ -2381,4 +2381,4 @@ function openWatchLaterPage() {
 }
 function getWatchlist()  { return JSON.parse(localStorage.getItem('cinemaRoxWatchlist')  || '[]'); }
 function getWatchLater() { return JSON.parse(localStorage.getItem('cinemaRoxWatchLater') || '[]'); }
-  {
+  }
