@@ -1,7 +1,3 @@
-.page { display: none !important; }
-.page.active { display: block !important; }
-.modal { display: none !important; }
-.modal.open { display: flex !important; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; } 
 /* ===== BOTTOM NAV UPGRADE - MASTER OVERRIDE ===== */
 .bottom-nav {
   background: rgba(0,0,0,0.55) !important;
@@ -60,14 +56,11 @@
 body, * { font-family:'Cairo','Tajawal',sans-serif !important; }
 .section-title { font-size:22px !important; font-weight:900 !important; letter-spacing:-0.3px !important; border-right:4px solid var(--primary) !important; }
 .grid { display:flex !important; flex-direction:row !important; overflow-x:auto !important; flex-wrap:nowrap !important; gap:14px !important; padding-bottom:12px !important; scroll-snap-type:x mandatory !important; -webkit-overflow-scrolling:touch !important; scrollbar-width:none !important; }
-.search-big-grid { display:grid !important; flex-direction:unset !important; overflow-x:unset !important; flex-wrap:unset !important; grid-template-columns:repeat(2,1fr) !important; gap:14px !important; padding-bottom:0 !important; scroll-snap-type:unset !important; }
-.search-big-grid .card { flex:unset !important; min-width:unset !important; width:100% !important; }
 .grid::-webkit-scrollbar { display:none !important; }
 .card { flex:0 0 180px !important; min-width:180px !important; border-radius:25px !important; overflow:hidden !important; box-shadow:0 10px 30px rgba(0,0,0,0.8) !important; scroll-snap-align:start !important; position:relative !important; transition:transform 0.18s !important; }
 .card:active { transform:scale(0.95) !important; }
 .card-img-wrap img { width:100% !important; height:265px !important; object-fit:cover !important; display:block !important; border-radius:25px !important; }
 .card-info, .card-title, .card-info h4, .card-info *, .similar-title { display:none !important; }
-.search-big-grid .card-rating { display:block !important; }
 .card-rating { position:absolute !important; bottom:10px !important; right:10px !important; left:auto !important; top:auto !important; background:rgba(0,0,0,0.72) !important; backdrop-filter:blur(20px) !important; -webkit-backdrop-filter:blur(20px) !important; border:1px solid rgba(255,255,255,0.2) !important; color:#f5c518 !important; font-size:11px !important; font-weight:800 !important; padding:4px 12px !important; border-radius:30px !important; box-shadow:0 2px 10px rgba(0,0,0,0.5) !important; }
 .plt-card { background:rgba(0,0,0,0.5) !important; backdrop-filter:blur(10px) !important; -webkit-backdrop-filter:blur(10px) !important; }
 .plt-card:active { transform:scale(0.95) !important; }
@@ -274,148 +267,43 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
 .search-big-grid .card {
   border-radius: 18px; overflow: hidden;
   background: var(--bg2);
-/* ===== SEARCH PAGE ULTRA ===== */
-.search-page-wrap {
-  min-height: 100vh;
-  background: radial-gradient(ellipse at top, #0d0f1e 0%, #08090f 60%, #000 100%);
-  padding-bottom: 100px;
-}
-.search-hero {
-  padding: 80px 4% 16px;
-  position: sticky; top: 0; z-index: 50;
-  background: rgba(6,7,14,0.92);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.search-input-wrap {
-  position: relative; margin-bottom: 14px;
-}
-.search-icon-inner {
-  position: absolute; right: 16px; top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.1rem; pointer-events: none; z-index: 2;
-}
-.search-neo-input {
-  width: 100%; box-sizing: border-box;
-  padding: 16px 50px 16px 20px;
-  border-radius: 20px;
-  border: 2px solid rgba(26,108,255,0.45);
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  color: #fff;
-  font-family: 'Cairo', sans-serif;
-  font-size: 1rem; font-weight: 700;
-  outline: none;
-  box-shadow: 0 0 22px rgba(26,108,255,0.18),
-              inset 0 1px 0 rgba(255,255,255,0.07);
-  transition: border-color 0.3s, box-shadow 0.3s;
-  -webkit-appearance: none;
-}
-.search-neo-input::placeholder { color: rgba(255,255,255,0.28); }
-.search-neo-input:focus {
-  border-color: rgba(26,108,255,0.85);
-  box-shadow: 0 0 0 3px rgba(26,108,255,0.15),
-              0 0 36px rgba(26,108,255,0.28);
-}
-.search-neo-input.has-value {
-  border-color: rgba(229,9,20,0.75);
-  box-shadow: 0 0 0 3px rgba(229,9,20,0.12),
-              0 0 30px rgba(229,9,20,0.22);
-}
-/* كبسولات الفلاتر */
-.filter-pills-row {
-  display: flex; gap: 8px;
-  overflow-x: auto; padding-bottom: 4px;
-  scrollbar-width: none;
-}
-.filter-pills-row::-webkit-scrollbar { display: none; }
-.filter-pill {
-  flex-shrink: 0;
-  padding: 9px 16px;
-  border-radius: 30px;
-  border: 1.5px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  color: rgba(255,255,255,0.8);
-  font-family: 'Cairo', sans-serif;
-  font-size: .82rem; font-weight: 900;
-  cursor: pointer; outline: none;
-  -webkit-appearance: none;
-  transition: all 0.22s ease;
-}
-.filter-pill.pill-active {
-  border-color: rgba(229,9,20,0.9);
-  background: rgba(229,9,20,0.15);
-  color: #fff;
-  box-shadow: 0 0 20px rgba(229,9,20,0.3),
-              0 0 6px rgba(229,9,20,0.2);
-}
-/* منطقة النتائج */
-.search-results-area {
-  padding: 20px 4% 0;
-}
-.search-quick { padding-bottom: 8px; }
-.search-quick .section-title { margin-bottom: 12px; }
-.search-quick .grid {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 10px;
-  margin-bottom: 32px;
-}
-.search-quick .grid .card-img-wrap img { height: 160px; }
-/* جريد البحث الضخم — بوسترين فقط */
-.search-big-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-.search-big-grid .card {
-  border-radius: 20px; overflow: hidden;
-  background: var(--bg2);
-  cursor: pointer; position: relative;
-  animation: slideUp 0.38s ease both;
+  cursor: pointer;
+  position: relative;
+  animation: slideUp 0.4s ease both;
 }
 .search-big-grid .card-img-wrap img {
-  width: 100%; height: 260px;
+  width: 100%; height: 240px;
   object-fit: cover; display: block;
 }
-/* إخفاء كل النصوص تحت البوستر */
 .search-big-grid .card-title,
 .search-big-grid .card-info,
-.search-big-grid .card-info *,
-.search-big-grid h4,
-.search-big-grid .type-badge,
-.search-big-grid span:not(.card-rating) { display: none !important; }
-/* كبسولة التقييم الزجاجية */
+.search-big-grid .type-badge { display: none !important; }
 .search-big-grid .card-rating {
   position: absolute; bottom: 10px; left: 10px;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: #f5a623;
-  font-size: .8rem; font-weight: 900;
-  padding: 5px 12px; border-radius: 22px;
-  font-family: 'Cairo', sans-serif;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #f5a623; font-size: .78rem; font-weight: 900;
+  padding: 4px 10px; border-radius: 20px;
+  font-family: 'Cairo',sans-serif;
 }
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(28px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.search-big-grid .card:nth-child(1)  { animation-delay:.03s }
-.search-big-grid .card:nth-child(2)  { animation-delay:.06s }
-.search-big-grid .card:nth-child(3)  { animation-delay:.09s }
-.search-big-grid .card:nth-child(4)  { animation-delay:.12s }
-.search-big-grid .card:nth-child(5)  { animation-delay:.15s }
-.search-big-grid .card:nth-child(6)  { animation-delay:.18s }
-.search-big-grid .card:nth-child(7)  { animation-delay:.21s }
-.search-big-grid .card:nth-child(8)  { animation-delay:.24s }
-.search-big-grid .card:nth-child(9)  { animation-delay:.27s }
-.search-big-grid .card:nth-child(10) { animation-delay:.30s }
+/* تأخير متتالي */
+.search-big-grid .card:nth-child(1)  { animation-delay: .03s; }
+.search-big-grid .card:nth-child(2)  { animation-delay: .06s; }
+.search-big-grid .card:nth-child(3)  { animation-delay: .09s; }
+.search-big-grid .card:nth-child(4)  { animation-delay: .12s; }
+.search-big-grid .card:nth-child(5)  { animation-delay: .15s; }
+.search-big-grid .card:nth-child(6)  { animation-delay: .18s; }
+.search-big-grid .card:nth-child(7)  { animation-delay: .21s; }
+.search-big-grid .card:nth-child(8)  { animation-delay: .24s; }
+.search-big-grid .card:nth-child(9)  { animation-delay: .27s; }
+.search-big-grid .card:nth-child(10) { animation-delay: .30s; }
 /* ===== END SEARCH PAGE ===== */
+
 /* تعديل padding الصفحات للـ bottom nav */
 .page { padding-bottom: 80px; }
 .hero-banner { margin-top: 0 !important; }
@@ -498,7 +386,7 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
    PAGES
    ============================ */
 .page { display:none; min-height:60vh; }
-.page.active { display:block !important; }
+.page.active { display:block; }
 .container { padding:16px 4% 60px; }
 .section-title {
   font-size:20px; font-weight:800;
@@ -791,7 +679,7 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
   padding: 40px 0 20px;
   background: var(--bg);
   overflow: hidden;
-min-height: 0;
+min-height: 720px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1137,7 +1025,7 @@ min-height: 0;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 26px;
   padding: 18px 22px 16px;
-  display: none;
+  display: flex;
   gap: 18px;
   align-items: center;
   opacity: 0;
@@ -1151,26 +1039,14 @@ min-height: 0;
   transform: translateX(-50%) scale(1) translateY(0);
 }
 .rox-item {
-  display: flex !important; 
-  flex-direction: column !important;
-  align-items: center !important; 
-  gap: 7px !important; 
-  cursor: pointer !important;
-  flex: none !important;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 7px; cursor: pointer;
 }
 .rox-circle {
-  width: 60px !important; 
-  height: 60px !important; 
-  min-width: 60px !important;
-  max-width: 60px !important;
-  border-radius: 50% !important;
-  display: flex !important; 
-  align-items: center !important; 
-  justify-content: center !important;
-  font-size: 1.65rem !important;
-  transition: transform 0.18s ease !important;
-  flex: none !important;
-  box-sizing: border-box !important;
+  width: 60px; height: 60px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.65rem;
+  transition: transform 0.18s ease;
 }
 .rox-item:active .rox-circle { transform: scale(0.88); }
 .rox-label {
