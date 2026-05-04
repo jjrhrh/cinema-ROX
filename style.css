@@ -215,9 +215,10 @@ body { background:var(--bg); color:var(--text); font-family:'Tajawal',sans-serif
 }
 .search-neo-input::placeholder { color: rgba(255,255,255,0.3); }
 .search-neo-input:focus {
-  border-color: rgba(26,108,255,0.7);
-  box-shadow: 0 0 0 3px rgba(26,108,255,0.12),
-              0 0 28px rgba(26,108,255,0.18);
+  border-color: rgba(26,108,255,0.9);
+  box-shadow: 0 0 0 3px rgba(26,108,255,0.2),
+              0 0 40px rgba(26,108,255,0.4),
+              0 0 80px rgba(26,108,255,0.15);
 }
 .search-neo-input.has-value:focus {
   border-color: rgba(229,9,20,0.7);
