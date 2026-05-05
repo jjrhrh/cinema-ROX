@@ -202,59 +202,135 @@ async function loadHomePage() {
 }
 // ===== END HOME =====
 // ===== HERO SLIDER =====
+let heroMovie = null;
+let heroMovies = [];
 let heroIndex = 0;
 let heroTimer = null;
 
-async function loadHeroSlider() {
-  const imgs = [];
+async function getFanartMovieBackground(tmdbId) {
+  try {
+    const url = `${CONFIG.API.FANART_BASE}/movies/${tmdbId}?api_key=${CONFIG.KEYS.FANART}`;
+    const res = await fetch(url);
 
-  // أولاً: نحاول Fanart
-  const FANART_IDS = [238, 278, 240, 424, 389, 155, 550, 680, 13, 122];
-  for (const id of FANART_IDS) {
-    try {
-      const url = `${CONFIG.API.FANART_BASE}/movies/${id}?api_key=${CONFIG.KEYS.FANART}`;
-      const res  = await fetch(url);
-      const data = await res.json();
-      const bg   = data.moviebackground?.[0]?.url
-                || data.hdmoviebackground?.[0]?.url;
-      if (bg) imgs.push(bg);
-    } catch(e) {}
+    if (!res.ok) throw new Error(`Fanart ${res.status}`);
+
+    const data = await res.json();
+
+    return (
+      data.hdmoviebackground?.[0]?.url ||
+      data.moviebackground?.[0]?.url ||
+      data.moviethumb?.[0]?.url ||
+      ''
+    );
+  } catch (err) {
+    return '';
   }
+}
 
-  // Fallback: TMDB إذا Fanart فشل أو أعطى أقل من 3 صور
-  if (imgs.length < 3) {
-    try {
-      const url = `${CONFIG.API.TMDB_BASE}/movie/popular?api_key=${CONFIG.KEYS.TMDB}&language=ar-SA`;
-      const res  = await fetch(url);
-      const data = await res.json();
-      (data.results || []).slice(0, 8).forEach(m => {
-        if (m.backdrop_path)
-          imgs.push(`https://image.tmdb.org/t/p/original${m.backdrop_path}`);
-      });
-    } catch(e) {}
-  }
+function resolveHeroBackdrop(movie, fanartUrl = '') {
+  if (fanartUrl) return fanartUrl;
+  if (movie.backdrop_path) return buildImageURL(movie.backdrop_path, 'ORIGINAL');
+  if (movie.poster_path) return buildImageURL(movie.poster_path, 'XL');
+  return CONFIG.IMAGES.PLACEHOLDER;
+}
 
-  if (!imgs.length) return;
-
+function renderHeroSlider(items) {
   const slider = document.getElementById('heroSlider');
   if (!slider) return;
 
-  slider.innerHTML = imgs.map((src, i) => `
-    <div class="hero-slide ${i === 0 ? 'active' : ''}"
-         style="background-image:url('${src}')"></div>
+  slider.innerHTML = items.map((movie, i) => `
+    <div
+      class="hero-slide ${i === 0 ? 'active' : ''}"
+      data-hero-index="${i}"
+      data-hero-id="${movie.id}"
+      onclick="openDetail(${movie.id}, 'movie')"
+      style="background-image:url('${movie.hero_backdrop}')"
+      aria-label="${movie.title || movie.original_title || 'Hero Movie'}"
+    ></div>
   `).join('');
 
+  heroMovie = items[0] || null;
+}
+
+function setHeroSlide(nextIndex) {
+  const slides = document.querySelectorAll('#heroSlider .hero-slide');
+  if (!slides.length) return;
+
+  slides[heroIndex]?.classList.remove('active');
+  heroIndex = nextIndex;
+  slides[heroIndex]?.classList.add('active');
+
+  heroMovie = heroMovies[heroIndex] || null;
+}
+
+function startHeroSlider() {
   clearInterval(heroTimer);
+
+  if (heroMovies.length < 2) return;
+
   heroTimer = setInterval(() => {
-    const slides = document.querySelectorAll('.hero-slide');
-    if (!slides.length) return;
-    slides[heroIndex].classList.remove('active');
-    heroIndex = (heroIndex + 1) % slides.length;
-    slides[heroIndex].classList.add('active');
+    const next = (heroIndex + 1) % heroMovies.length;
+    setHeroSlide(next);
   }, 5000);
 }
+
+async function loadHeroSlider() {
+  const slider = document.getElementById('heroSlider');
+  if (!slider) return;
+
+  slider.innerHTML = '<div class="loading">⏳ جاري تحميل الهيرو...</div>';
+
+  let sourceMovies = await fetchMovies('/trending/movie/week', {
+    type: 'movie',
+    limit: 6,
+    requirePoster: true,
+    requireBackdrop: true,
+  });
+
+  if (!sourceMovies.length) {
+    sourceMovies = await fetchMovies('/movie/popular', {
+      type: 'movie',
+      limit: 6,
+      requirePoster: true,
+      requireBackdrop: true,
+    });
+  }
+
+  const enriched = await Promise.all(
+    sourceMovies.map(async movie => {
+      const fanartUrl = await getFanartMovieBackground(movie.id);
+
+      return {
+        ...movie,
+        hero_backdrop: resolveHeroBackdrop(movie, fanartUrl),
+      };
+    })
+  );
+
+  heroMovies = enriched.filter(movie => !!movie.hero_backdrop);
+
+  if (!heroMovies.length) {
+    slider.innerHTML = '';
+    return;
+  }
+
+  heroIndex = 0;
+  renderHeroSlider(heroMovies);
+  startHeroSlider();
+}
 // ===== END HERO =====
+
 // ===== INIT =====
+document.addEventListener('DOMContentLoaded', async () => {
+  bnavGo('home');
+
+  await Promise.all([
+    loadHeroSlider(),
+    loadHomePage(),
+  ]);
+});
+// ===== END INIT =====
+
 document.addEventListener('DOMContentLoaded', async () => {
   bnavGo('home');
   loadHomePage();
