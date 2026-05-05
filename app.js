@@ -103,14 +103,53 @@ function toggleRoxMenu() {
 }
 // ===== END NAVIGATION =====
 // ===== FETCH MOVIES =====
-async function fetchMovies(endpoint = '/movie/popular', page = 1) {
-  const url = `${CONFIG.API.TMDB_BASE}${endpoint}?api_key=${CONFIG.KEYS.TMDB}&language=ar-SA&page=${page}`;
+async function fetchMovies(endpoint = '/movie/popular', options = {}) {
+  const {
+    page = 1,
+    type = endpoint.includes('/tv') ? 'tv' : 'movie',
+    limit = CONFIG.DISPLAY.TRENDING_LIMIT || 20,
+    requirePoster = true,
+    requireBackdrop = false,
+    params = {},
+  } = options;
+
+  const url = buildTMDBUrl(endpoint, {
+    page,
+    include_adult: String(CONFIG.SEARCH.INCLUDE_ADULT),
+    ...params,
+  });
+
   try {
-    const res  = await fetch(url);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, CONFIG.PERFORMANCE.REQUEST_TIMEOUT_MS || 8000);
+
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeout);
+
+    if (!res.ok) throw new Error(`TMDB ${res.status}`);
+
     const data = await res.json();
-    return data.results || [];
-  } catch(e) { return []; }
+    const results = Array.isArray(data.results) ? data.results : [];
+
+    return results
+      .filter(item => {
+        if (requirePoster && !item.poster_path) return false;
+        if (requireBackdrop && !item.backdrop_path) return false;
+        return true;
+      })
+      .slice(0, limit)
+      .map(item => ({
+        ...item,
+        media_type: item.media_type || type,
+      }));
+  } catch (err) {
+    console.warn('fetchMovies failed:', endpoint, err);
+    return [];
+  }
 }
+
 
 // ===== BUILD HOME PAGE =====
 function buildMovieCard(movie, type = 'movie') {
