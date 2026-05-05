@@ -1,3 +1,66 @@
+// ===== NAVIGATION SYSTEM =====
+const Pages = {
+  active: null,
+
+  show(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(id);
+    if (page) {
+      page.classList.add('active');
+      this.active = id;
+      window.scrollTo(0, 0);
+    }
+  }
+};
+
+// ===== BOTTOM NAV =====
+function bnavGo(tab) {
+  const hero = document.getElementById('heroBanner');
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('bnav' + tab.charAt(0).toUpperCase() + tab.slice(1))?.classList.add('active');
+
+  if (tab === 'home') {
+    Pages.show('homePage');
+    if (hero) hero.style.display = '';
+  } else if (tab === 'search') {
+    Pages.show('searchPage');
+    if (hero) hero.style.display = 'none';
+  } else if (tab === 'library') {
+    Pages.show('libraryPage');
+    if (hero) hero.style.display = 'none';
+    loadLibraryTab('libWatchlist');
+  } else if (tab === 'profile') {
+    Pages.show('profilePage');
+    if (hero) hero.style.display = 'none';
+  } else if (tab === 'browse') {
+    toggleRoxMenu();
+  }
+}
+
+function goBack() {
+  const hero = document.getElementById('heroBanner');
+  Pages.show('homePage');
+  if (hero) hero.style.display = '';
+  document.getElementById('bnavHome')?.classList.add('active');
+}
+
+// ===== ROX MENU =====
+let roxMenuOpen = false;
+function toggleRoxMenu() {
+  roxMenuOpen = !roxMenuOpen;
+  document.getElementById('roxMenu')?.classList.toggle('open', roxMenuOpen);
+  document.getElementById('roxOverlay')?.classList.toggle('open', roxMenuOpen);
+}
+
+// ===== START =====
+window.onload = () => {
+  Pages.show('homePage');
+  document.getElementById('bnavHome')?.classList.add('active');
+  setTimeout(() => {
+    const s = document.getElementById('splash-screen');
+    if (s) { s.style.opacity = '0'; setTimeout(() => s.style.display = 'none', 600); }
+  }, 1500);
+};
 // ===== NAVIGATION =====
 function bnavGo(tab) {
   // إخفاء كل الصفحات
