@@ -47,3 +47,52 @@
 <div id="libraryPage"    class="page"></div>
 <div id="profilePage"    class="page"></div>
 <div id="detailPage"     class="page"></div>
+
+  <!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bnav-btn" id="bnavHome" onclick="bnavGo('home')">
+    <span class="bnav-icon">🏠</span>
+    <span class="bnav-label">الرئيسية</span>
+  </button>
+  <button class="bnav-btn" id="bnavSearch" onclick="bnavGo('search')">
+    <span class="bnav-icon">🔍</span>
+    <span class="bnav-label">البحث</span>
+  </button>
+  <button class="bnav-btn bnav-center" id="bnavCenter" onclick="toggleRoxMenu()">
+    <span class="bnav-icon">🎬</span>
+  </button>
+  <button class="bnav-btn" id="bnavLibrary" onclick="bnavGo('library')">
+    <span class="bnav-icon">📚</span>
+    <span class="bnav-label">مكتبتي</span>
+  </button>
+  <button class="bnav-btn" id="bnavProfile" onclick="bnavGo('profile')">
+    <span class="bnav-icon">👤</span>
+    <span class="bnav-label">حسابي</span>
+  </button>
+</nav>
+<!-- ROX MENU -->
+<div class="rox-overlay hidden" id="roxOverlay" onclick="toggleRoxMenu()"></div>
+<div class="rox-menu hidden" id="roxMenu">
+  <div class="rox-item" onclick="toggleRoxMenu();openMovieOfDay()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#e50914,#8B0000);">🎥</div>
+    <span class="rox-label">فيلم اليوم</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openStats()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);">📊</div>
+    <span class="rox-label">إحصائياتي</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openSurprise()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#f5a623,#c47d0e);">🎲</div>
+    <span class="rox-label">فاجئني</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openAI()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#1ce783,#0a8f4a);">🤖</div>
+    <span class="rox-label">اختياري</span>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
