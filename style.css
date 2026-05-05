@@ -44,7 +44,7 @@ html, body {
   color: var(--text);
   font-family: 'Cairo', sans-serif;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 /* ===== END VARIABLES ===== */
 /* ===== BOTTOM NAV ===== */
