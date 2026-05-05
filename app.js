@@ -12,10 +12,27 @@ async function fetchFanartHero() {
       const res  = await fetch(url);
       const data = await res.json();
       const bg = data.moviebackground?.[0]?.url
-              || data.hdmoviebackground?.[0]?.url;
-      if (bg) imgs.push(bg);
+              || data.hdmoviebackground?.[0]?.url
+              || data.movieposter?.[0]?.url;
+      if (bg) imgs.push({ img: bg, id });
     } catch(e) {}
   }
+
+  // fallback: إذا فشل Fanart نستخدم TMDB backdrops
+  if (!imgs.length) {
+    try {
+      const url = `${CONFIG.API.TMDB_BASE}/movie/popular?api_key=${CONFIG.KEYS.TMDB}&language=ar-SA`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      (data.results||[]).slice(0,8).forEach(m => {
+        if (m.backdrop_path) imgs.push({
+          img: `https://image.tmdb.org/t/p/original${m.backdrop_path}`,
+          id: m.id
+        });
+      });
+    } catch(e) {}
+  }
+
   heroImages = imgs;
   buildHeroSlider();
 }
@@ -23,9 +40,10 @@ async function fetchFanartHero() {
 function buildHeroSlider() {
   const slider = document.getElementById('heroSlider');
   if (!slider || !heroImages.length) return;
-  slider.innerHTML = heroImages.map((img, i) => `
+  slider.innerHTML = heroImages.map((item, i) => `
     <div class="hero-slide ${i===0?'active':''}"
-         style="background-image:url('${img}')"></div>
+         style="background-image:url('${item.img}')">
+    </div>
   `).join('');
   clearInterval(heroTimer);
   heroTimer = setInterval(nextHeroSlide, 5000);
@@ -33,6 +51,12 @@ function buildHeroSlider() {
 
 function nextHeroSlide() {
   const slides = document.querySelectorAll('.hero-slide');
+  if (!slides.length) return;
+  slides[heroSlideIndex].classList.remove('active');
+  heroSlideIndex = (heroSlideIndex + 1) % slides.length;
+  slides[heroSlideIndex].classList.add('active');
+}
+// ===== END HERO =====
   if (!slides.length) return;
   slides[heroSlideIndex].classList.remove('active');
   heroSlideIndex = (heroSlideIndex + 1) % slides.length;
