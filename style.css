@@ -218,3 +218,20 @@ html, body {
     0 0 16px rgba(0,255,255,0.3),
     0 0 40px rgba(0,255,255,0.15) !important;
 }
+/* ===== توحيد أبعاد البوسترات ===== */
+.movie-card {
+  aspect-ratio: unset !important;
+  height: unset !important;
+}
+.movie-poster-wrap {
+  width: 100% !important;
+  aspect-ratio: 2/3 !important;
+  height: unset !important;
+  max-height: unset !important;
+}
+.movie-poster {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+}
