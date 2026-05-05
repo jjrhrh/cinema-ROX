@@ -466,3 +466,12 @@ html, body {
 }
 .rox-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 /* ===== END TOAST ===== */
+/* ===== LIBRARY & SEARCH ===== */
+.lib-header { padding: 20px 16px 8px; }
+.lib-title  { font-size: 1.3rem; font-weight: 900; color: var(--text); }
+.lib-section{ padding: 8px 0; }
+.lib-empty  {
+  padding: 40px 16px; text-align: center;
+  color: var(--text3); font-size: 0.9rem;
+}
+/* ===== END LIBRARY ===== */
