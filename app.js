@@ -99,6 +99,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   buildHeader();
   const movies = await fetchMovies();
   buildMoviesGrid(movies);
-  document.getElementById('closeTrailer')
-    .addEventListener('click', closeTrailerPlayer);
+  const closeBtn = document.getElementById('closeTrailer');
+  if (closeBtn) closeBtn.addEventListener('click', closeTrailerPlayer);
+  const overlay = document.getElementById('trailerOverlay');
+  if (overlay) overlay.classList.add('hidden');
 });
