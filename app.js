@@ -1,3 +1,44 @@
+// ===== HERO FANART SLIDER =====
+const HERO_MOVIE_IDS = [238,278,240,424,389,155,550,680,13,122];
+let heroSlideIndex = 0;
+let heroImages = [];
+let heroTimer = null;
+
+async function fetchFanartHero() {
+  const imgs = [];
+  for (const id of HERO_MOVIE_IDS) {
+    try {
+      const url = `${CONFIG.API.FANART_BASE}/movies/${id}?api_key=${CONFIG.KEYS.FANART}`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      const bg = data.moviebackground?.[0]?.url
+              || data.hdmoviebackground?.[0]?.url;
+      if (bg) imgs.push(bg);
+    } catch(e) {}
+  }
+  heroImages = imgs;
+  buildHeroSlider();
+}
+
+function buildHeroSlider() {
+  const slider = document.getElementById('heroSlider');
+  if (!slider || !heroImages.length) return;
+  slider.innerHTML = heroImages.map((img, i) => `
+    <div class="hero-slide ${i===0?'active':''}"
+         style="background-image:url('${img}')"></div>
+  `).join('');
+  clearInterval(heroTimer);
+  heroTimer = setInterval(nextHeroSlide, 5000);
+}
+
+function nextHeroSlide() {
+  const slides = document.querySelectorAll('.hero-slide');
+  if (!slides.length) return;
+  slides[heroSlideIndex].classList.remove('active');
+  heroSlideIndex = (heroSlideIndex + 1) % slides.length;
+  slides[heroSlideIndex].classList.add('active');
+}
+// ===== END HERO =====
 // ===== بناء الهيدر =====
 function buildHeader() {
   const header = document.getElementById('siteHeader');
@@ -97,6 +138,7 @@ function closeTrailerPlayer() {
 
 // ===== تشغيل عند تحميل الصفحة =====
 document.addEventListener('DOMContentLoaded', async () => {
+  fetchFanartHero();
   buildHeader();
   const movies = await fetchMovies();
   buildMoviesGrid(movies);
