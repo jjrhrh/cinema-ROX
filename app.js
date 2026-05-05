@@ -99,7 +99,59 @@ async function loadHomePage() {
   `;
 }
 // ===== END HOME =====
+// ===== HERO SLIDER =====
+let heroIndex = 0;
+let heroTimer = null;
 
+async function loadHeroSlider() {
+  const imgs = [];
+
+  // أولاً: نحاول Fanart
+  const FANART_IDS = [238, 278, 240, 424, 389, 155, 550, 680, 13, 122];
+  for (const id of FANART_IDS) {
+    try {
+      const url = `${CONFIG.API.FANART_BASE}/movies/${id}?api_key=${CONFIG.KEYS.FANART}`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      const bg   = data.moviebackground?.[0]?.url
+                || data.hdmoviebackground?.[0]?.url;
+      if (bg) imgs.push(bg);
+    } catch(e) {}
+  }
+
+  // Fallback: TMDB إذا Fanart فشل أو أعطى أقل من 3 صور
+  if (imgs.length < 3) {
+    try {
+      const url = `${CONFIG.API.TMDB_BASE}/movie/popular?api_key=${CONFIG.KEYS.TMDB}&language=ar-SA`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      (data.results || []).slice(0, 8).forEach(m => {
+        if (m.backdrop_path)
+          imgs.push(`https://image.tmdb.org/t/p/original${m.backdrop_path}`);
+      });
+    } catch(e) {}
+  }
+
+  if (!imgs.length) return;
+
+  const slider = document.getElementById('heroSlider');
+  if (!slider) return;
+
+  slider.innerHTML = imgs.map((src, i) => `
+    <div class="hero-slide ${i === 0 ? 'active' : ''}"
+         style="background-image:url('${src}')"></div>
+  `).join('');
+
+  clearInterval(heroTimer);
+  heroTimer = setInterval(() => {
+    const slides = document.querySelectorAll('.hero-slide');
+    if (!slides.length) return;
+    slides[heroIndex].classList.remove('active');
+    heroIndex = (heroIndex + 1) % slides.length;
+    slides[heroIndex].classList.add('active');
+  }, 5000);
+}
+// ===== END HERO =====
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
   bnavGo('home');
