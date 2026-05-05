@@ -163,3 +163,12 @@ html, body {
   object-fit: cover !important;
   display: block !important;
 }
+/* ===== نيون Cyan عند Hover ===== */
+.movie-card:hover {
+  box-shadow:
+    0 0 12px rgba(0,255,255,0.4),
+    0 0 28px rgba(0,255,255,0.2),
+    0 0 60px rgba(0,255,255,0.1) !important;
+  transform: translateY(-5px) scale(1.03) !important;
+  border: 1px solid rgba(0,255,255,0.35) !important;
+}
