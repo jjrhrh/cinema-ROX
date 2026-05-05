@@ -362,3 +362,41 @@ body, html {
   box-shadow: 0 0 30px rgba(0,255,255,0.35);
 }
 /* ===== END HERO ===== */
+/* ===== HERO SLIDES FIX ===== */
+.hero-slide {
+  position: absolute !important;
+  inset: 0 !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  opacity: 0 !important;
+  transition: opacity 1.4s ease !important;
+}
+.hero-slide.active {
+  opacity: 1 !important;
+}
+.hero-section {
+  position: relative !important;
+  width: 100% !important;
+  height: 70vh !important;
+  overflow: hidden !important;
+  background: #050505 !important;
+}
+.hero-slider {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+.hero-gradient {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  background: linear-gradient(
+    to bottom,
+    rgba(5,5,5,0.2) 0%,
+    rgba(5,5,5,0.4) 50%,
+    #050505 100%
+  ) !important;
+}
+/* ===== END HERO FIX ===== */
