@@ -144,3 +144,10 @@
 }
 /* إخفاء أي نصوص قديمة */
 .movie-title, .movie-rating { display: none !important; }
+/* ===== خلفية ملكية ===== */
+html, body {
+  margin: 0; padding: 0;
+  background: #050505;
+  min-height: 100vh;
+}
+#mainContent { background: #050505; }
