@@ -181,7 +181,141 @@ async function loadHomePage() {
 }
 
 // stub لمنع أخطاء الكونسول إن لم تُبنَ الصفحات بعد
-function openDetail(id, type) { console.log('openDetail:', id, type); }
+// ===== DETAIL PAGE =====
+async function openDetail(id, type = 'movie') {
+  const page = document.getElementById('detailPage');
+  if (!page) return;
+
+  const hero = document.getElementById('heroSection');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  page.classList.add('active');
+  if (hero) hero.style.display = 'none';
+  window.scrollTo(0, 0);
+
+  page.innerHTML = '<div class="loading">⏳ جاري تحميل التفاصيل...</div>';
+
+  try {
+    const endpoint = type === 'tv' ? `/tv/${id}` : `/movie/${id}`;
+    const [detailRes, videosRes, creditsRes] = await Promise.all([
+      fetch(buildTMDBUrl(endpoint)),
+      fetch(buildTMDBUrl(`${endpoint}/videos`)),
+      fetch(buildTMDBUrl(`${endpoint}/credits`)),
+    ]);
+
+    const detail  = await detailRes.json();
+    const videos  = await videosRes.json();
+    const credits = await creditsRes.json();
+
+    const trailer = (videos.results || []).find(v => v.type === 'Trailer' && v.site === 'YouTube')
+                 || (videos.results || [])[0];
+
+    const backdrop = detail.backdrop_path
+      ? `${CONFIG.IMAGES.ORIGINAL}${detail.backdrop_path}`
+      : (detail.poster_path ? `${CONFIG.IMAGES.ORIGINAL}${detail.poster_path}` : '');
+
+    const poster = detail.poster_path
+      ? `${CONFIG.IMAGES.POSTER_LG}${detail.poster_path}`
+      : CONFIG.IMAGES.PLACEHOLDER;
+
+    const title    = type === 'movie' ? (detail.title || detail.original_title) : (detail.name || detail.original_name);
+    const year     = (detail.release_date || detail.first_air_date || '').slice(0, 4);
+    const rating   = detail.vote_average ? detail.vote_average.toFixed(1) : 'N/A';
+    const runtime  = detail.runtime ? `${detail.runtime} د` : (detail.episode_run_time?.[0] ? `${detail.episode_run_time[0]} د` : '');
+    const genres   = (detail.genres || []).map(g => `<span class="detail-genre">${g.name}</span>`).join('');
+    const overview = detail.overview || 'لا يوجد وصف متاح.';
+    const cast     = (credits.cast || []).slice(0, 8);
+
+    const castHTML = cast.length ? `
+      <div class="detail-section">
+        <h3 class="detail-section-title">🎭 طاقم التمثيل</h3>
+        <div class="cast-row">
+          ${cast.map(a => `
+            <div class="cast-card">
+              <img src="${a.profile_path ? CONFIG.IMAGES.POSTER_SM + a.profile_path : CONFIG.IMAGES.PLACEHOLDER}"
+                   alt="${a.name}" loading="lazy" onerror="this.src='${CONFIG.IMAGES.PLACEHOLDER}'">
+              <span class="cast-name">${a.name}</span>
+              <span class="cast-char">${a.character || ''}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>` : '';
+
+    const trailerBtn = trailer
+      ? `<button class="detail-btn detail-btn-trailer" onclick="playTrailer('${trailer.key}')">▶ المقطع الدعائي</button>`
+      : '';
+
+    // حفظ ID لاستخدامه في أزرار المكتبة
+    page.dataset.currentId   = id;
+    page.dataset.currentType = type;
+
+    page.innerHTML = `
+      <!-- Backdrop -->
+      <div class="detail-backdrop" style="background-image:url('${backdrop}')">
+        <div class="detail-backdrop-gradient"></div>
+        <button class="detail-back-btn" onclick="goBack()">← رجوع</button>
+      </div>
+
+      <!-- Main Info -->
+      <div class="detail-body">
+        <div class="detail-top">
+          <img class="detail-poster" src="${poster}" alt="${title}"
+               onerror="this.src='${CONFIG.IMAGES.PLACEHOLDER}'">
+          <div class="detail-info">
+            <h1 class="detail-title">${title}</h1>
+            <div class="detail-meta">
+              ${year ? `<span class="detail-badge">📅 ${year}</span>` : ''}
+              ${runtime ? `<span class="detail-badge">⏱ ${runtime}</span>` : ''}
+              <span class="detail-badge detail-rating">⭐ ${rating}</span>
+              <span class="detail-badge">${type === 'tv' ? '📺 مسلسل' : '🎬 فيلم'}</span>
+            </div>
+            <div class="detail-genres">${genres}</div>
+            <div class="detail-actions">
+              ${trailerBtn}
+              <button class="detail-btn detail-btn-watch"   onclick="addToWatchlist(${id},'${type}')">+ قائمتي</button>
+              <button class="detail-btn detail-btn-later"   onclick="addToWatchLater(${id},'${type}')">⏰ سأشاهده</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overview -->
+        <div class="detail-section">
+          <h3 class="detail-section-title">📖 القصة</h3>
+          <p class="detail-overview">${overview}</p>
+        </div>
+
+        <!-- Production Info -->
+        <div class="detail-section detail-prod-grid">
+          ${detail.budget ? `<div class="detail-prod-item"><span class="prod-label">💰 الميزانية</span><span class="prod-val">$${(detail.budget/1e6).toFixed(1)}M</span></div>` : ''}
+          ${detail.revenue ? `<div class="detail-prod-item"><span class="prod-label">✅ الإيرادات</span><span class="prod-val">$${(detail.revenue/1e6).toFixed(1)}M</span></div>` : ''}
+          ${detail.vote_count ? `<div class="detail-prod-item"><span class="prod-label">🗳 التقييمات</span><span class="prod-val">${detail.vote_count.toLocaleString()}</span></div>` : ''}
+          ${detail.status ? `<div class="detail-prod-item"><span class="prod-label">📌 الحالة</span><span class="prod-val">${detail.status}</span></div>` : ''}
+        </div>
+
+        <!-- Cast -->
+        ${castHTML}
+      </div>
+    `;
+
+  } catch (err) {
+    page.innerHTML = `<div class="loading">❌ تعذّر تحميل التفاصيل<br><small>${err.message}</small></div>
+      <div style="text-align:center;padding:20px">
+        <button class="detail-btn detail-btn-watch" onclick="goBack()">← رجوع</button>
+      </div>`;
+  }
+}
+
+function playTrailer(key) {
+  const overlay = document.getElementById('trailerOverlay');
+  const frame   = document.getElementById('trailerFrame');
+  if (!overlay || !frame) return;
+  frame.src = `${CONFIG.VIDEO.YOUTUBE_EMBED}${key}?autoplay=1`;
+  overlay.classList.remove('hidden');
+  document.getElementById('closeTrailer')?.addEventListener('click', () => {
+    overlay.classList.add('hidden');
+    frame.src = '';
+  }, { once: true });
+}
 function openMovieOfDay() {}
 function openStats() {}
 function openSurprise() {}
