@@ -235,3 +235,68 @@ html, body {
   object-fit: cover !important;
   object-position: center top !important;
 }
+/* ===== FINAL OVERRIDE ===== */
+body, html {
+  background: #050505 !important;
+  color: #fff !important;
+}
+#mainContent { background: #050505 !important; }
+
+/* 2 columns جوال */
+.movies-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 8px !important;
+  padding: 8px !important;
+  background: #050505 !important;
+}
+@media (min-width: 769px) {
+  .movies-grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+
+/* الكروت */
+.movie-card {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background: #111 !important;
+  border: 1px solid rgba(0,255,255,0.15) !important;
+  box-shadow: 0 0 6px rgba(0,255,255,0.08) !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+}
+.movie-card:hover {
+  border-color: rgba(0,255,255,0.7) !important;
+  box-shadow: 0 0 20px rgba(0,255,255,0.4),
+              0 0 50px rgba(0,255,255,0.15) !important;
+  transform: scale(1.03) !important;
+}
+
+/* البوستر */
+.movie-poster-wrap {
+  width: 100% !important;
+  aspect-ratio: 2/3 !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+.movie-poster {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center top !important;
+  display: block !important;
+}
+
+/* شريط البحث */
+.search-input {
+  background: rgba(0,255,255,0.05) !important;
+  border: 1.5px solid rgba(0,255,255,0.4) !important;
+  color: #fff !important;
+  border-radius: 30px !important;
+}
+.search-input::placeholder { color: rgba(255,255,255,0.35) !important; }
+.search-input:focus {
+  border-color: cyan !important;
+  box-shadow: 0 0 20px rgba(0,255,255,0.3) !important;
+  outline: none !important;
+}
+/* ===== END FINAL ===== */
