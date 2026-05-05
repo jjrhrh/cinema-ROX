@@ -449,3 +449,20 @@ html, body {
   font-size: 1.4rem; cursor: pointer; padding: 4px 10px;
 }
 /* ===== END DETAIL ===== */
+/* ===== TOAST ===== */
+.rox-toast {
+  position: fixed; bottom: 90px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(20,20,28,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-accent);
+  color: var(--text); padding: 12px 24px;
+  border-radius: var(--radius-full);
+  font-family: 'Cairo',sans-serif; font-size: 0.9rem; font-weight: 700;
+  z-index: 99998; opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  box-shadow: 0 4px 24px var(--accent-glow);
+  white-space: nowrap;
+}
+.rox-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+/* ===== END TOAST ===== */
