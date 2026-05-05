@@ -180,3 +180,11 @@ html, body {
     padding: 8px !important;
   }
 }
+/* ===== تثبيت نسبة البوسترات ===== */
+.movie-card {
+  aspect-ratio: unset !important;
+}
+.movie-poster-wrap {
+  aspect-ratio: 2/3 !important;
+  height: unset !important;
+}
