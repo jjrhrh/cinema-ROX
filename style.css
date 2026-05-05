@@ -194,3 +194,16 @@ html, body {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
+/* ===== Glass Search Bar ===== */
+.search-input {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1.5px solid rgba(0,255,255,0.5) !important;
+  color: #fff !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 0 12px rgba(0,255,255,0.2) !important;
+}
+.search-input::placeholder { color: rgba(255,255,255,0.4) !important; }
+.search-input:focus {
+  border-color: rgba(0,255,255,0.9) !important;
+  box-shadow: 0 0 24px rgba(0,255,255,0.35) !important;
+}
