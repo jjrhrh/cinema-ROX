@@ -244,7 +244,44 @@ async function openDetail(id, type = 'movie') {
     const trailerBtn = trailer
       ? `<button class="detail-btn detail-btn-trailer" onclick="playTrailer('${trailer.key}')">▶ المقطع الدعائي</button>`
       : '';
+// ===== LIBRARY HELPERS =====
+function getLib(key) {
+  try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+}
+function saveLib(key, arr) {
+  localStorage.setItem(key, JSON.stringify(arr));
+}
 
+function addToWatchlist(id, type) {
+  const list = getLib('rox_watchlist');
+  if (list.find(i => i.id === id)) {
+    showToast('✅ موجود في قائمتك مسبقاً');
+    return;
+  }
+  list.unshift({ id, type, addedAt: Date.now() });
+  saveLib('rox_watchlist', list);
+  showToast('❤️ تمت الإضافة إلى قائمتك');
+}
+
+function addToWatchLater(id, type) {
+  const list = getLib('rox_watchlater');
+  if (list.find(i => i.id === id)) {
+    showToast('⏰ موجود في سأشاهده مسبقاً');
+    return;
+  }
+  list.unshift({ id, type, addedAt: Date.now() });
+  saveLib('rox_watchlater', list);
+  showToast('⏰ تمت الإضافة إلى سأشاهده لاحقاً');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'rox-toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.classList.add('show'), 10);
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 2500);
+                                                                                                 }
     // حفظ ID لاستخدامه في أزرار المكتبة
     page.dataset.currentId   = id;
     page.dataset.currentType = type;
