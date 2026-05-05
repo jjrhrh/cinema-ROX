@@ -172,3 +172,11 @@ html, body {
   transform: translateY(-5px) scale(1.03) !important;
   border: 1px solid rgba(0,255,255,0.35) !important;
 }
+/* ===== إصلاح الأعمدة للجوال ===== */
+@media (max-width: 599px) {
+  .movies-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    padding: 8px !important;
+  }
+}
