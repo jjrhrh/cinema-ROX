@@ -188,3 +188,9 @@ html, body {
   aspect-ratio: 2/3 !important;
   height: unset !important;
 }
+/* ===== قسري: بوسترين فقط على الجوال ===== */
+@media (max-width: 768px) {
+  .movies-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
