@@ -151,3 +151,15 @@ html, body {
   min-height: 100vh;
 }
 #mainContent { background: #050505; }
+/* ===== توحيد البوسترات ===== */
+.movie-poster-wrap {
+  aspect-ratio: 2/3 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+.movie-poster {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
