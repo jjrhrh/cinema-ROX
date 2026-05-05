@@ -93,7 +93,7 @@ function closeTrailerPlayer() {
   frame.src = '';
   overlay.classList.add('hidden');
 }
-}
+
 // ===== تشغيل عند تحميل الصفحة =====
 document.addEventListener('DOMContentLoaded', async () => {
   buildHeader();
