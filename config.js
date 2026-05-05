@@ -52,9 +52,10 @@ const CONFIG = Object.freeze({
     INCLUDE_ADULT     : false,   // إخفاء المحتوى الكبار
   }),
 // ===== إعدادات نظام الفيديو =====
-const YOUTUBE_BASE   = 'https://www.youtube.com/embed/';
-const YOUTUBE_SEARCH = 'https://www.googleapis.com/youtube/v3/search';
-const TMDB_VIDEO_EP  = '/videos'; // يُضاف لـ /movie/{id}/videos
+VIDEO: Object.freeze({
+    YOUTUBE_EMBED   : 'https://www.youtube.com/embed/',
+    TMDB_VIDEO_PATH : '/videos',
+  }),
   // ─────────────────────────────────────────
   //  🎬  إعدادات عرض المحتوى
   // ─────────────────────────────────────────
