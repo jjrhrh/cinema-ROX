@@ -63,10 +63,11 @@ function buildMoviesGrid(movies) {
               loading="lazy"
               onerror="this.src='${CONFIG.IMAGES.PLACEHOLDER}'"
             >
-            <div class="movie-play-icon">▶</div>
+            <div class="movie-overlay">
+              <span class="movie-play-btn">▶</span>
+              <span class="movie-rating-badge">⭐ ${movie.vote_average?.toFixed(1) || ''}</span>
+            </div>
           </div>
-          <div class="movie-title">${movie.title}</div>
-          <div class="movie-rating">⭐ ${movie.vote_average?.toFixed(1) || 'N/A'}</div>
         </div>
       `).join('')}
     </div>
