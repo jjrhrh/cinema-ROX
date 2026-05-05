@@ -1,120 +1,84 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl" id="htmlRoot">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <meta name="theme-color" content="#0a0a0f">
-  <title>Cinema ROX</title>
-  <link rel="icon" href="logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
 <body>
+
 <!-- SPLASH -->
 <div id="splash-screen">
   <div class="splash-logo">🎬</div>
   <h1>Cinema <span>ROX</span></h1>
-  <div class="splash-dots">
-    <span></span><span></span><span></span>
+  <div class="splash-dots"><span></span><span></span><span></span></div>
+</div>
+
+<!-- HERO -->
+<div id="heroSection" class="hero-section">
+  <div id="heroSlider" class="hero-slider"></div>
+  <div class="hero-gradient"></div>
+  <div class="hero-logo">Cinema <span>ROX</span></div>
+  <div class="hero-search-wrap">
+    <input type="text" id="searchInput" class="hero-search-input"
+      placeholder="🔍 ابحث عن فيلم..."
+      oninput="handleSearch(this.value)">
   </div>
 </div>
-  <!-- 1️⃣ Hero Section -->
-  <div id="heroSection" class="hero-section">
-    <div id="heroSlider" class="hero-slider"></div>
-    <div class="hero-gradient"></div>
-    <div class="hero-search-wrap">
-      <input type="text" id="searchInput" class="hero-search-input"
-        placeholder="🔍 ابحث عن فيلم..."
-        oninput="handleSearch(this.value)">
-    </div>
-    <div class="hero-logo">Cinema <span>ROX</span></div>
-  </div>
 
-  <!-- 2️⃣ الصفحة الرئيسية -->
-  <main id="mainContent"></main>
+<!-- PAGES -->
+<div id="homePage"        class="page"></div>
+<div id="searchPage"      class="page"></div>
+<div id="libraryPage"     class="page"></div>
+<div id="profilePage"     class="page"></div>
+<div id="detailPage"      class="page"></div>
+<div id="watchPage"       class="page"></div>
+<div id="statsPage"       class="page"></div>
+<div id="surprisePage"    class="page"></div>
+<div id="movieOfDayPage"  class="page"></div>
 
-  <!-- 3️⃣ مشغل الفيديو (مخفي افتراضياً) -->
+<!-- TRAILER OVERLAY -->
 <div id="trailerOverlay" class="trailer-overlay hidden">
-    <div class="trailer-box">
-      <button id="closeTrailer" class="trailer-close">✕</button>
-      <iframe id="trailerFrame" class="trailer-frame"
-        src="" allowfullscreen
-        allow="autoplay; fullscreen">
-      </iframe>
-    </div>
+  <div class="trailer-box">
+    <button id="closeTrailer" class="trailer-close">✕</button>
+    <iframe id="trailerFrame" class="trailer-frame" src="" allowfullscreen allow="autoplay; fullscreen"></iframe>
   </div>
-<!-- 5️⃣ Bottom Navigation -->
-  <nav class="bottom-nav">
-    <button class="bnav-btn active" id="bnavHome" onclick="bnavGo('home')">
-      <span class="bnav-icon">🏠</span>
-      <span class="bnav-label">الرئيسية</span>
-    </button>
-    <button class="bnav-btn" id="bnavSearch" onclick="bnavGo('search')">
-      <span class="bnav-icon">🔍</span>
-      <span class="bnav-label">البحث</span>
-    </button>
-    <button class="bnav-btn bnav-center" id="bnavCenter" onclick="toggleRoxMenu()">
-      <span class="bnav-icon">🎬</span>
-    </button>
-    <button class="bnav-btn" id="bnavLibrary" onclick="bnavGo('library')">
-      <span class="bnav-icon">📚</span>
-      <span class="bnav-label">مكتبتي</span>
-    </button>
-    <button class="bnav-btn" id="bnavProfile" onclick="bnavGo('profile')">
-      <span class="bnav-icon">👤</span>
-      <span class="bnav-label">حسابي</span>
-    </button>
-  </nav>
+</div>
 
-  <!-- 6️⃣ الصفحات -->
-  <div class="page" id="homePage"></div>
-  <div class="page" id="searchPage"></div>
-  <div class="page" id="libraryPage"></div>
-  <div class="page" id="profilePage"></div>
-  <div class="page" id="detailPage"></div>
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bnav-btn" id="bnavHome"    onclick="bnavGo('home')">
+    <span class="bnav-icon">🏠</span><span class="bnav-label">الرئيسية</span>
+  </button>
+  <button class="bnav-btn" id="bnavSearch"  onclick="bnavGo('search')">
+    <span class="bnav-icon">🔍</span><span class="bnav-label">البحث</span>
+  </button>
+  <button class="bnav-btn bnav-center" id="bnavCenter" onclick="toggleRoxMenu()">
+    <span class="bnav-icon">🎬</span>
+  </button>
+  <button class="bnav-btn" id="bnavLibrary" onclick="bnavGo('library')">
+    <span class="bnav-icon">📚</span><span class="bnav-label">مكتبتي</span>
+  </button>
+  <button class="bnav-btn" id="bnavProfile" onclick="bnavGo('profile')">
+    <span class="bnav-icon">👤</span><span class="bnav-label">حسابي</span>
+  </button>
+</nav>
 
-  <!-- 7️⃣ Floating ROX Menu -->
-  <div class="rox-overlay hidden" id="roxOverlay" onclick="toggleRoxMenu()"></div>
-  <div class="rox-menu hidden" id="roxMenu">
-    <div class="rox-item" onclick="toggleRoxMenu();openMovieOfDay()">
-      <div class="rox-circle" style="background:linear-gradient(135deg,#e50914,#8B0000);">🎥</div>
-      <span class="rox-label">فيلم اليوم</span>
-    </div>
-    <div class="rox-item" onclick="toggleRoxMenu();openStats()">
-      <div class="rox-circle" style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);">📊</div>
-      <span class="rox-label">إحصائياتي</span>
-    </div>
-    <div class="rox-item" onclick="toggleRoxMenu();openSurprise()">
-      <div class="rox-circle" style="background:linear-gradient(135deg,#f5a623,#c47d0e);">🎲</div>
-      <span class="rox-label">فاجئني</span>
-    </div>
-    <div class="rox-item" onclick="toggleRoxMenu();openAI()">
-      <div class="rox-circle" style="background:linear-gradient(135deg,#1ce783,#0a8f4a);">🤖</div>
-      <span class="rox-label">اختياري</span>
-    </div>
+<!-- ROX MENU -->
+<div class="rox-overlay hidden" id="roxOverlay" onclick="toggleRoxMenu()"></div>
+<div class="rox-menu hidden" id="roxMenu">
+  <div class="rox-item" onclick="toggleRoxMenu();openMovieOfDay()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#e50914,#8B0000);">🎥</div>
+    <span class="rox-label">فيلم اليوم</span>
   </div>
-  <!-- 4️⃣ السكريبتات (الترتيب مهم) -->
-  <script src="config.js"></script>
-  <script src="app.js"></script>
-<!-- صفحات التطبيق -->
-<div id="homePage" class="page active"></div>
-<div id="searchPage" class="page"></div>
-<div id="detailPage" class="page"></div>
-<div id="libraryPage" class="page"></div>
-<div id="watchPage" class="page"></div>
-<div id="statsPage" class="page"></div>
-<div id="surprisePage" class="page"></div>
-<div id="watchlistPage" class="page"></div>
-<div id="watchLaterPage" class="page"></div>
-<div id="notesPage" class="page"></div>
-<div id="movieOfDayPage" class="page"></div>
-<div id="networksListPage" class="page"></div>
-<div id="animePage" class="page"></div>
-<div id="seriesPage" class="page"></div>
-<div id="moviesPage" class="page"></div>
+  <div class="rox-item" onclick="toggleRoxMenu();openStats()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#1a6cff,#0a3d8f);">📊</div>
+    <span class="rox-label">إحصائياتي</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openSurprise()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#f5a623,#c47d0e);">🎲</div>
+    <span class="rox-label">فاجئني</span>
+  </div>
+  <div class="rox-item" onclick="toggleRoxMenu();openAI()">
+    <div class="rox-circle" style="background:linear-gradient(135deg,#1ce783,#0a8f4a);">🤖</div>
+    <span class="rox-label">اختياري</span>
+  </div>
+</div>
 
-<!-- السكريبتات -->
+<!-- SCRIPTS (مرة واحدة فقط) -->
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
-</html>
