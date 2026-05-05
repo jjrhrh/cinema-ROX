@@ -87,3 +87,60 @@
 }
 /* ===== END TRAILER ===== */
 .hidden { display: none !important; } 
+/* ===== MOVIES GRID — 2 columns mobile ===== */
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 12px;
+}
+@media (min-width: 600px)  { .movies-grid { grid-template-columns: repeat(3,1fr); } }
+@media (min-width: 900px)  { .movies-grid { grid-template-columns: repeat(4,1fr); } }
+@media (min-width: 1200px) { .movies-grid { grid-template-columns: repeat(6,1fr); } }
+
+/* ===== MOVIE CARD — صامت بدون نصوص ===== */
+.movie-card {
+  cursor: pointer;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #13141f;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.movie-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 0 24px rgba(229,9,20,0.4);
+}
+.movie-poster-wrap {
+  position: relative;
+  aspect-ratio: 2/3;
+  overflow: hidden;
+}
+.movie-poster {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform 0.3s;
+}
+.movie-card:hover .movie-poster { transform: scale(1.07); }
+.movie-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+  opacity: 0; transition: opacity 0.25s;
+}
+.movie-card:hover .movie-overlay { opacity: 1; }
+.movie-play-btn {
+  font-size: 2.8rem;
+  filter: drop-shadow(0 0 12px rgba(229,9,20,0.8));
+}
+.movie-rating-badge {
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #f5c518; font-weight: 900;
+  font-size: 0.82rem;
+  padding: 4px 12px; border-radius: 20px;
+}
+/* إخفاء أي نصوص قديمة */
+.movie-title, .movie-rating { display: none !important; }
