@@ -1,402 +1,49 @@
-/* ===== MOVIES GRID ===== */
-#mainContent {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px 16px 80px;
-}
-.movies-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-@media (min-width: 600px)  { .movies-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (min-width: 900px)  { .movies-grid { grid-template-columns: repeat(4, 1fr); } }
-@media (min-width: 1200px) { .movies-grid { grid-template-columns: repeat(6, 1fr); } }
+/* ===== CINEMA ROX — CSS VARIABLES ===== */
+:root {
+  /* الألوان الأساسية */
+  --accent:        #e50914;
+  --accent-glow:   rgba(229,9,20,0.35);
+  --accent-soft:   rgba(229,9,20,0.12);
 
-/* ===== MOVIE CARD ===== */
-.movie-card {
-  cursor: pointer; border-radius: var(--radius);
-  overflow: hidden; background: var(--bg2);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-.movie-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 12px 32px rgba(229,9,20,0.25);
-}
-.movie-poster-wrap {
-  position: relative; overflow: hidden;
-  aspect-ratio: 2/3;
-}
-.movie-poster {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-  transition: transform 0.3s ease;
-}
-.movie-card:hover .movie-poster { transform: scale(1.06); }
-.movie-play-icon {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.5rem;
-  background: rgba(0,0,0,0.45);
-  opacity: 0; transition: opacity 0.25s;
-}
-.movie-card:hover .movie-play-icon { opacity: 1; }
-.movie-title {
-  padding: 8px 10px 2px;
-  font-size: 0.82rem; font-weight: 700;
-  white-space: nowrap; overflow: hidden;
-  text-overflow: ellipsis;
-}
-.movie-rating {
-  padding: 0 10px 10px;
-  font-size: 0.78rem; color: var(--gold);
-  font-weight: 700;
-}
-/* ===== TRAILER PLAYER NEON ===== */
-.trailer-overlay {
-  position: fixed; inset: 0; z-index: 9999;
-  background: rgba(0,0,0,0.88);
-  backdrop-filter: blur(14px);
-  display: flex; align-items: center; justify-content: center;
-}
-.trailer-box {
-  position: relative;
-  width: 92%; max-width: 860px;
-  border-radius: 20px; overflow: hidden;
-  border: 2px solid var(--primary);
-  box-shadow:
-    0 0 30px rgba(229,9,20,0.5),
-    0 0 80px rgba(229,9,20,0.2);
-}
-.trailer-frame {
-  width: 100%; aspect-ratio: 16/9;
-  border: none; display: block;
-}
-.trailer-close {
-  position: absolute; top: 12px; left: 12px;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--primary); color: #fff;
-  border: none; font-size: 1rem; font-weight: 900;
-  cursor: pointer; z-index: 10;
-  box-shadow: 0 0 14px rgba(229,9,20,0.6);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.trailer-close:hover {
-  transform: scale(1.12);
-  box-shadow: 0 0 24px rgba(229,9,20,0.9);
-}
-/* ===== END TRAILER ===== */
-.hidden { display: none !important; } 
-/* ===== MOVIES GRID — 2 columns mobile ===== */
-.movies-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  padding: 12px;
-}
-@media (min-width: 600px)  { .movies-grid { grid-template-columns: repeat(3,1fr); } }
-@media (min-width: 900px)  { .movies-grid { grid-template-columns: repeat(4,1fr); } }
-@media (min-width: 1200px) { .movies-grid { grid-template-columns: repeat(6,1fr); } }
+  /* الخلفيات */
+  --bg:            #0a0a0f;
+  --bg2:           #111118;
+  --bg3:           #18181f;
+  --card-bg:       #16161e;
 
-/* ===== MOVIE CARD — صامت بدون نصوص ===== */
-.movie-card {
-  cursor: pointer;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #13141f;
-  transition: transform 0.25s, box-shadow 0.25s;
+  /* النصوص */
+  --text:          #ffffff;
+  --text2:         #aaaaaa;
+  --text3:         #666677;
+
+  /* الذهبي */
+  --gold:          #f5c518;
+
+  /* الحدود */
+  --border:        rgba(255,255,255,0.08);
+  --border-accent: rgba(229,9,20,0.4);
+
+  /* الزجاجية */
+  --glass:         rgba(255,255,255,0.05);
+  --glass-border:  rgba(255,255,255,0.1);
+
+  /* الأحجام */
+  --radius-sm:     8px;
+  --radius-md:     14px;
+  --radius-lg:     20px;
+  --radius-full:   999px;
+
+  /* النافبار */
+  --nav-height:    64px;
 }
-.movie-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 0 24px rgba(229,9,20,0.4);
-}
-.movie-poster-wrap {
-  position: relative;
-  aspect-ratio: 2/3;
-  overflow: hidden;
-}
-.movie-poster {
-  width: 100%; height: 100%;
-  object-fit: cover; display: block;
-  transition: transform 0.3s;
-}
-.movie-card:hover .movie-poster { transform: scale(1.07); }
-.movie-overlay {
-  position: absolute; inset: 0;
-  background: rgba(0,0,0,0.55);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 10px;
-  opacity: 0; transition: opacity 0.25s;
-}
-.movie-card:hover .movie-overlay { opacity: 1; }
-.movie-play-btn {
-  font-size: 2.8rem;
-  filter: drop-shadow(0 0 12px rgba(229,9,20,0.8));
-}
-.movie-rating-badge {
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #f5c518; font-weight: 900;
-  font-size: 0.82rem;
-  padding: 4px 12px; border-radius: 20px;
-}
-/* إخفاء أي نصوص قديمة */
-.movie-title, .movie-rating { display: none !important; }
-/* ===== خلفية ملكية ===== */
+
+/* ===== BASE ===== */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html, body {
-  margin: 0; padding: 0;
-  background: #050505;
-  min-height: 100vh;
-}
-#mainContent { background: #050505; }
-/* ===== توحيد البوسترات ===== */
-.movie-poster-wrap {
-  aspect-ratio: 2/3 !important;
-  overflow: hidden !important;
-  width: 100% !important;
-}
-.movie-poster {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  display: block !important;
-}
-/* ===== نيون Cyan عند Hover ===== */
-.movie-card:hover {
-  box-shadow:
-    0 0 12px rgba(0,255,255,0.4),
-    0 0 28px rgba(0,255,255,0.2),
-    0 0 60px rgba(0,255,255,0.1) !important;
-  transform: translateY(-5px) scale(1.03) !important;
-  border: 1px solid rgba(0,255,255,0.35) !important;
-}
-/* ===== إصلاح الأعمدة للجوال ===== */
-@media (max-width: 599px) {
-  .movies-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
-    padding: 8px !important;
-  }
-}
-/* ===== تثبيت نسبة البوسترات ===== */
-.movie-card {
-  aspect-ratio: unset !important;
-}
-.movie-poster-wrap {
-  aspect-ratio: 2/3 !important;
-  height: unset !important;
-}
-/* ===== قسري: بوسترين فقط على الجوال ===== */
-@media (max-width: 768px) {
-  .movies-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-/* ===== Glass Search Bar ===== */
-.search-input {
-  background: rgba(255,255,255,0.05) !important;
-  border: 1.5px solid rgba(0,255,255,0.5) !important;
-  color: #fff !important;
-  backdrop-filter: blur(10px) !important;
-  box-shadow: 0 0 12px rgba(0,255,255,0.2) !important;
-}
-.search-input::placeholder { color: rgba(255,255,255,0.4) !important; }
-.search-input:focus {
-  border-color: rgba(0,255,255,0.9) !important;
-  box-shadow: 0 0 24px rgba(0,255,255,0.35) !important;
-}
-/* ===== Neon Glow على الكروت ===== */
-.movie-card {
-  border: 1px solid rgba(0,255,255,0.08) !important;
-  box-shadow: 0 0 8px rgba(0,255,255,0.06) !important;
-}
-.movie-card:hover {
-  border: 1px solid rgba(0,255,255,0.5) !important;
-  box-shadow:
-    0 0 16px rgba(0,255,255,0.3),
-    0 0 40px rgba(0,255,255,0.15) !important;
-}
-/* ===== توحيد أبعاد البوسترات ===== */
-.movie-card {
-  aspect-ratio: unset !important;
-  height: unset !important;
-}
-.movie-poster-wrap {
-  width: 100% !important;
-  aspect-ratio: 2/3 !important;
-  height: unset !important;
-  max-height: unset !important;
-}
-.movie-poster {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center top !important;
-}
-/* ===== FINAL OVERRIDE ===== */
-body, html {
-  background: #050505 !important;
-  color: #fff !important;
-}
-#mainContent { background: #050505 !important; }
-
-/* 2 columns جوال */
-.movies-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 8px !important;
-  padding: 8px !important;
-  background: #050505 !important;
-}
-@media (min-width: 769px) {
-  .movies-grid { grid-template-columns: repeat(4, 1fr) !important; }
-}
-
-/* الكروت */
-.movie-card {
-  border-radius: 12px !important;
-  overflow: hidden !important;
-  background: #111 !important;
-  border: 1px solid rgba(0,255,255,0.15) !important;
-  box-shadow: 0 0 6px rgba(0,255,255,0.08) !important;
-  cursor: pointer !important;
-  transition: all 0.25s ease !important;
-}
-.movie-card:hover {
-  border-color: rgba(0,255,255,0.7) !important;
-  box-shadow: 0 0 20px rgba(0,255,255,0.4),
-              0 0 50px rgba(0,255,255,0.15) !important;
-  transform: scale(1.03) !important;
-}
-
-/* البوستر */
-.movie-poster-wrap {
-  width: 100% !important;
-  aspect-ratio: 2/3 !important;
-  overflow: hidden !important;
-  display: block !important;
-}
-.movie-poster {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: center top !important;
-  display: block !important;
-}
-
-/* شريط البحث */
-.search-input {
-  background: rgba(0,255,255,0.05) !important;
-  border: 1.5px solid rgba(0,255,255,0.4) !important;
-  color: #fff !important;
-  border-radius: 30px !important;
-}
-.search-input::placeholder { color: rgba(255,255,255,0.35) !important; }
-.search-input:focus {
-  border-color: cyan !important;
-  box-shadow: 0 0 20px rgba(0,255,255,0.3) !important;
-  outline: none !important;
-}
-/* ===== END FINAL ===== */
-/* ===== HERO SECTION ===== */
-.hero-section {
-  position: relative;
-  width: 100%;
-  height: 70vh;
-  overflow: hidden;
-  background: #050505;
-}
-.hero-slider {
-  width: 100%; height: 100%;
-  position: relative;
-}
-.hero-slide {
-  position: absolute; inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 1.2s ease;
-}
-.hero-slide.active { opacity: 1; }
-.hero-gradient {
-  position: absolute; inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 30%,
-    rgba(5,5,5,0.7) 60%,
-    #050505 100%
-  );
-  z-index: 2;
-}
-.hero-logo {
-  position: absolute;
-  top: 20px; left: 20px;
-  font-size: 1.6rem; font-weight: 900;
-  color: #fff; z-index: 3;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.8);
-}
-.hero-logo span { color: #e50914; }
-.hero-search-wrap {
-  position: absolute;
-  bottom: 30px; left: 50%;
-  transform: translateX(-50%);
-  width: 88%; max-width: 500px;
-  z-index: 3;
-}
-.hero-search-input {
-  width: 100%; padding: 14px 22px;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(16px);
-  border: 1.5px solid rgba(0,255,255,0.5);
-  border-radius: 40px;
-  color: #fff; font-size: 1rem;
+  background: var(--bg);
+  color: var(--text);
   font-family: 'Cairo', sans-serif;
-  outline: none;
-  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
-.hero-search-input::placeholder { color: rgba(255,255,255,0.4); }
-.hero-search-input:focus {
-  border-color: cyan;
-  box-shadow: 0 0 30px rgba(0,255,255,0.35);
-}
-/* ===== END HERO ===== */
-/* ===== HERO SLIDES FIX ===== */
-.hero-slide {
-  position: absolute !important;
-  inset: 0 !important;
-  background-size: cover !important;
-  background-position: center center !important;
-  background-repeat: no-repeat !important;
-  opacity: 0 !important;
-  transition: opacity 1.4s ease !important;
-}
-.hero-slide.active {
-  opacity: 1 !important;
-}
-.hero-section {
-  position: relative !important;
-  width: 100% !important;
-  height: 70vh !important;
-  overflow: hidden !important;
-  background: #050505 !important;
-}
-.hero-slider {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-.hero-gradient {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 2 !important;
-  background: linear-gradient(
-    to bottom,
-    rgba(5,5,5,0.2) 0%,
-    rgba(5,5,5,0.4) 50%,
-    #050505 100%
-  ) !important;
-}
-/* ===== END HERO FIX ===== */
+/* ===== END VARIABLES ===== */
