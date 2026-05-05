@@ -21,7 +21,14 @@
 
 <!-- PAGES -->
 <div id="homePage"        class="page"></div>
-<div id="searchPage"      class="page"></div>
+<div id="searchPage" class="page">
+  <div class="search-header">
+    <input type="text" id="searchInput2" class="hero-search-input"
+           placeholder="🔍 ابحث عن فيلم أو مسلسل..."
+           oninput="handleSearch(this.value)" style="margin:16px;width:calc(100% - 32px)">
+  </div>
+  <div id="searchResults"></div>
+</div>
 <div id="libraryPage"     class="page"></div>
 <div id="profilePage"     class="page"></div>
 <div id="detailPage"      class="page"></div>
