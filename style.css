@@ -96,3 +96,46 @@ html, body {
   transform: scale(1.1);
   box-shadow: 0 0 32px var(--accent2-glow);
 }
+/* ===== PAGES ===== */
+.page {
+  display: none;
+  min-height: 100vh;
+  padding-bottom: var(--nav-height);
+}
+.page.active { display: block; }
+.hidden { display: none !important; }
+
+/* ===== ROX MENU ===== */
+.rox-overlay {
+  position: fixed; inset: 0; z-index: 9991;
+  background: rgba(0,0,0,0.6);
+}
+.rox-menu {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 12px);
+  left: 50%; transform: translateX(-50%);
+  z-index: 9995;
+  background: rgba(5,5,5,0.95);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex; gap: 16px; align-items: center;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.8),
+              0 0 30px var(--accent-glow);
+}
+.rox-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px; cursor: pointer;
+}
+.rox-circle {
+  width: 56px; height: 56px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  transition: transform 0.2s;
+}
+.rox-item:active .rox-circle { transform: scale(0.9); }
+.rox-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--text2); white-space: nowrap;
+}
